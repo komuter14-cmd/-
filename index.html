@@ -3,7 +3,12 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Гиды Узбекистана — Управление</title>
+  <title>Туры и Гиды по Узбекистану — Панель Управления</title>
+  
+  <!-- SEO Мета-теги -->
+  <meta name="description" content="Панель управления бронированием гидов по Узбекистану (Ташкент, Самарканд, Бухара, Хива).">
+  <meta name="keywords" content="туры узбекистан, гиды узбекистан, экскурсии ташкент, самарканд гид, гид бухара, гид хива">
+
   <style>
     /* Живой анимированный фон */
     body {
@@ -27,7 +32,7 @@
       100% { background-position: 0% 50%; }
     }
 
-    /* Анимированная карточка */
+    /* Модальные карты */
     .card {
       background: rgba(22, 19, 43, 0.88);
       backdrop-filter: blur(16px);
@@ -45,9 +50,8 @@
       100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    /* Панель управления шире для комфорта */
     .dashboard-card {
-      max-width: 650px;
+      max-width: 700px;
       display: none;
     }
 
@@ -55,7 +59,6 @@
       margin-top: 0;
       text-align: center;
       color: #ffffff;
-      letter-spacing: 0.5px;
     }
 
     .form-group {
@@ -106,15 +109,28 @@
       box-shadow: 0 6px 20px rgba(199, 21, 133, 0.4);
     }
 
-    /* Сетка для ввода даты/времени */
+    .btn-danger {
+      background: #dc3545;
+      color: #fff;
+      border: none;
+      padding: 6px 12px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+    }
+
+    .btn-danger:hover {
+      background: #bd2130;
+    }
+
     .dateTimeGrid {
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 12px;
     }
 
-    /* Список гидов */
-    .guide-item {
+    /* Элементы списков */
+    .item-box {
       background: rgba(255, 255, 255, 0.04);
       border: 1px solid rgba(255, 255, 255, 0.08);
       padding: 14px 18px;
@@ -123,21 +139,10 @@
       display: flex;
       justify-content: space-between;
       align-items: center;
-      transition: all 0.3s ease;
     }
 
-    .guide-item:hover {
-      background: rgba(255, 255, 255, 0.08);
-    }
-
-    .guide-item.booked {
-      border-left: 4px solid #dc3545;
-      opacity: 0.65;
-    }
-
-    .guide-item.free {
-      border-left: 4px solid #28a745;
-    }
+    .item-box.booked { border-left: 4px solid #dc3545; opacity: 0.7; }
+    .item-box.free { border-left: 4px solid #28a745; }
 
     .badge {
       font-size: 0.75rem;
@@ -166,18 +171,26 @@
       border-radius: 8px;
       cursor: pointer;
       font-size: 0.85rem;
-      transition: 0.2s;
     }
 
     .btn-logout:hover {
       background: #dc3545;
       color: #fff;
     }
+
+    .owner-only {
+      display: none;
+      background: rgba(138, 43, 226, 0.1);
+      border: 1px solid rgba(138, 43, 226, 0.3);
+      padding: 15px;
+      border-radius: 12px;
+      margin-top: 20px;
+    }
   </style>
 </head>
 <body>
 
-  <!-- Центрированная карточка Логина -->
+  <!-- Окно Логина по центру -->
   <div class="card" id="loginCard">
     <h2>🔐 Вход в Управление</h2>
     <form id="loginForm">
@@ -185,7 +198,8 @@
         <label for="role">Выберите роль:</label>
         <select id="role">
           <option value="owner">Основатель</option>
-          <option value="admin">Администратор</option>
+          <option value="admin1">Администратор 1</option>
+          <option value="admin2">Администратор 2</option>
         </select>
       </div>
 
@@ -198,13 +212,14 @@
     </form>
   </div>
 
-  <!-- Центрированная Панель Управления -->
+  <!-- Главная Панель Управления -->
   <div class="card dashboard-card" id="adminPanel">
     <div class="header-bar">
-      <h2 id="userRoleTitle" style="margin:0;">👑 Панель Управления</h2>
+      <h2 id="userRoleTitle" style="margin:0;">Панель Управления</h2>
       <button class="btn-logout" onclick="logout()">Выйти</button>
     </div>
 
+    <!-- Блок бронирования гидов -->
     <h3>📅 Бронирование гида</h3>
     <form id="bookingForm">
       <div class="form-group">
@@ -221,16 +236,51 @@
           <input type="time" id="bookTime" required>
         </div>
       </div>
-      <button type="submit" class="btn-submit">Забронировать</button>
+      <button type="submit" class="btn-submit">Забронировать гида</button>
     </form>
 
     <hr style="border-color: rgba(255,255,255,0.1); margin: 25px 0;">
 
+    <!-- Список статусов гидов -->
     <h3>👨‍💼 Статус всех гидов</h3>
     <div id="guidesList"></div>
+
+    <hr style="border-color: rgba(255,255,255,0.1); margin: 25px 0;">
+
+    <!-- Блок Активных Админов Онлайн -->
+    <h3>🟢 Активные Сессии (Онлайн)</h3>
+    <div id="activeAdminsList"></div>
+
+    <!-- Раздел Управления для Основателя -->
+    <div class="owner-only" id="ownerControlBlock">
+      <h3 style="color: #d8b4fe;">👑 Настройки доступа (Только Основатель)</h3>
+      
+      <div class="form-group">
+        <label for="targetAdmin">Выберите администратора:</label>
+        <select id="targetAdmin">
+          <option value="admin1">Администратор 1</option>
+          <option value="admin2">Администратор 2</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="newAdminPass">Новый пароль:</label>
+        <input type="password" id="newAdminPass" placeholder="Введите новый пароль">
+      </div>
+      <button type="button" class="btn-submit" onclick="changeAdminPassword()">Изменить пароль</button>
+    </div>
   </div>
 
   <script>
+    // Пароли по умолчанию
+    let passwords = {
+      owner: '3112',
+      admin1: '3221',
+      admin2: '3221'
+    };
+
+    let currentUser = null;
+
+    // Список гидов
     let guides = [
       { id: 1, name: "Тимур (Ташкент)", status: "free", bookingInfo: "" },
       { id: 2, name: "Шахноза (Самарканд)", status: "free", bookingInfo: "" },
@@ -238,27 +288,83 @@
       { id: 4, name: "Азиз (Хива)", status: "free", bookingInfo: "" }
     ];
 
+    // Список сессий онлайн
+    let activeSessions = [];
+
+    // Вход
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
       const role = document.getElementById('role').value;
-      const password = document.getElementById('password').value;
+      const pass = document.getElementById('password').value;
 
-      if ((role === 'owner' && password === '3112') || (role === 'admin' && password === '3221')) {
+      if (pass === passwords[role]) {
+        currentUser = role;
+        
+        // Добавляем в активные сессии
+        if (!activeSessions.includes(role)) {
+          activeSessions.push(role);
+        }
+
         document.getElementById('loginCard').style.display = 'none';
         document.getElementById('adminPanel').style.display = 'block';
-        document.getElementById('userRoleTitle').innerText = role === 'owner' ? '👑 Панель Основателя' : '🛡️ Панель Администратора';
+
+        const roleNames = {
+          owner: '👑 Панель Основателя',
+          admin1: '🛡️ Панель Админа 1',
+          admin2: '🛡️ Панель Админа 2'
+        };
+
+        document.getElementById('userRoleTitle').innerText = roleNames[role];
+
+        // Показываем блок управления паролями только для Основателя
+        document.getElementById('ownerControlBlock').style.display = (role === 'owner') ? 'block' : 'none';
+
         renderGuides();
+        renderActiveAdmins();
       } else {
         alert('Неверный пароль!');
       }
     });
 
+    // Выход
     function logout() {
+      if (currentUser) {
+        activeSessions = activeSessions.filter(u => u !== currentUser);
+      }
+      currentUser = null;
       document.getElementById('adminPanel').style.display = 'none';
       document.getElementById('loginCard').style.display = 'block';
       document.getElementById('password').value = '';
     }
 
+    // Кик администратора (функция Основателя)
+    function kickAdmin(adminRole) {
+      activeSessions = activeSessions.filter(u => u !== adminRole);
+      alert(`Пользователь ${adminRole} заблокирован/выкинут из сессии.`);
+      
+      if (currentUser === adminRole) {
+        logout();
+      } else {
+        renderActiveAdmins();
+      }
+    }
+
+    // Изменение пароля администратора
+    function changeAdminPassword() {
+      const target = document.getElementById('targetAdmin').value;
+      const newPass = document.getElementById('newAdminPass').value;
+
+      if (!newPass) {
+        alert('Введите новый пароль!');
+        return;
+      }
+
+      passwords[target] = newPass;
+      alert(`Пароль для ${target} успешно изменен!`);
+      document.getElementById('newAdminPass').value = '';
+    }
+
+    // Отрисовка списка гидов
     function renderGuides() {
       const guidesList = document.getElementById('guidesList');
       const guideSelect = document.getElementById('guideSelect');
@@ -269,14 +375,14 @@
       let freeCount = 0;
 
       guides.forEach(guide => {
-        const guideDiv = document.createElement('div');
         const isFree = guide.status === 'free';
-        guideDiv.className = `guide-item ${isFree ? 'free' : 'booked'}`;
+        const guideDiv = document.createElement('div');
+        guideDiv.className = `item-box ${isFree ? 'free' : 'booked'}`;
         
         guideDiv.innerHTML = `
           <div>
             <strong style="font-size:1.05rem;">${guide.name}</strong><br>
-            <small style="color:#b3b3b3;">${isFree ? 'Доступен для брони' : 'Занят на: ' + guide.bookingInfo}</small>
+            <small style="color:#b3b3b3;">${isFree ? 'Свободен к бронированию' : 'Забронирован: ' + guide.bookingInfo}</small>
           </div>
           <span class="badge ${isFree ? 'badge-free' : 'badge-booked'}">
             ${isFree ? 'Свободен' : 'Занят'}
@@ -298,6 +404,35 @@
       }
     }
 
+    // Отрисовка активных администраторов
+    function renderActiveAdmins() {
+      const list = document.getElementById('activeAdminsList');
+      list.innerHTML = '';
+
+      if (activeSessions.length === 0) {
+        list.innerHTML = '<small style="color:#aaa;">Нет активных сессий</small>';
+        return;
+      }
+
+      activeSessions.forEach(user => {
+        const div = document.createElement('div');
+        div.className = 'item-box free';
+        
+        const isSelf = (user === currentUser);
+        const canKick = (currentUser === 'owner' && !isSelf);
+
+        div.innerHTML = `
+          <div>
+            <strong>${user === 'owner' ? '👑 Основатель' : '🛡️ ' + user}</strong>
+            ${isSelf ? ' <small style="color:#2ecc71;">(Вы)</small>' : ''}
+          </div>
+          ${canKick ? `<button class="btn-danger" onclick="kickAdmin('${user}')">Кикнуть</button>` : '<span class="badge badge-free">Онлайн</span>'}
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    // Бронирование
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
       e.preventDefault();
       
@@ -306,7 +441,7 @@
       const time = document.getElementById('bookTime').value;
 
       if (!guideId) {
-        alert('Выберите гида!');
+        alert('Выберите свободного гида!');
         return;
       }
 
