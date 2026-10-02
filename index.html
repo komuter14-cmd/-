@@ -14,21 +14,19 @@
       --accent-glow: rgba(56, 189, 248, 0.4);
       --accent-hover: #00d2ff;
       --danger: #f43f5e;
-      --danger-glow: rgba(244, 63, 94, 0.3);
       --success: #10b981;
-      --success-glow: rgba(16, 185, 129, 0.35);
       --text-main: #f8fafc;
       --text-muted: #94a3b8;
     }
 
     * {
       box-sizing: border-box;
-      transition: background-color 0.3s ease, border-color 0.3s ease, box-shadow 0.3s ease, transform 0.25s cubic-bezier(0.2, 0.8, 0.2, 1);
+      transition: background-color 0.25s ease, border-color 0.25s ease, box-shadow 0.25s ease;
     }
 
     body {
       margin: 0;
-      padding: 24px;
+      padding: 20px;
       font-family: 'Inter', system-ui, -apple-system, sans-serif;
       min-height: 100vh;
       background: var(--bg-gradient);
@@ -36,44 +34,35 @@
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      overflow-x: hidden;
     }
 
     .main-wrapper {
       width: 100%;
-      max-width: 1200px;
-      animation: pageEntrance 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+      max-width: 1250px;
+      animation: pageEntrance 0.6s cubic-bezier(0.16, 1, 0.3, 1) forwards;
     }
 
-    /* Анимация захода на сайт */
     @keyframes pageEntrance {
-      from {
-        opacity: 0;
-        transform: translateY(25px) scale(0.98);
-      }
-      to {
-        opacity: 1;
-        transform: translateY(0) scale(1);
-      }
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
     }
 
-    /* Верхняя шапка */
     .top-header {
       display: flex;
       justify-content: space-between;
       align-items: center;
       background: var(--card-bg);
       border: 1px solid var(--card-border);
-      padding: 18px 28px;
-      border-radius: 20px;
-      margin-bottom: 24px;
+      padding: 16px 24px;
+      border-radius: 16px;
+      margin-bottom: 20px;
       backdrop-filter: blur(16px);
       box-shadow: 0 8px 32px rgba(0, 0, 0, 0.4), 0 0 15px var(--accent-glow);
     }
 
     .top-header h2 {
       margin: 0;
-      font-size: 1.5rem;
+      font-size: 1.4rem;
       background: linear-gradient(90deg, #ffffff, var(--accent));
       -webkit-background-clip: text;
       -webkit-text-fill-color: transparent;
@@ -83,77 +72,69 @@
       background: var(--card-bg);
       backdrop-filter: blur(16px);
       border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 22px;
+      border-radius: 16px;
+      padding: 20px;
       box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-      margin-bottom: 24px;
-      position: relative;
-      overflow: hidden;
-    }
-
-    .card:hover {
-      border-color: rgba(56, 189, 248, 0.6);
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.5), 0 0 20px rgba(56, 189, 248, 0.2);
+      margin-bottom: 20px;
     }
 
     .grid-2 {
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 24px;
+      gap: 20px;
     }
 
     .form-group {
-      margin-bottom: 14px;
+      margin-bottom: 12px;
     }
 
     label {
       display: block;
       font-size: 0.85rem;
-      margin-bottom: 6px;
+      margin-bottom: 5px;
       color: var(--text-muted);
       font-weight: 500;
     }
 
-    select, input {
+    select, input, textarea {
       width: 100%;
-      padding: 12px 14px;
-      border-radius: 10px;
+      padding: 10px 12px;
+      border-radius: 8px;
       border: 1px solid rgba(255, 255, 255, 0.12);
       background: rgba(15, 23, 42, 0.85);
       color: #fff;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       outline: none;
     }
 
-    select:focus, input:focus {
+    select:focus, input:focus, textarea:focus {
       border-color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
-      transform: translateY(-1px);
+      box-shadow: 0 0 10px var(--accent-glow);
     }
 
-    /* Кнопки */
     .btn {
       width: 100%;
-      padding: 12px;
+      padding: 10px 14px;
       border: none;
-      border-radius: 10px;
+      border-radius: 8px;
       background: linear-gradient(135deg, var(--accent), #0284c7);
       color: #0b0f19;
       font-weight: 700;
-      font-size: 0.95rem;
+      font-size: 0.9rem;
       cursor: pointer;
-      box-shadow: 0 4px 15px var(--accent-glow);
+      box-shadow: 0 4px 12px var(--accent-glow);
     }
 
     .btn:hover {
       background: linear-gradient(135deg, var(--accent-hover), var(--accent));
       color: #fff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(0, 210, 255, 0.5);
+      transform: translateY(-1px);
     }
 
-    .btn:active {
-      transform: translateY(0);
+    .btn-sm {
+      width: auto;
+      padding: 6px 12px;
+      font-size: 0.8rem;
     }
 
     .btn-outline {
@@ -161,84 +142,51 @@
       border: 1px solid var(--accent);
       color: var(--accent);
       width: auto;
-      padding: 10px 20px;
-      box-shadow: 0 0 10px var(--accent-glow);
+      padding: 8px 16px;
     }
 
     .btn-outline:hover {
       background: var(--accent);
       color: #0b0f19;
-      box-shadow: 0 0 20px var(--accent);
     }
 
     .btn-danger {
       background: rgba(244, 63, 94, 0.15);
       border: 1px solid var(--danger);
       color: var(--danger);
-      padding: 6px 12px;
-      border-radius: 8px;
+      padding: 5px 10px;
+      border-radius: 6px;
       cursor: pointer;
-      font-weight: 600;
-      font-size: 0.85rem;
+      font-size: 0.8rem;
     }
 
     .btn-danger:hover {
       background: var(--danger);
       color: #fff;
-      box-shadow: 0 0 15px var(--danger-glow);
-      transform: translateY(-1px);
     }
 
-    /* Карточки элементов списка */
     .item-box {
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(255, 255, 255, 0.08);
-      padding: 14px 18px;
-      border-radius: 12px;
-      margin-bottom: 12px;
+      padding: 12px 16px;
+      border-radius: 10px;
+      margin-bottom: 10px;
       display: flex;
       justify-content: space-between;
       align-items: center;
-      animation: fadeIn 0.4s ease-out;
-    }
-
-    .item-box:hover {
-      transform: translateX(4px);
-      background: rgba(255, 255, 255, 0.06);
-    }
-
-    .item-box.booked {
-      border-left: 4px solid var(--danger);
-      box-shadow: -5px 0 15px -3px var(--danger-glow);
     }
 
     .item-box.free {
       border-left: 4px solid var(--success);
-      box-shadow: -5px 0 15px -3px var(--success-glow);
     }
 
-    .badge {
-      font-size: 0.75rem;
-      padding: 5px 12px;
-      border-radius: 20px;
-      font-weight: 700;
-      letter-spacing: 0.5px;
-      text-transform: uppercase;
-    }
-    .badge-free {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      border: 1px solid var(--success);
-      box-shadow: 0 0 10px var(--success-glow);
-    }
-    .badge-booked {
-      background: rgba(244, 63, 94, 0.15);
-      color: var(--danger);
-      border: 1px solid var(--danger);
-      box-shadow: 0 0 10px var(--danger-glow);
+    .price-tag {
+      color: #f59e0b;
+      font-weight: bold;
+      font-size: 0.95rem;
     }
 
-    /* Модальное окно Входа */
+    /* Модальное окно */
     .modal {
       display: none;
       position: fixed;
@@ -248,37 +196,63 @@
       justify-content: center;
       align-items: center;
       z-index: 100;
-      opacity: 0;
-      transition: opacity 0.3s ease;
     }
 
     .modal.active {
       display: flex;
-      opacity: 1;
     }
 
     .modal-content {
       width: 100%;
-      max-width: 380px;
-      transform: scale(0.85);
-      animation: modalZoom 0.3s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
-    }
-
-    @keyframes modalZoom {
-      to { transform: scale(1); }
+      max-width: 420px;
     }
 
     table {
       width: 100%;
       border-collapse: collapse;
       margin-top: 10px;
-      font-size: 0.85rem;
+      font-size: 0.82rem;
     }
 
     th, td {
-      padding: 10px;
+      padding: 8px 6px;
       text-align: left;
       border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+    }
+
+    /* Чат */
+    .chat-box {
+      height: 200px;
+      overflow-y: auto;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 10px;
+      background: rgba(15, 23, 42, 0.6);
+      margin-bottom: 10px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .chat-msg {
+      background: rgba(255, 255, 255, 0.05);
+      padding: 6px 10px;
+      border-radius: 6px;
+      font-size: 0.85rem;
+    }
+
+    .chat-msg .author {
+      color: var(--accent);
+      font-weight: bold;
+      margin-right: 5px;
+    }
+
+    .filter-panel {
+      background: rgba(56, 189, 248, 0.05);
+      border: 1px solid var(--card-border);
+      padding: 15px;
+      border-radius: 12px;
+      margin-bottom: 20px;
     }
 
     @media (max-width: 800px) {
@@ -290,118 +264,149 @@
 
   <div class="main-wrapper">
     
-    <!-- Шапка сайта -->
+    <!-- Шапка -->
     <div class="top-header">
       <div>
-        <h2>🚗 Услуги и Бронирование Узбекистан</h2>
-        <small style="color:var(--text-muted);" id="headerStatus">Витрина статуса онлайн</small>
+        <h2>🚗 Гиды и Авто Узбекистана</h2>
+        <small style="color:var(--text-muted);" id="headerStatus">Публичный поиск свободных гидов</small>
       </div>
       <div>
-        <button class="btn btn-outline" id="authBtn" onclick="openLoginModal()">🔑 Вход для сотрудников</button>
+        <button class="btn btn-outline" id="authBtn" onclick="openLoginModal()">🔑 Вход (Выбор роли)</button>
         <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="logout()">Выйти</button>
       </div>
     </div>
 
-    <!-- МОДУЛЬ 1: Публичная витрина (для всех заходящих) -->
-    <div id="publicView" class="grid-2">
-      <div class="card">
-        <h3 style="margin-top:0; color:#fff;">👨‍💼 Доступные Гиды</h3>
-        <div id="publicGuidesList"></div>
-      </div>
-
-      <div class="card">
-        <h3 style="margin-top:0; color:#fff;">🚘 Доступные Автомобили</h3>
-        <div id="publicCarsList"></div>
+    <!-- Фильтр для клиентов -->
+    <div class="filter-panel card">
+      <h3 style="margin-top:0; color:var(--accent);">🔍 Найти свободного гида (с машиной)</h3>
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 12px; align-items: end;">
+        <div class="form-group" style="margin:0;">
+          <label>Дата:</label>
+          <input type="date" id="filterDate">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Время начала:</label>
+          <input type="time" id="filterTime" value="09:00">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Длительность (часов):</label>
+          <input type="number" id="filterHours" min="1" max="24" value="6">
+        </div>
+        <div class="form-group" style="margin:0;">
+          <label>Язык гида:</label>
+          <select id="filterLang">
+            <option value="all">Все языки</option>
+            <option value="Русский">Русский</option>
+            <option value="Узбекский">Узбекский</option>
+            <option value="Английский">Английский</option>
+            <option value="Китайский">Китайский</option>
+          </select>
+        </div>
+        <div>
+          <button class="btn" onclick="renderPublicGuides()">Показать свободных</button>
+        </div>
       </div>
     </div>
 
-    <!-- МОДУЛЬ 2: Панель Управления (После Входа) -->
+    <!-- Список свободных гидов (Авто подтягивается автоматически) -->
+    <div class="card">
+      <h3 style="margin-top:0;">👨‍💼 Свободные гиды на выбранное время</h3>
+      <div id="publicGuidesList"></div>
+    </div>
+
+    <!-- Панель Управления (После Входа) -->
     <div id="adminPanel" style="display: none;" class="grid-2">
       
       <!-- Левая колонка -->
       <div>
-        <!-- Блок Бронирования (Для Основателя и Админа) -->
+        <!-- Бронирование -->
         <div class="card" id="bookingCard">
-          <h3 style="margin-top:0; color:var(--accent);">📅 Забронировать (Гид или Авто)</h3>
+          <h3 style="margin-top:0; color:var(--accent);">📅 Забронировать гида</h3>
           <form id="bookingForm">
             <div class="form-group">
-              <label>Тип услуги:</label>
-              <select id="bookingType" onchange="toggleBookingType()">
-                <option value="guide">Гид</option>
-                <option value="car">Автомобиль</option>
-              </select>
+              <label>Выберите гида:</label>
+              <select id="targetGuideSelect" required></select>
             </div>
             <div class="form-group">
-              <label>Выберите объект:</label>
-              <select id="targetSelect" required></select>
-            </div>
-            <div class="form-group">
-              <label>Имя Клиента:</label>
-              <input type="text" id="clientName" placeholder="Иван (+998...)" required>
+              <label>Имя и Телефон Клиента:</label>
+              <input type="text" id="clientName" placeholder="Алексей (+998901234567)" required>
             </div>
             <div class="form-group">
               <label>Дата:</label>
               <input type="date" id="bookDate" required>
             </div>
             <div class="form-group">
-              <label>Время начала и Часов:</label>
+              <label>Время и Часы:</label>
               <div style="display:flex; gap:10px;">
-                <input type="time" id="bookTime" required>
-                <input type="number" id="bookHours" min="1" max="24" value="2" placeholder="Часов" required>
+                <input type="time" id="bookTime" value="09:00" required>
+                <input type="number" id="bookHours" min="1" max="24" value="6" required>
               </div>
             </div>
             <button type="submit" class="btn">Создать бронь</button>
           </form>
         </div>
 
-        <!-- Управление и генерация аккаунтов (Только Основатель) -->
+        <!-- Управление добавлением (Основатель) -->
         <div class="card" id="ownerTools" style="display: none;">
-          <h3 style="margin-top:0; color: var(--accent);">⚙️ Добавление Гидов и Авто (Основатель)</h3>
+          <h3 style="margin-top:0; color: var(--accent);">➕ Добавить Машину / Гида</h3>
           
           <div class="form-group">
-            <label>Создать нового гида:</label>
-            <input type="text" id="newGuideName" placeholder="Имя Гида (например: Тимур Ташкент)">
-            <button class="btn" style="margin-top:8px;" onclick="addGuide()">+ Добавить и Сгенерировать Доступ</button>
+            <label>Добавить автомобиль:</label>
+            <input type="text" id="newCarName" placeholder="Chevrolet Tahoe (01 Z 777 ZZ)">
+            <input type="number" id="newCarPrice" placeholder="Цена за день ($)" style="margin-top:5px;">
+            <button class="btn btn-sm" style="margin-top:8px;" onclick="addCar()">+ Сохранить авто</button>
           </div>
 
-          <hr style="border-color: rgba(255,255,255,0.1); margin: 20px 0;">
+          <hr style="border-color: rgba(255,255,255,0.1); margin: 15px 0;">
 
           <div class="form-group">
-            <label>Добавить новый автомобиль:</label>
-            <input type="text" id="newCarName" placeholder="Название Авто (например: Malibu 2)">
-            <button class="btn" style="margin-top:8px;" onclick="addCar()">+ Добавить Автомобиль</button>
+            <label>Добавить гида:</label>
+            <input type="text" id="newGuideName" placeholder="Имя гида (Город)">
+            <div style="display:flex; gap:8px; margin-top:5px;">
+              <input type="text" id="newGuideLangs" placeholder="Языки">
+              <input type="number" id="newGuidePrice" placeholder="$/день" style="width:100px;">
+            </div>
+            <button class="btn btn-sm" style="margin-top:8px;" onclick="addGuide()">+ Создать гида</button>
           </div>
         </div>
       </div>
 
       <!-- Правая колонка -->
       <div>
-        <!-- Личный кабинет Гида -->
+        <!-- Внутренний чат -->
+        <div class="card">
+          <h3 style="margin-top:0; color:var(--accent);">💬 Рабочий чат</h3>
+          <div class="chat-box" id="chatBox"></div>
+          <div style="display:flex; gap:8px;">
+            <input type="text" id="chatInput" placeholder="Написать сообщение..." onkeypress="if(event.key==='Enter') sendChatMessage()">
+            <button class="btn btn-sm" onclick="sendChatMessage()">Отправить</button>
+          </div>
+        </div>
+
+        <!-- Расписание для Гида -->
         <div class="card" id="guideScheduleCard" style="display: none;">
-          <h3 style="margin-top:0; color:var(--accent);">⏳ Мои Бронирования (Расписание по часам)</h3>
+          <h3 style="margin-top:0; color:var(--accent);">⏳ Мои бронирования</h3>
           <div id="guideBookingsList"></div>
         </div>
 
-        <!-- Управление пользователями и паролями (Основатель) -->
+        <!-- Список персонала и редактирование (Основатель) -->
         <div class="card" id="ownerUsersCard" style="display: none;">
-          <h3 style="margin-top:0; color: var(--accent);">👥 Все Аккаунты и Пароли</h3>
-          <table>
-            <thead>
-              <tr>
-                <th>Логин</th>
-                <th>Роль</th>
-                <th>Пароль</th>
-                <th>Удалить</th>
-              </tr>
-            </thead>
-            <tbody id="usersTable"></tbody>
-          </table>
-        </div>
-
-        <!-- Активные Сессии (Только для Основателя и Админа) -->
-        <div class="card" id="activeSessionsCard">
-          <h3 style="margin-top:0;">🌐 Активные Сессии Администраторов</h3>
-          <div id="activeSessionsList"></div>
+          <h3 style="margin-top:0; color: var(--accent);">👥 Редактирование гидов и машин</h3>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead>
+                <tr>
+                  <th>Имя</th>
+                  <th>Пароль</th>
+                  <th>Языки</th>
+                  <th>Машина</th>
+                  <th>$/день</th>
+                  <th>Действия</th>
+                </tr>
+              </thead>
+              <tbody id="usersTable"></tbody>
+            </table>
+          </div>
         </div>
       </div>
 
@@ -409,18 +414,23 @@
 
   </div>
 
-  <!-- Модальное окно Авторизации -->
+  <!-- Окно входа без логинов (выбор роли + короткий пароль) -->
   <div class="modal" id="loginModal">
     <div class="card modal-content">
-      <h3 style="text-align: center; margin-top:0; color:#fff;">🔒 Авторизация Персонала</h3>
+      <h3 style="text-align: center; margin-top:0;">🔒 Вход для сотрудников</h3>
       <form id="loginForm">
         <div class="form-group">
-          <label>Логин:</label>
-          <input type="text" id="loginInput" required>
+          <label>Выберите вашу роль:</label>
+          <select id="loginRoleSelect" required>
+            <option value="owner">👑 Основатель</option>
+            <option value="admin">🛡️ Администратор</option>
+            <option value="guide_timur">👨‍💼 Гид: Тимур</option>
+            <option value="guide_sardor">👨‍💼 Гид: Сардор</option>
+          </select>
         </div>
         <div class="form-group">
-          <label>Пароль:</label>
-          <input type="password" id="passInput" required>
+          <label>Короткий пароль:</label>
+          <input type="password" id="passInput" placeholder="Введите пароль" required>
         </div>
         <button type="submit" class="btn">Войти</button>
         <button type="button" class="btn-danger" style="width:100%; margin-top:10px;" onclick="closeLoginModal()">Отмена</button>
@@ -428,102 +438,162 @@
     </div>
   </div>
 
+  <!-- Модальное окно редактирования гида -->
+  <div class="modal" id="editModal">
+    <div class="card modal-content">
+      <h3 style="text-align: center; margin-top:0; color:var(--accent);">✏️ Изменить данные гида</h3>
+      <input type="hidden" id="editUserKey">
+      <div class="form-group">
+        <label>Имя:</label>
+        <input type="text" id="editName">
+      </div>
+      <div class="form-group">
+        <label>Пароль:</label>
+        <input type="text" id="editPass">
+      </div>
+      <div class="form-group">
+        <label>Языки:</label>
+        <input type="text" id="editLangs">
+      </div>
+      <div class="form-group">
+        <label>Закрепленная машина:</label>
+        <select id="editCarSelect"></select>
+      </div>
+      <div class="form-group">
+        <label>Цена за день ($):</label>
+        <input type="number" id="editPrice">
+      </div>
+      <button type="button" class="btn" onclick="saveUserEdit()">Сохранить</button>
+      <button type="button" class="btn-danger" style="width:100%; margin-top:8px;" onclick="closeEditModal()">Отмена</button>
+    </div>
+  </div>
+
   <script>
-    // База пользователей
-    let users = [
-      { login: 'owner', pass: '3112', role: 'owner', name: 'Основатель' },
-      { login: 'admin1', pass: '3221', role: 'admin', name: 'Администратор 1' },
-      { login: 'guide_timur', pass: '88412', role: 'guide', name: 'Тимур (Ташкент)' }
+    // Машины в автопарке
+    let cars = [
+      { id: 1, name: 'Chevrolet Malibu 2 (01 A 123 AB)', price: 70 },
+      { id: 2, name: 'Chevrolet Tracker (01 B 456 CD)', price: 50 },
+      { id: 3, name: 'Chevrolet Tahoe (01 Z 777 ZZ)', price: 120 }
     ];
 
-    // База машин
-    let cars = [
-      { id: 1, name: 'Chevrolet Malibu 2' },
-      { id: 2, name: 'Chevrolet Tracker' },
-      { id: 3, name: 'Chevrolet Tahoe' }
+    // Пользователи с короткими паролями
+    let users = [
+      { key: 'owner', role: 'owner', name: 'Основатель', pass: '000', langs: 'Все', price: 0, carId: null },
+      { key: 'admin', role: 'admin', name: 'Администратор', pass: '111', langs: 'Все', price: 0, carId: null },
+      { key: 'guide_timur', role: 'guide', name: 'Тимур (Ташкент)', pass: '11', langs: 'Русский, Английский', price: 50, carId: 1 },
+      { key: 'guide_sardor', role: 'guide', name: 'Сардор (Самарканд)', pass: '22', langs: 'Русский, Узбекский', price: 40, carId: 2 }
     ];
 
     let bookings = [];
-    let activeSessions = [];
+    let chatMessages = [
+      { author: 'Основатель', text: 'Добро пожаловать в систему бронирования гидов!' }
+    ];
     let currentUser = null;
 
-    // Инициализация при запуске
-    renderPublicData();
+    document.getElementById('filterDate').valueAsDate = new Date();
+    document.getElementById('bookDate').valueAsDate = new Date();
 
-    function renderPublicData() {
-      const gList = document.getElementById('publicGuidesList');
-      const cList = document.getElementById('publicCarsList');
-      
-      gList.innerHTML = '';
-      cList.innerHTML = '';
+    renderPublicGuides();
+    renderChat();
 
-      // Гиды
+    function isTimeOverlapping(start1, hours1, start2, hours2) {
+      const s1 = parseInt(start1.split(':')[0]) * 60 + parseInt(start1.split(':')[1]);
+      const e1 = s1 + hours1 * 60;
+      const s2 = parseInt(start2.split(':')[0]) * 60 + parseInt(start2.split(':')[1]);
+      const e2 = s2 + hours2 * 60;
+      return Math.max(s1, s2) < Math.min(e1, e2);
+    }
+
+    // Вывод свободных гидов с их машинами
+    function renderPublicGuides() {
+      const list = document.getElementById('publicGuidesList');
+      list.innerHTML = '';
+
+      const filterDate = document.getElementById('filterDate').value;
+      const filterTime = document.getElementById('filterTime').value;
+      const filterHours = parseInt(document.getElementById('filterHours').value) || 1;
+      const filterLang = document.getElementById('filterLang').value;
+
       const guides = users.filter(u => u.role === 'guide');
+
       guides.forEach(g => {
-        const isBooked = bookings.some(b => b.targetLogin === g.login);
-        gList.innerHTML += `
-          <div class="item-box ${isBooked ? 'booked' : 'free'}">
-            <div><strong>${g.name}</strong></div>
-            <span class="badge ${isBooked ? 'badge-booked' : 'badge-free'}">${isBooked ? 'Занят' : 'Свободен'}</span>
-          </div>`;
+        if (filterLang !== 'all' && !g.langs.toLowerCase().includes(filterLang.toLowerCase())) {
+          return;
+        }
+
+        const isBusy = bookings.some(b => 
+          b.guideKey === g.key && 
+          b.date === filterDate && 
+          isTimeOverlapping(b.time, parseInt(b.hours), filterTime, filterHours)
+        );
+
+        if (!isBusy) {
+          const car = cars.find(c => c.id === g.carId);
+          const carText = car ? car.name : 'Без машины';
+
+          list.innerHTML += `
+            <div class="item-box free">
+              <div>
+                <strong>👨‍💼 ${g.name}</strong><br>
+                <small style="color:var(--text-muted);">🗣 Языки: ${g.langs}</small><br>
+                <small style="color:var(--text-muted);">🚗 Машина: ${carText}</small><br>
+                <span class="price-tag">💰 Стоимость: $${g.price} / день</span>
+              </div>
+              <button class="btn btn-sm" onclick="selectForBooking('${g.key}')">📅 Забронировать</button>
+            </div>`;
+        }
       });
 
-      // Автомобили
-      cars.forEach(c => {
-        const isBooked = bookings.some(b => b.targetCarId === c.id);
-        cList.innerHTML += `
-          <div class="item-box ${isBooked ? 'booked' : 'free'}">
-            <div><strong>${c.name}</strong></div>
-            <span class="badge ${isBooked ? 'badge-booked' : 'badge-free'}">${isBooked ? 'Забронирован' : 'Свободен'}</span>
-          </div>`;
-      });
+      if (list.innerHTML === '') {
+        list.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Нет свободных гидов на указанное время.</div>';
+      }
     }
 
-    function openLoginModal() { 
-      const modal = document.getElementById('loginModal');
-      modal.classList.add('active');
+    function selectForBooking(guideKey) {
+      document.getElementById('targetGuideSelect').value = guideKey;
+      document.getElementById('bookDate').value = document.getElementById('filterDate').value;
+      document.getElementById('bookTime').value = document.getElementById('filterTime').value;
+      document.getElementById('bookHours').value = document.getElementById('filterHours').value;
+      document.getElementById('bookingCard').scrollIntoView({ behavior: 'smooth' });
     }
 
-    function closeLoginModal() { 
-      const modal = document.getElementById('loginModal');
-      modal.classList.remove('active');
+    // Авторизация без логина
+    function openLoginModal() {
+      document.getElementById('loginModal').classList.add('active');
+    }
+    function closeLoginModal() {
+      document.getElementById('loginModal').classList.remove('active');
     }
 
-    // Логин
     document.getElementById('loginForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const login = document.getElementById('loginInput').value.trim();
+      const roleKey = document.getElementById('loginRoleSelect').value;
       const pass = document.getElementById('passInput').value.trim();
 
-      const user = users.find(u => u.login === login && u.pass === pass);
+      const user = users.find(u => u.key === roleKey && u.pass === pass);
 
       if (user) {
         currentUser = user;
-        if (!activeSessions.includes(user.login)) activeSessions.push(user.login);
-
         closeLoginModal();
+        document.getElementById('passInput').value = '';
         document.getElementById('authBtn').style.display = 'none';
         document.getElementById('logoutBtn').style.display = 'block';
-        document.getElementById('headerStatus').innerText = `Вы вошли как: ${user.name} (${user.role.toUpperCase()})`;
+        document.getElementById('headerStatus').innerText = `Вы вошли: ${user.name}`;
 
         document.getElementById('adminPanel').style.display = 'grid';
-
         setupAdminUI();
       } else {
-        alert('Неверный логин или пароль!');
+        alert('Неверный пароль!');
       }
     });
 
     function logout() {
-      if (currentUser) {
-        activeSessions = activeSessions.filter(l => l !== currentUser.login);
-      }
       currentUser = null;
       document.getElementById('adminPanel').style.display = 'none';
       document.getElementById('authBtn').style.display = 'block';
       document.getElementById('logoutBtn').style.display = 'none';
-      document.getElementById('headerStatus').innerText = 'Витрина статуса онлайн';
-      renderPublicData();
+      document.getElementById('headerStatus').innerText = 'Публичный поиск свободных гидов';
+      renderPublicGuides();
     }
 
     function setupAdminUI() {
@@ -532,40 +602,27 @@
 
       document.getElementById('ownerTools').style.display = isOwner ? 'block' : 'none';
       document.getElementById('ownerUsersCard').style.display = isOwner ? 'block' : 'none';
-      
       document.getElementById('bookingCard').style.display = isGuide ? 'none' : 'block';
-      document.getElementById('activeSessionsCard').style.display = isGuide ? 'none' : 'block';
       document.getElementById('guideScheduleCard').style.display = isGuide ? 'block' : 'none';
 
-      toggleBookingType();
-
+      populateGuideSelect();
       if (isOwner) renderUsersTable();
       if (isGuide) renderGuideSchedule();
-      renderActiveSessions();
     }
 
-    function toggleBookingType() {
-      const type = document.getElementById('bookingType').value;
-      const targetSelect = document.getElementById('targetSelect');
-      targetSelect.innerHTML = '';
-
-      if (type === 'guide') {
-        const guides = users.filter(u => u.role === 'guide');
-        guides.forEach(g => {
-          targetSelect.innerHTML += `<option value="${g.login}">${g.name}</option>`;
-        });
-      } else {
-        cars.forEach(c => {
-          targetSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-        });
-      }
+    function populateGuideSelect() {
+      const select = document.getElementById('targetGuideSelect');
+      select.innerHTML = '';
+      users.filter(u => u.role === 'guide').forEach(g => {
+        const car = cars.find(c => c.id === g.carId);
+        select.innerHTML += `<option value="${g.key}">${g.name} (${car ? car.name : 'Без авто'})</option>`;
+      });
     }
 
-    // Создание брони
+    // Создание бронирования
     document.getElementById('bookingForm').addEventListener('submit', function(e) {
       e.preventDefault();
-      const type = document.getElementById('bookingType').value;
-      const target = document.getElementById('targetSelect').value;
+      const guideKey = document.getElementById('targetGuideSelect').value;
       const client = document.getElementById('clientName').value;
       const date = document.getElementById('bookDate').value;
       const time = document.getElementById('bookTime').value;
@@ -573,83 +630,125 @@
 
       bookings.push({
         id: Date.now(),
-        type: type,
-        targetLogin: type === 'guide' ? target : null,
-        targetCarId: type === 'car' ? parseInt(target) : null,
-        client: client,
-        date: date,
-        time: time,
-        hours: hours
+        guideKey,
+        client,
+        date,
+        time,
+        hours
       });
 
-      alert('Бронирование добавлено!');
-      document.getElementById('bookingForm').reset();
-      renderPublicData();
-      toggleBookingType();
+      alert('Бронирование успешно создано!');
+      document.getElementById('clientName').value = '';
+      renderPublicGuides();
     });
 
-    // Функция добавления Гида (Основатель)
-    function addGuide() {
-      const name = document.getElementById('newGuideName').value.trim();
-      if (!name) return alert('Введите имя гида');
-
-      const login = 'guide_' + Math.floor(100 + Math.random() * 900);
-      const pass = Math.floor(100000 + Math.random() * 900000).toString();
-
-      users.push({ login, pass, role: 'guide', name });
-      alert(`Гид добавлен!\nЛогин: ${login}\nПароль: ${pass}`);
-      
-      document.getElementById('newGuideName').value = '';
-      renderUsersTable();
-      renderPublicData();
-    }
-
-    // Функция добавления Автомобиля (Основатель)
+    // Добавление машин и гидов
     function addCar() {
       const name = document.getElementById('newCarName').value.trim();
-      if (!name) return alert('Введите название машины');
+      const price = parseInt(document.getElementById('newCarPrice').value) || 50;
+      if (!name) return alert('Введите название авто');
 
-      cars.push({ id: Date.now(), name });
-      alert('Автомобиль успешно добавлен!');
-      
+      cars.push({ id: Date.now(), name, price });
+      alert('Автомобиль добавлен в парк!');
       document.getElementById('newCarName').value = '';
-      renderPublicData();
-      toggleBookingType();
+      document.getElementById('newCarPrice').value = '';
     }
 
-    // Таблица гидов/аккаунтов для основателя
+    function addGuide() {
+      const name = document.getElementById('newGuideName').value.trim();
+      const langs = document.getElementById('newGuideLangs').value.trim() || 'Русский';
+      const price = parseInt(document.getElementById('newGuidePrice').value) || 40;
+      if (!name) return alert('Введите имя гида');
+
+      const key = 'guide_' + Date.now();
+      const pass = Math.floor(10 + Math.random() * 90).toString(); // Короткий пароль
+
+      users.push({ key, role: 'guide', name, pass, langs, price, carId: null });
+      alert(`Гид добавлен!\nИмя: ${name}\nПароль: ${pass}`);
+      
+      document.getElementById('newGuideName').value = '';
+      document.getElementById('newGuideLangs').value = '';
+      document.getElementById('newGuidePrice').value = '';
+      renderUsersTable();
+      populateGuideSelect();
+      renderPublicGuides();
+    }
+
+    // Редактирование гидов
     function renderUsersTable() {
       const tbody = document.getElementById('usersTable');
       tbody.innerHTML = '';
 
       users.forEach(u => {
         if (u.role === 'owner') return;
+        const car = cars.find(c => c.id === u.carId);
         tbody.innerHTML += `
           <tr>
-            <td>${u.login}</td>
-            <td>${u.role}</td>
-            <td>${u.pass}</td>
-            <td><button class="btn-danger" onclick="deleteUser('${u.login}')">Удалить</button></td>
+            <td><strong>${u.name}</strong></td>
+            <td><code>${u.pass}</code></td>
+            <td>${u.langs}</td>
+            <td>${car ? car.name : '—'}</td>
+            <td>$${u.price}</td>
+            <td>
+              <button class="btn btn-sm" onclick="openEditModal('${u.key}')">✏️</button>
+            </td>
           </tr>
         `;
       });
     }
 
-    function deleteUser(login) {
-      users = users.filter(u => u.login !== login);
-      renderUsersTable();
-      renderPublicData();
+    function openEditModal(key) {
+      const u = users.find(x => x.key === key);
+      if (!u) return;
+
+      document.getElementById('editUserKey').value = u.key;
+      document.getElementById('editName').value = u.name;
+      document.getElementById('editPass').value = u.pass;
+      document.getElementById('editLangs').value = u.langs;
+      document.getElementById('editPrice').value = u.price;
+
+      const carSelect = document.getElementById('editCarSelect');
+      carSelect.innerHTML = '<option value="">Без машины</option>';
+      cars.forEach(c => {
+        carSelect.innerHTML += `<option value="${c.id}" ${u.carId === c.id ? 'selected' : ''}>${c.name}</option>`;
+      });
+
+      document.getElementById('editModal').classList.add('active');
+    }
+
+    function closeEditModal() {
+      document.getElementById('editModal').classList.remove('active');
+    }
+
+    function saveUserEdit() {
+      const key = document.getElementById('editUserKey').value;
+      const u = users.find(x => x.key === key);
+
+      if (u) {
+        u.name = document.getElementById('editName').value.trim();
+        u.pass = document.getElementById('editPass').value.trim();
+        u.langs = document.getElementById('editLangs').value.trim();
+        u.price = parseInt(document.getElementById('editPrice').value) || 0;
+        
+        const carVal = document.getElementById('editCarSelect').value;
+        u.carId = carVal ? parseInt(carVal) : null;
+
+        alert('Изменения сохранены!');
+        closeEditModal();
+        renderUsersTable();
+        populateGuideSelect();
+        renderPublicGuides();
+      }
     }
 
     // Расписание гида
     function renderGuideSchedule() {
       const container = document.getElementById('guideBookingsList');
       container.innerHTML = '';
-
-      const myBookings = bookings.filter(b => b.targetLogin === currentUser.login);
+      const myBookings = bookings.filter(b => b.guideKey === currentUser.key);
 
       if (myBookings.length === 0) {
-        container.innerHTML = '<small style="color:var(--text-muted);">У вас нет текущих бронирований.</small>';
+        container.innerHTML = '<small style="color:var(--text-muted);">Нет заказов.</small>';
         return;
       }
 
@@ -657,10 +756,10 @@
         container.innerHTML += `
           <div class="item-box booked">
             <div>
-              <strong>📅 Дата: ${b.date} | 🕒 ${b.time} (${b.hours} ч.)</strong><br>
+              <strong>📅 ${b.date} | 🕒 ${b.time} (${b.hours}ч)</strong><br>
               <small style="color:var(--text-muted);">Клиент: ${b.client}</small>
             </div>
-            <button class="btn" style="width:auto; padding: 6px 14px;" onclick="completeBooking(${b.id})">Завершить</button>
+            <button class="btn btn-sm" onclick="completeBooking(${b.id})">Завершить</button>
           </div>
         `;
       });
@@ -669,23 +768,33 @@
     function completeBooking(id) {
       bookings = bookings.filter(b => b.id !== id);
       renderGuideSchedule();
-      renderPublicData();
+      renderPublicGuides();
     }
 
-    function renderActiveSessions() {
-      const list = document.getElementById('activeSessionsList');
-      if (!list) return;
-      list.innerHTML = '';
+    // Чат
+    function sendChatMessage() {
+      const input = document.getElementById('chatInput');
+      const text = input.value.trim();
+      if (!text) return;
 
-      activeSessions.forEach(login => {
-        const u = users.find(x => x.login === login);
-        list.innerHTML += `
-          <div class="item-box free">
-            <div><strong>${u ? u.name : login}</strong> (${login})</div>
-            <span class="badge badge-free">Онлайн</span>
+      const authorName = currentUser ? currentUser.name : 'Гость';
+      chatMessages.push({ author: authorName, text });
+      input.value = '';
+      renderChat();
+    }
+
+    function renderChat() {
+      const box = document.getElementById('chatBox');
+      box.innerHTML = '';
+      chatMessages.forEach(m => {
+        box.innerHTML += `
+          <div class="chat-msg">
+            <span class="author">${m.author}:</span>
+            <span>${m.text}</span>
           </div>
         `;
       });
+      box.scrollTop = box.scrollHeight;
     }
   </script>
 </body>
