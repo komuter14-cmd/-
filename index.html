@@ -380,7 +380,7 @@
 
   async function loadSiteData() {
     try {
-      const res = await fetch('http://localhost:3000/api/site-data');
+      const res = await fetch('/api/site-data');
       const data = await res.json();
       if (data.success) {
         document.getElementById('userBookingPhone').innerText = data.settings.bookingPhone;
@@ -402,7 +402,7 @@
     const password = document.getElementById('passwordInput').value;
 
     try {
-      const res = await fetch('http://localhost:3000/api/auth/login', {
+      const res = await fetch('/api/auth/login', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ role, login, password })
@@ -434,7 +434,7 @@
 
   async function updateBookingPhone() {
     const phone = document.getElementById('adminPhoneInput').value;
-    const res = await fetch('http://localhost:3000/api/admin/update-phone', {
+    const res = await fetch('/api/admin/update-phone', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ role: currentUserRole, phone })
@@ -487,7 +487,7 @@
     const lang = document.getElementById(`lang_${id}`).value;
     const price = document.getElementById(`price_${id}`).value;
 
-    await fetch('http://localhost:3000/api/admin/update-guide', {
+    await fetch('/api/admin/update-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id, name, phone, city, car, carImg, lang, price })
@@ -507,7 +507,7 @@
 
     if (!name || !phone) return alert('Заполните данные');
 
-    await fetch('http://localhost:3000/api/admin/add-guide', {
+    await fetch('/api/admin/add-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ city, name, phone, car, carImg, lang, price })
@@ -517,7 +517,7 @@
 
   async function deleteGuide(id) {
     if (!confirm('Удалить гида?')) return;
-    await fetch('http://localhost:3000/api/admin/delete-guide', {
+    await fetch('/api/admin/delete-guide', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ id })
