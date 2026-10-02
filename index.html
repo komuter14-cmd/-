@@ -2,570 +2,168 @@
 <html lang="ru">
 <head>
   <meta charset="UTF-8">
-  <title>Гиды Узбекистана — Премиум Тур</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Гиды Узбекистана</title>
   <style>
-    :root {
-      --bg-color: #0f0c20;
-      --card-bg: rgba(30, 24, 54, 0.75);
-      --card-border: #3b2d6b;
-      --primary-purple: #8b5cf6;
-      --accent-pink: #ec4899;
-      --text-main: #f3f4f6;
-      --text-muted: #a78bfa;
-    }
-
+    /* Живой анимированный фон */
     body {
-      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-      background: var(--bg-color);
-      background-image: radial-gradient(circle at 10% 20%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
-                        radial-gradient(circle at 90% 80%, rgba(236, 72, 153, 0.12) 0%, transparent 40%);
-      color: var(--text-main);
       margin: 0;
       padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
       min-height: 100vh;
+      background: linear-gradient(-45deg, #0f0c29, #302b63, #24243e, #1a0826);
+      background-size: 400% 400%;
+      animation: gradientBG 15s ease infinite;
+      color: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
     }
 
-    header {
-      background: rgba(20, 15, 38, 0.85);
+    @keyframes gradientBG {
+      0% { background-position: 0% 50%; }
+      50% { background-position: 100% 50%; }
+      100% { background-position: 0% 50%; }
+    }
+
+    /* Модальное окно с анимированным появлением */
+    .login-card {
+      background: rgba(22, 19, 43, 0.85);
       backdrop-filter: blur(12px);
-      border-bottom: 1px solid var(--card-border);
-      padding: 18px 35px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      position: sticky;
-      top: 0;
-      z-index: 100;
-    }
-
-    header h1 {
-      margin: 0;
-      font-size: 24px;
-      background: linear-gradient(135deg, #a78bfa, #ec4899);
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-      font-weight: 800;
-    }
-
-    .btn-login {
-      background: linear-gradient(135deg, #6d28d9, #8b5cf6);
-      color: white;
-      border: 1px solid #a78bfa;
-      padding: 9px 18px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-weight: 600;
-      transition: all 0.3s ease;
-      box-shadow: 0 4px 15px rgba(139, 92, 246, 0.3);
-    }
-
-    .btn-login:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px rgba(139, 92, 246, 0.5);
-    }
-
-    main {
-      max-width: 1000px;
-      margin: 40px auto;
-      padding: 0 20px;
-    }
-
-    .card {
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      backdrop-filter: blur(16px);
+      border: 1px solid rgba(138, 43, 226, 0.3);
       border-radius: 16px;
-      padding: 28px;
-      margin-bottom: 25px;
-      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
-    }
-
-    .card h2 {
-      margin-top: 0;
-      color: #c4b5fd;
-      font-size: 20px;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-    }
-
-    .weather-widget {
-      display: flex;
-      gap: 15px;
-      margin-top: 15px;
-      overflow-x: auto;
-      padding-bottom: 5px;
-    }
-
-    .weather-item {
-      background: rgba(15, 12, 32, 0.6);
-      border: 1px solid #4c1d95;
-      padding: 12px 18px;
-      border-radius: 12px;
-      min-width: 120px;
+      padding: 30px;
+      width: 320px;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.6), 0 0 20px rgba(138, 43, 226, 0.2);
+      animation: popup 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
       text-align: center;
     }
 
-    .weather-item strong { display: block; color: var(--accent-pink); margin-bottom: 4px; }
-    .weather-item span { font-size: 18px; font-weight: bold; color: #f3f4f6; }
-
-    .contact-box {
-      background: linear-gradient(135deg, rgba(109, 40, 217, 0.25), rgba(236, 72, 153, 0.15));
-      border-left: 4px solid var(--accent-pink);
-      padding: 20px;
-      border-radius: 10px;
-      margin-top: 15px;
+    @keyframes popup {
+      0% { opacity: 0; transform: scale(0.7) translateY(-30px); }
+      100% { opacity: 1; transform: scale(1) translateY(0); }
     }
 
-    .contact-box p { margin: 8px 0; font-size: 16px; color: #ddd; }
-    .contact-box strong { font-size: 20px; color: #a78bfa; }
+    .login-card h2 {
+      margin-top: 0;
+      margin-bottom: 20px;
+      font-size: 1.3rem;
+      color: #e0e0e0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
 
-    .form-group { margin-bottom: 18px; }
-    .form-group label { display: block; font-weight: 600; margin-bottom: 8px; color: var(--text-muted); }
-    .form-group input, .form-group select {
+    .form-group {
+      margin-bottom: 18px;
+      text-align: left;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 0.85rem;
+      margin-bottom: 6px;
+      color: #b3b3b3;
+    }
+
+    select, input[type="password"] {
+      width: 100%;
+      padding: 10px;
+      border-radius: 8px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      background: rgba(10, 8, 22, 0.6);
+      color: #fff;
+      font-size: 0.95rem;
+      outline: none;
+      box-sizing: border-box;
+      transition: border-color 0.3s, box-shadow 0.3s;
+    }
+
+    select:focus, input[type="password"]:focus {
+      border-color: #8a2be2;
+      box-shadow: 0 0 8px rgba(138, 43, 226, 0.5);
+    }
+
+    .btn-submit {
       width: 100%;
       padding: 12px;
-      background: #150f30;
-      border: 1px solid var(--card-border);
-      color: white;
+      border: none;
       border-radius: 8px;
-      box-sizing: border-box;
-      font-size: 15px;
-      outline: none;
+      background: linear-gradient(90deg, #8a2be2, #c71585);
+      color: #fff;
+      font-weight: bold;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s;
+      margin-top: 10px;
     }
 
-    .guide-card {
-      background: rgba(21, 15, 48, 0.8);
-      border: 1px solid #4c1d95;
-      border-radius: 12px;
-      padding: 18px;
-      margin-bottom: 15px;
-      display: flex;
-      gap: 20px;
-      align-items: center;
-      transition: transform 0.2s;
+    .btn-submit:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(199, 21, 133, 0.4);
     }
 
-    .guide-card:hover { transform: translateY(-3px); border-color: var(--accent-pink); }
-    
-    .car-preview {
-      width: 150px;
-      height: 100px;
-      border-radius: 10px;
-      object-fit: cover;
-      border: 2px solid var(--card-border);
-      background: #0f0c20;
-      flex-shrink: 0;
+    .btn-cancel {
+      width: 100%;
+      padding: 10px;
+      border: none;
+      border-radius: 8px;
+      background: #dc3545;
+      color: #fff;
+      font-weight: bold;
+      font-size: 0.9rem;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: background 0.2s;
     }
 
-    .guide-info { flex-grow: 1; }
-    .guide-info h3 { margin: 0 0 6px 0; color: #f3f4f6; font-size: 18px; }
-    .guide-info p { margin: 4px 0; color: #a78bfa; font-size: 14px; }
-    
-    .status-free { color: #10b981; font-weight: bold; background: rgba(16, 185, 129, 0.15); padding: 6px 12px; border-radius: 20px; border: 1px solid #10b981; }
-    .status-busy { color: #f43f5e; font-weight: bold; background: rgba(244, 63, 94, 0.15); padding: 6px 12px; border-radius: 20px; border: 1px solid #f43f5e; }
-
-    .modal-overlay {
-      position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(0, 0, 0, 0.75); backdrop-filter: blur(8px);
-      display: flex; justify-content: center; align-items: center; z-index: 200;
+    .btn-cancel:hover {
+      background: #bd2130;
     }
-
-    .modal-card {
-      background: #181236;
-      border: 1px solid var(--primary-purple);
-      padding: 30px; border-radius: 16px; width: 340px;
-    }
-
-    .modal-card h3 { margin-top: 0; text-align: center; color: #c4b5fd; }
-    .modal-card label { font-size: 13px; color: var(--text-muted); display: block; margin-top: 12px; }
-    .modal-card input, .modal-card select {
-      width: 100%; padding: 10px; margin-top: 5px;
-      background: #0f0c20; border: 1px solid var(--card-border);
-      color: white; border-radius: 6px; box-sizing: border-box;
-    }
-
-    .btn {
-      width: 100%; padding: 12px; background: linear-gradient(135deg, #7c3aed, #db2777);
-      color: white; border: none; border-radius: 8px; margin-top: 18px;
-      cursor: pointer; font-weight: 700; font-size: 15px;
-    }
-
-    .btn-sm { padding: 6px 12px; font-size: 13px; width: auto; }
-    .btn-danger { background: #e11d48; }
-    .btn-success { background: #059669; }
-
-    .hidden { display: none !important; }
-
-    table { width: 100%; border-collapse: collapse; margin-top: 15px; }
-    th, td { border: 1px solid var(--card-border); padding: 8px; text-align: left; font-size: 13px; }
-    th { background: rgba(124, 58, 237, 0.2); color: #c4b5fd; }
-    td input, td select { width: 95%; padding: 6px; background: #0f0c20; border: 1px solid var(--card-border); color: white; border-radius: 4px; }
   </style>
 </head>
 <body>
 
-  <header id="mainHeader">
-    <h1>🏛️ Гиды Узбекистана</h1>
-    <div id="authNav">
-      <button class="btn-login" onclick="openLoginModal()">Вход для Сотрудников</button>
-    </div>
-  </header>
-
-  <main>
-    <div id="publicSite">
-      
-      <!-- Погода -->
-      <div class="card">
-        <h2> Погода в турах сейчас</h2>
-        <div class="weather-widget">
-          <div class="weather-item"><strong>Ташкент</strong> <span>+24°C ☀️</span></div>
-          <div class="weather-item"><strong>Самарканд</strong> <span>+22°C 🌤️</span></div>
-          <div class="weather-item"><strong>Бухара</strong> <span>+26°C ☀️</span></div>
-          <div class="weather-item"><strong>Хива</strong> <span>+25°C 🌤️</span></div>
-        </div>
+  <div class="login-card">
+    <h2>🔐 Вход в Управление</h2>
+    <form id="loginForm">
+      <div class="form-group">
+        <label for="role">Выберите роль:</label>
+        <select id="role">
+          <option value="owner">Основатель</option>
+          <option value="admin">Администратор</option>
+        </select>
       </div>
 
-      <!-- Контакты -->
-      <div class="card">
-        <h2>📞 Забронировать гида</h2>
-        <div class="contact-box">
-          <p>Телефон бронирования: <strong id="userBookingPhone">+998 906556550</strong></p>
-          <p>Быстрая связь в мессенджерах: <strong style="color: #ec4899;">Telegram / MAX</strong></p>
-        </div>
+      <div class="form-group">
+        <label for="password">Пароль:</label>
+        <input type="password" id="password" placeholder="••••" required>
       </div>
 
-      <!-- Поиск гидов -->
-      <div class="card">
-        <h2>🔍 Выбор гида и авто</h2>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px;">
-          <div class="form-group">
-            <label>Выберите город:</label>
-            <select id="citySelect" onchange="checkGuides()">
-              <option value="Ташкент">Ташкент</option>
-              <option value="Самарканд">Самарканд</option>
-              <option value="Бухара">Бухара</option>
-              <option value="Хива">Хива</option>
-            </select>
-          </div>
-
-          <div class="form-group">
-            <label>Выберите дату экскурсии:</label>
-            <input type="date" id="dateInput" onchange="checkGuides()">
-          </div>
-        </div>
-
-        <div id="guidesResult" style="margin-top: 15px;"></div>
-      </div>
-    </div>
-
-    <!-- ПАНЕЛЬ ОСНОВАТЕЛЯ И АДМИНИСТРАТОРА -->
-    <div id="adminPanel" class="hidden">
-      <!-- Только Основатель -->
-      <div id="founderSettingsCard" class="card" style="border-color: #ec4899;">
-        <h2>⚙️ Изменить главный номер бронирования сайта</h2>
-        <p style="color: var(--text-muted); font-size: 14px;">Этот номер отображается для всех клиентов на сайте.</p>
-        <div style="display: flex; gap: 10px;">
-          <input type="text" id="adminPhoneInput" style="padding: 10px; width: 300px; background: #0f0c20; border: 1px solid var(--card-border); color: white; border-radius: 6px;">
-          <button class="btn btn-sm btn-success" onclick="updateBookingPhone()">Сохранить номер</button>
-        </div>
-      </div>
-
-      <!-- Управление гидами -->
-      <div class="card">
-        <h2>👥 Управление гидами, авто и ссылками на фото</h2>
-        <p style="color: var(--text-muted); font-size: 13px;">Если оставить поле «Ссылка на фото» пустым, система автоматически подберет подходящую картинку по названию авто.</p>
-        
-        <table>
-          <thead>
-            <tr>
-              <th>Город</th>
-              <th>Имя гида</th>
-              <th>Телефон</th>
-              <th>Автомобиль</th>
-              <th>Ссылка на фото (URL)</th>
-              <th>Языки</th>
-              <th>$/день</th>
-              <th>Действие</th>
-            </tr>
-          </thead>
-          <tbody id="guidesTableBody"></tbody>
-        </table>
-
-        <h3 style="margin-top: 25px; color: #c4b5fd;">➕ Добавить гида</h3>
-        <div style="display: flex; gap: 8px; margin-top: 10px; flex-wrap: wrap;">
-          <select id="newGuideCity" style="padding: 8px; background: #0f0c20; color: white; border-radius: 6px;">
-            <option value="Ташкент">Ташкент</option>
-            <option value="Самарканд">Самарканд</option>
-            <option value="Бухара">Бухара</option>
-            <option value="Хива">Хива</option>
-          </select>
-          <input type="text" id="newGuideName" placeholder="Имя" style="padding: 8px; width: 100px; background: #0f0c20; color: white; border-radius: 6px;">
-          <input type="text" id="newGuidePhone" placeholder="+998..." style="padding: 8px; width: 100px; background: #0f0c20; color: white; border-radius: 6px;">
-          <input type="text" id="newGuideCar" placeholder="Модель авто" style="padding: 8px; width: 110px; background: #0f0c20; color: white; border-radius: 6px;">
-          <input type="text" id="newGuideCarImg" placeholder="Ссылка на фото (необязательно)" style="padding: 8px; width: 160px; background: #0f0c20; color: white; border-radius: 6px;">
-          <input type="text" id="newGuideLang" placeholder="Языки" style="padding: 8px; width: 90px; background: #0f0c20; color: white; border-radius: 6px;">
-          <input type="number" id="newGuidePrice" placeholder="$/день" style="padding: 8px; width: 65px; background: #0f0c20; color: white; border-radius: 6px;">
-          <button class="btn btn-sm btn-success" onclick="addGuide()">Добавить</button>
-        </div>
-      </div>
-    </div>
-  </main>
-
-  <!-- МОДАЛЬНОЕ ОКНО ЛОГИНА -->
-  <div id="loginModal" class="modal-overlay hidden">
-    <div class="modal-card">
-      <h3>🔐 Вход в Управление</h3>
-
-      <label>Выберите роль:</label>
-      <select id="roleSelect">
-        <option value="admin">Администратор</option>
-        <option value="founder">Основатель</option>
-      </select>
-
-      <label>Логин:</label>
-      <input type="text" id="loginInput" placeholder="Введите логин">
-
-      <label>Пароль:</label>
-      <input type="password" id="passwordInput" placeholder="Введите пароль">
-
-      <button class="btn" onclick="submitLogin()">Войти</button>
-      <button class="btn btn-danger" style="margin-top: 8px;" onclick="closeLoginModal()">Отмена</button>
-    </div>
+      <button type="submit" class="btn-submit">Войти</button>
+      <button type="button" class="btn-cancel" onclick="alert('Отмена')">Отмена</button>
+    </form>
   </div>
 
-<script>
-  let currentUserRole = '';
-  let allGuides = [];
+  <script>
+    document.getElementById('loginForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      
+      const role = document.getElementById('role').value;
+      const password = document.getElementById('password').value;
 
-  // База стандартизированных качественных фото для авто Uzbekistan
-  const carImagesMap = {
-    'cobalt': 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400',
-    'кобальт': 'https://images.unsplash.com/photo-1533473359331-0135ef1b58bf?w=400',
-    'malibu': 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400',
-    'малибу': 'https://images.unsplash.com/photo-1552519507-da3b142c6e3d?w=400',
-    'gentra': 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400',
-    'джентра': 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400',
-    'byd': 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=400',
-    'бид': 'https://images.unsplash.com/photo-1563720223185-11003d516935?w=400',
-    'lacetti': 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400',
-    'ласетти': 'https://images.unsplash.com/photo-1541899481282-d53bffe3c35d?w=400',
-    'tracker': 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400',
-    'трекер': 'https://images.unsplash.com/photo-1519641471654-76ce0107ad1b?w=400',
-    'damas': 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400',
-    'дамас': 'https://images.unsplash.com/photo-1570125909232-eb263c188f7e?w=400',
-    'пеший': 'https://images.unsplash.com/photo-1517649763962-0c6232661a0b?w=400',
-    'без авто': 'https://images.unsplash.com/photo-1517649763962-0c6232661a0b?w=400'
-  };
-
-  function getCarPhoto(carName, customImgUrl) {
-    if (customImgUrl && customImgUrl.trim().length > 10) {
-      return customImgUrl.trim();
-    }
-    if (!carName) return 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400';
-    
-    const lower = carName.toLowerCase();
-    for (let key in carImagesMap) {
-      if (lower.includes(key)) {
-        return carImagesMap[key];
-      }
-    }
-    return 'https://images.unsplash.com/photo-1549317661-bd32c8ce0db2?w=400';
-  }
-
-  window.onload = function() {
-    loadSiteData();
-  };
-
-  async function loadSiteData() {
-    try {
-      const res = await fetch('/api/site-data');
-      const data = await res.json();
-      if (data.success) {
-        document.getElementById('userBookingPhone').innerText = data.settings.bookingPhone;
-        document.getElementById('adminPhoneInput').value = data.settings.bookingPhone;
-        allGuides = data.guides;
-        renderAdminTable();
-      }
-    } catch (e) {
-      console.log('Запустите node server.js');
-    }
-  }
-
-  function openLoginModal() { document.getElementById('loginModal').classList.remove('hidden'); }
-  function closeLoginModal() { document.getElementById('loginModal').classList.add('hidden'); }
-
-  async function submitLogin() {
-    const role = document.getElementById('roleSelect').value;
-    const login = document.getElementById('loginInput').value;
-    const password = document.getElementById('passwordInput').value;
-
-    try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ role, login, password })
-      });
-
-      const data = await res.json();
-
-      if (data.success) {
-        currentUserRole = data.role;
-        closeLoginModal();
-
-        document.getElementById('authNav').innerHTML = `
-          <span style="color: #c4b5fd;">Роль: <strong>${data.name}</strong></span>
-          <button class="btn-login" style="margin-left: 10px; background: #e11d48;" onclick="location.reload()">Выйти</button>
-        `;
-
-        document.getElementById('adminPanel').classList.remove('hidden');
-
-        if (currentUserRole === 'admin') {
-          document.getElementById('founderSettingsCard').classList.add('hidden');
-        }
+      // Проверка паролей напрямую
+      if (role === 'owner' && password === '3112') {
+        alert('Успешный вход в роли Основателя!');
+        // Перенаправление или вызов функции для основателя
+      } else if (role === 'admin' && password === '3221') {
+        alert('Успешный вход в роли Администратора!');
+        // Перенаправление или вызов функции для админа
       } else {
-        alert(data.error);
+        alert('Неверный пароль!');
       }
-    } catch (e) {
-      alert('Ошибка подключения.');
-    }
-  }
-
-  async function updateBookingPhone() {
-    const phone = document.getElementById('adminPhoneInput').value;
-    const res = await fetch('/api/admin/update-phone', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ role: currentUserRole, phone })
     });
-    const data = await res.json();
-    if (data.success) {
-      alert('Номер обновлён!');
-      loadSiteData();
-    } else {
-      alert(data.error);
-    }
-  }
-
-  function renderAdminTable() {
-    const tbody = document.getElementById('guidesTableBody');
-    tbody.innerHTML = '';
-
-    allGuides.forEach(g => {
-      tbody.innerHTML += `
-        <tr>
-          <td>
-            <select id="city_${g.id}">
-              <option value="Ташкент" ${g.city==='Ташкент'?'selected':''}>Ташкент</option>
-              <option value="Самарканд" ${g.city==='Самарканд'?'selected':''}>Самарканд</option>
-              <option value="Бухара" ${g.city==='Бухара'?'selected':''}>Бухара</option>
-              <option value="Хива" ${g.city==='Хива'?'selected':''}>Хива</option>
-            </select>
-          </td>
-          <td><input type="text" id="name_${g.id}" value="${g.name}"></td>
-          <td><input type="text" id="phone_${g.id}" value="${g.phone}"></td>
-          <td><input type="text" id="car_${g.id}" value="${g.car || 'Пеший'}"></td>
-          <td><input type="text" id="carImg_${g.id}" value="${g.carImg || ''}" placeholder="URL картинки"></td>
-          <td><input type="text" id="lang_${g.id}" value="${g.lang || 'Русский'}"></td>
-          <td><input type="number" id="price_${g.id}" value="${g.price || 80}" style="width: 50px;"></td>
-          <td>
-            <button class="btn btn-sm btn-success" onclick="saveGuide(${g.id})">💾</button>
-            <button class="btn btn-sm btn-danger" onclick="deleteGuide(${g.id})">🗑️</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
-
-  async function saveGuide(id) {
-    const name = document.getElementById(`name_${id}`).value;
-    const phone = document.getElementById(`phone_${id}`).value;
-    const city = document.getElementById(`city_${id}`).value;
-    const car = document.getElementById(`car_${id}`).value;
-    const carImg = document.getElementById(`carImg_${id}`).value;
-    const lang = document.getElementById(`lang_${id}`).value;
-    const price = document.getElementById(`price_${id}`).value;
-
-    await fetch('/api/admin/update-guide', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id, name, phone, city, car, carImg, lang, price })
-    });
-    alert('Данные сохранены!');
-    loadSiteData();
-  }
-
-  async function addGuide() {
-    const city = document.getElementById('newGuideCity').value;
-    const name = document.getElementById('newGuideName').value;
-    const phone = document.getElementById('newGuidePhone').value;
-    const car = document.getElementById('newGuideCar').value;
-    const carImg = document.getElementById('newGuideCarImg').value;
-    const lang = document.getElementById('newGuideLang').value;
-    const price = document.getElementById('newGuidePrice').value;
-
-    if (!name || !phone) return alert('Заполните данные');
-
-    await fetch('/api/admin/add-guide', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ city, name, phone, car, carImg, lang, price })
-    });
-    loadSiteData();
-  }
-
-  async function deleteGuide(id) {
-    if (!confirm('Удалить гида?')) return;
-    await fetch('/api/admin/delete-guide', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ id })
-    });
-    loadSiteData();
-  }
-
-  function checkGuides() {
-    const city = document.getElementById('citySelect').value;
-    const date = document.getElementById('dateInput').value;
-    const resultDiv = document.getElementById('guidesResult');
-
-    if (!date) return;
-
-    const cityGuides = allGuides.filter(g => g.city === city);
-
-    if (cityGuides.length === 0) {
-      resultDiv.innerHTML = '<p style="color: var(--text-muted);">В этом городе пока нет гидов.</p>';
-      return;
-    }
-
-    let html = `<h3 style="color: #c4b5fd;">Гиды и трансфер на ${date}:</h3>`;
-    cityGuides.forEach(g => {
-      const isBusy = g.busyDates && g.busyDates.includes(date);
-      const statusText = isBusy ? 'Занят' : 'Свободен';
-      const statusClass = isBusy ? 'status-busy' : 'status-free';
-
-      const imageUrl = getCarPhoto(g.car, g.carImg);
-
-      html += `
-        <div class="guide-card">
-          <img class="car-preview" src="${imageUrl}" alt="${g.car}">
-          <div class="guide-info">
-            <h3>👤 ${g.name}</h3>
-            <p>📞 Тел: <strong>${g.phone}</strong></p>
-            <p>🚘 Автомобиль: <strong style="color: #ec4899;">${g.car || 'Без авто'}</strong></p>
-            <p>🗣️ Языки: ${g.lang || 'Русский'}</p>
-            <p>💵 Стоимость: <strong style="color: #10b981;">${g.price || 80}$ / день</strong></p>
-          </div>
-          <div>
-            <span class="${statusClass}">${statusText}</span>
-          </div>
-        </div>
-      `;
-    });
-    resultDiv.innerHTML = html;
-  }
-</script>
-
+  </script>
 </body>
 </html>
