@@ -29,6 +29,27 @@ const mk = p => ({ hash: hashPw(p), pw: enc(p) });
 const RANK = { owner: 3, admin: 2, guide: 1 };
 const canSeePw = (m, u) => RANK[m.role] > RANK[u.role];
 
+// ---- Настройки сайта (меняет только владелец) ----
+const DEF = { siteName: 'Гиды Узбекистана', contact: '', notice: '', currency: '$',
+  dayStart: '07:00', dayEnd: '23:00', minHours: 1, maxHours: 24, daysAhead: 90 };
+const pad2 = n => String(n).padStart(2, '0');
+const mins = t => { const [a, b] = String(t).split(':').map(Number); return a * 60 + (b || 0); };
+const numIn = (v, d, a, b) => { const n = parseInt(v, 10); return Number.isFinite(n) && n >= a && n <= b ? n : d; };
+const hhmm = (s, d) => (/^([01]\d|2[0-3]):[0-5]\d$/.test(String(s || '')) ? s : d);
+const cleanSettings = o => {
+  const s = { siteName: str(o.siteName, 60) || DEF.siteName, contact: str(o.contact, 120),
+    notice: str(o.notice, 400), currency: str(o.currency, 8) || DEF.currency,
+    dayStart: hhmm(o.dayStart, DEF.dayStart), dayEnd: hhmm(o.dayEnd, DEF.dayEnd),
+    minHours: numIn(o.minHours, DEF.minHours, 1, 24), maxHours: numIn(o.maxHours, DEF.maxHours, 1, 24),
+    daysAhead: numIn(o.daysAhead, DEF.daysAhead, 0, 730) };
+  if (s.maxHours < s.minHours) s.maxHours = s.minHours;
+  return s;
+};
+// Сегодняшняя дата в Узбекистане (UTC+5) и «крайняя дата» для брони
+const todayTZ = () => new Date(Date.now() + 5 * 36e5).toISOString().slice(0, 10);
+const horizon = st => (st.daysAhead > 0 ? new Date(todayTZ() + 'T00:00:00+05:00').getTime() + st.daysAhead * 864e5 : Infinity);
+const workHours = st => st.dayStart < st.dayEnd; // иначе работаем круглосуточно
+
 const seed = () => ({
   users: [
     { login: 'owner', ...mk(process.env.OWNER_PASSWORD || '000'), role: 'owner', name: 'Основатель', langs: 'Все', price: 0, car: '' },
@@ -59,6 +80,7 @@ async function init() {
     delete S.cars; S.bookings = S.bookings.filter(b => b.targetLogin); await persist();
   }
   (S.sessions || []).forEach(x => tokens.set(x.t, { login: x.login, at: x.at }));
+  if (!S.settings) { S.settings = { ...DEF }; await persist(); } // миграция: настройки появились позже остальных данных
   console.log(pool ? 'Хранилище: PostgreSQL' : 'Хранилище: файл data.json (на бесплатном Render может сбрасываться!)');
 }
 
@@ -84,9 +106,10 @@ const ECODE = {
   'Неверный пароль!': 'wrong_pass', 'Недостаточно прав': 'forbid', 'Войдите в систему': 'no_auth',
   'Пустое сообщение': 'empty_msg', 'Бронь не найдена': 'no_booking', 'Неизвестное действие': 'unknown_op',
   'Введите имя гида': 'name_guide', 'Имя не может быть пустым': 'name_empty',
-  'Пароль — минимум 4 символа': 'pass_min', 'Ошибка сервера': 'server'
+  'Пароль — минимум 4 символа': 'pass_min', 'Ошибка сервера': 'server',
+  'Это время вне рабочих часов': 'closed_hours', 'Этот логин уже занят': 'login_busy'
 };
-const bad = (res, error) => res.status(400).json({ error, code: ECODE[error] || 'server' });
+const bad = (res, error, code) => res.status(400).json({ error, code: code || ECODE[error] || 'server' });
 const forbid = res => res.status(403).json({ error: 'Недостаточно прав', code: 'forbid' });
 const str = (s, n) => String(s ?? '').trim().slice(0, n);
 const span = (d, t, h) => { const s = new Date(`${d}T${t}:00+05:00`).getTime(); return { s, e: s + h * 36e5 }; };
@@ -99,15 +122,19 @@ const canManage = (m, u) => m.role === 'owner' || u.login === m.login || (m.role
 const canDelete = (m, u) => u.role !== 'owner' && u.login !== m.login && (m.role === 'owner' || (m.role === 'admin' && u.role === 'guide'));
 
 // ---- API ----
+// Кого видит текущий: гость и гид — только гидов и себя; админ — всех, кроме владельца; владелец — всех.
+const visible = m => m ? S.users.filter(u => u.role === 'guide' || u.login === m.login ||
+    (m.role !== 'guide' && !(m.role === 'admin' && u.role === 'owner'))) : guides();
 app.get('/api/data', (req, res) => {
   const m = auth(req);
-  const users = (m ? S.users.filter(u => !(m.role === 'admin' && u.role === 'owner')) : guides())
+  const users = visible(m)
     .map(u => ({ ...pub(u), pass: m && canSeePw(m, u) ? (u.pw ? dec(u.pw) : null) : undefined }));
   const bookings = !m ? [] : m.role === 'guide' ? S.bookings.filter(b => b.targetLogin === m.login) : S.bookings;
   const online = m && m.role !== 'guide'
     ? [...new Set(live().map(t => t.login))].map(l => { const u = S.users.find(x => x.login === l); return u && { login: l, name: u.name }; }).filter(Boolean) : [];
   res.json({
     me: m && pub(m), users, bookings, online, db: !!pool,
+    settings: S.settings,
     profiles: S.users.map(u => ({ login: u.login, name: u.name, role: u.role })),
     slots: S.bookings.map(b => ({ date: b.date, time: b.time, hours: b.hours, targetLogin: b.targetLogin })),
     chat: m ? S.chat : []
@@ -129,12 +156,16 @@ app.post('/api/logout', async (req, res) => { tokens.delete(req.get('x-token'));
 app.post('/api/book', async (req, res) => {
   if (limited('b' + req.ip, 30, 36e5)) return res.status(429).json({ error: 'Слишком много запросов', code: 'rate_book' });
   const b = req.body || {}, client = str(b.client, 80), hours = parseInt(b.hours), date = str(b.date, 10), time = str(b.time, 5);
+  const st = S.settings;
   if (!/^\d{4}-\d\d-\d\d$/.test(date) || !/^\d\d:\d\d$/.test(time)) return bad(res, 'Неверная дата или время');
-  if (!(hours >= 1 && hours <= 24)) return bad(res, 'Длительность: от 1 до 24 часов');
+  if (!(hours >= st.minHours && hours <= st.maxHours)) return bad(res, `Длительность: от ${st.minHours} до ${st.maxHours} часов`, 'hours');
   if (client.replace(/\D/g, '').length < 9) return bad(res, 'Укажите имя и номер телефона (минимум 9 цифр)');
   const sp = span(date, time, hours);
   if (isNaN(sp.s)) return bad(res, 'Неверная дата или время');
   if (sp.s < Date.now()) return bad(res, 'Нельзя бронировать в прошлом');
+  if (sp.s > horizon(st)) return bad(res, `Бронирование доступно не более чем за ${st.daysAhead} дней вперёд`, 'too_far');
+  if (workHours(st) && (mins(time) < mins(st.dayStart) || mins(time) + hours * 60 > mins(st.dayEnd)))
+    return bad(res, 'Это время вне рабочих часов', 'closed_hours');
   if (S.bookings.length > 5000) return bad(res, 'Слишком много броней');
   const g = guides().find(x => x.login === b.target);
   if (!g) return bad(res, 'Гид не найден');
@@ -159,13 +190,26 @@ app.post('/api/act', async (req, res) => {
         const text = str(b.text, 500); if (!text) return bad(res, 'Пустое сообщение');
         S.chat.push({ author: m.name, text }); S.chat = S.chat.slice(-100); break;
       }
-      case 'addGuide': {
+      case 'addGuide': case 'addUser': { // создание сотрудника: админ может только гида, владелец — кого угодно
         if (!st) return forbid(res);
+        const role = b.op === 'addGuide' ? 'guide' : (b.role === 'admin' ? 'admin' : 'guide');
+        if (role === 'admin' && m.role !== 'owner') return forbid(res);
         const name = str(b.name, 60); if (!name) return bad(res, 'Введите имя гида');
-        const login = 'guide_' + Date.now().toString(36) + crypto.randomInt(10, 99), pass = crypto.randomBytes(4).toString('hex');
-        S.users.push({ login, ...mk(pass), role: 'guide', name, langs: str(b.langs, 100) || 'Русский',
-          price: Math.max(0, parseInt(b.price) || 30), car: str(b.car, 80) });
-        await persist(); return res.json({ ok: 1, pass });
+        const pass = role === 'admin' && String(b.pass || '').trim() ? String(b.pass).trim() : crypto.randomBytes(4).toString('hex');
+        if (pass.length < 4) return bad(res, 'Пароль — минимум 4 символа');
+        let login = role === 'admin'
+          ? 'adm_' + (str(b.login, 20).toLowerCase().replace(/[^a-z0-9_]/g, '') || Date.now().toString(36))
+          : 'guide_' + Date.now().toString(36) + crypto.randomInt(10, 99);
+        if (S.users.some(x => x.login === login)) return bad(res, 'Этот логин уже занят');
+        const u = { login, ...mk(pass), role, name, langs: role === 'guide' ? (str(b.langs, 100) || 'Русский') : '',
+          price: role === 'guide' ? Math.max(0, parseInt(b.price) || 30) : 0, car: role === 'guide' ? str(b.car, 80) : '' };
+        S.users.push(u);
+        await persist(); return res.json({ ok: 1, pass, login, role });
+      }
+      case 'saveSettings': {
+        if (m.role !== 'owner') return forbid(res);
+        S.settings = cleanSettings(b.settings || b);
+        await persist(); break;
       }
       case 'editUser': {
         const u = S.users.find(x => x.login === b.login);
@@ -174,7 +218,7 @@ app.post('/api/act', async (req, res) => {
         if (!name) return bad(res, 'Имя не может быть пустым');
         if (pass && pass.length < 4) return bad(res, 'Пароль — минимум 4 символа');
         u.name = name; if (pass) Object.assign(u, mk(pass));
-        u.langs = str(b.langs, 100); u.price = Math.max(0, parseInt(b.price) || 0); u.car = str(b.car, 80);
+        if (u.role === 'guide') { u.langs = str(b.langs, 100); u.price = Math.max(0, parseInt(b.price) || 0); u.car = str(b.car, 80); }
         if (pass) { for (const [t, v] of tokens) if (v.login === u.login && u !== m) tokens.delete(t); await syncTokens(); }
         break;
       }

@@ -32,7 +32,15 @@ body::before{content:'';position:fixed;inset:0;z-index:0;pointer-events:none;opa
 .cy{--g:linear-gradient(90deg,#22d3ee,#8b5cf6)}.or{--g:linear-gradient(90deg,#f59e0b,#ec4899)}.gr{--g:linear-gradient(90deg,#10b981,#22d3ee)}.pk{--g:linear-gradient(90deg,#ec4899,#8b5cf6)}
 h3{margin:0 0 16px;font-size:1.08rem;letter-spacing:-.2px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+.notice{display:flex;align-items:center;gap:12px;margin:-8px 0 22px;padding:13px 20px;border-radius:18px;font-size:.9rem;font-weight:600;color:#fde68a;background:rgba(245,158,11,.14);border:1px solid rgba(245,158,11,.5)}
 /* ---------- Поля ---------- */
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:12px}
+.grid3>div{min-width:0}
+.stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:12px}
+.stat{padding:14px;border-radius:16px;text-align:center;background:rgba(255,255,255,.06);border:1px solid var(--bd);transition:transform .2s,background .2s}
+.stat:hover{transform:translateY(-3px);background:rgba(255,255,255,.1)}
+.stat b{display:block;font-size:1.5rem;font-weight:800;letter-spacing:-.5px;background:linear-gradient(90deg,#67e8f9,#f9a8d4);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.stat span{font-size:.74rem;color:var(--mu);letter-spacing:.05em;text-transform:uppercase;font-weight:700}
 .fg{margin-bottom:14px}
 label{display:block;font-size:.71rem;margin-bottom:7px;color:var(--mu);font-weight:700;letter-spacing:.09em;text-transform:uppercase}
 select,input{width:100%;padding:12px 14px;border-radius:14px;border:1px solid var(--bd);background:rgba(9,6,32,.6);color:#fff;font-size:.94rem;outline:none;color-scheme:dark;transition:border-color .2s,box-shadow .2s,background .2s}
@@ -129,7 +137,7 @@ body:not(.ready) .wrap>*{opacity:0}
 #toast{animation:rise .35s ease}
 /* ---------- Телефон ---------- */
 @media(max-width:860px){.grid2{grid-template-columns:1fr;gap:16px}.top{flex-direction:column;align-items:flex-start}.top>div:last-child{width:100%;justify-content:space-between}}
-@media(max-width:560px){.guides{grid-template-columns:1fr}.item{flex-direction:column;align-items:flex-start}.del{margin-left:0}}
+@media(max-width:560px){.guides{grid-template-columns:1fr}.item{flex-direction:column;align-items:flex-start}.del{margin-left:0}.grid3{grid-template-columns:1fr 1fr}}
 @media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}body:not(.ready) .wrap>*{opacity:1}}
 </style>
 </head>
@@ -138,13 +146,15 @@ body:not(.ready) .wrap>*{opacity:0}
 <div id="splash"><div><div class="sp-i">🧭</div><div class="sp-t">Гиды Узбекистана</div><div class="sp-b"></div></div></div>
 <div class="wrap">
   <div class="top">
-    <div><h1>🧭 Гиды Узбекистана</h1><small id="status" data-t="status_guest">Выберите гида и забронируйте поездку</small><br><span class="pill" id="freePill"></span></div>
+    <div><h1 id="siteName">🧭 Гиды Узбекистана</h1><small id="status" data-t="status_guest">Выберите гида и забронируйте поездку</small><br><span class="pill" id="freePill"></span><a class="pill" id="contactPill" style="display:none;text-decoration:none" target="_blank" rel="noopener"></a></div>
     <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
       <select id="langSel" class="langsel" onchange="setLang(this.value)" title="Язык сайта"></select>
       <button class="btn gl" id="authBtn" onclick="openLogin()" data-t="btn_auth">🔑 Вход для персонала</button>
       <button class="btn gl" id="logoutBtn" style="display:none" onclick="logout()" data-t="btn_logout">Выйти</button>
     </div>
   </div>
+
+  <div class="notice" id="noticeBar" style="display:none"></div>
 
   <div class="card cy">
     <h3 data-t="find_title">🔍 Найти свободных гидов</h3>
@@ -154,6 +164,7 @@ body:not(.ready) .wrap>*{opacity:0}
       <div><label data-t="f_hours">Длительность (часов)</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
       <div><button class="btn cy2" onclick="renderPublic()" data-t="f_show">Показать свободных</button></div>
     </div>
+    <small class="mu" id="hoursHint" style="display:block;margin-top:12px"></small>
   </div>
 
   <h3 style="font-size:1.25rem;margin-left:6px" data-t="guides_title">👨‍💼 Свободные гиды</h3>
@@ -163,17 +174,48 @@ body:not(.ready) .wrap>*{opacity:0}
     <div>
       <div class="card or" id="ownerTools" style="display:none">
         <div class="warn" id="warn" style="display:none" data-t="warn_db">⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).</div>
-        <h3 data-t="new_guide">➕ Новый гид</h3>
+        <h3 data-t="new_staff">➕ Новый сотрудник</h3>
+        <div class="fg" id="roleRow" style="display:none"><label data-t="staff_role">Роль</label>
+          <select id="ngRole"><option value="guide" data-t="role_guide">Гид</option><option value="admin" data-t="role_admin">Админ</option></select>
+          <small class="mu" id="roleHint" style="display:block;margin-top:7px"></small></div>
+        <div class="fg" id="loginRow" style="display:none"><label data-t="l_login">Логин</label><input id="ngLogin" placeholder="ali" autocomplete="off"></div>
         <div class="fg"><label data-t="l_name">Имя</label><input id="ngName" data-p="ph_name" placeholder="Алишер (Ташкент)"></div>
-        <div class="fg"><label data-t="l_langs">Языки</label><input id="ngLangs" data-p="ph_langs" placeholder="Русский, Английский"></div>
-        <div class="fg"><label data-t="l_car">Автомобиль гида (модель и номер)</label><input id="ngCar" data-p="ph_car" placeholder="Chevrolet Tahoe (01 A 777 AA)"></div>
-        <div class="fg"><label data-t="l_price">Цена за день ($)</label><input type="number" id="ngPrice" data-p="ph_price" placeholder="50" min="0"></div>
+        <div class="fg" id="ngLangsRow"><label data-t="l_langs">Языки</label><input id="ngLangs" data-p="ph_langs" placeholder="Русский, Английский"></div>
+        <div class="fg" id="ngCarRow"><label data-t="l_car">Автомобиль гида (модель и номер)</label><input id="ngCar" data-p="ph_car" placeholder="Chevrolet Tahoe (01 A 777 AA)"></div>
+        <div class="fg" id="ngPriceRow"><label data-t="l_price">Цена за день ($)</label><input type="number" id="ngPrice" data-p="ph_price" placeholder="50" min="0"></div>
         <button class="btn or2" onclick="addGuide()" data-t="btn_add_guide">+ Создать гида</button>
       </div>
+      <div class="card cy" id="setCard" style="display:none">
+        <h3 data-t="settings_title">⚙️ Настройки сайта</h3>
+        <div class="fg"><label data-t="s_site">Название сайта</label><input id="stSite" maxlength="60"></div>
+        <div class="fg"><label data-t="s_contact">Контакт (телефон / Telegram)</label><input id="stContact" maxlength="120" placeholder="+998 90 123 45 67 · @username"></div>
+        <div class="grid3">
+          <div><label data-t="s_currency">Валюта</label><input id="stCur" maxlength="8"></div>
+          <div><label data-t="s_hours_from">Работаем с</label><input type="time" id="stFrom"></div>
+          <div><label data-t="s_hours_to">до</label><input type="time" id="stTo"></div>
+        </div>
+        <div class="grid3">
+          <div><label data-t="s_minh">Мин. часов</label><input type="number" id="stMin" min="1" max="24"></div>
+          <div><label data-t="s_maxh">Макс. часов</label><input type="number" id="stMax" min="1" max="24"></div>
+          <div><label data-t="s_ahead">Дней вперёд (0 = все)</label><input type="number" id="stAhead" min="0" max="730"></div>
+        </div>
+        <div class="fg"><label data-t="s_notice">Примечание для гостей</label><input id="stNotice" maxlength="400"></div>
+        <button class="btn cy2" onclick="saveSettings()" data-t="btn_save_settings">Сохранить настройки</button>
+      </div>
+      <div class="card gr" id="statCard" style="display:none">
+        <h3 data-t="stat_title">📊 Статистика</h3>
+        <div class="stats" id="statBox"></div>
+      </div>
       <div class="card gr">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px;flex-wrap:wrap">
           <h3 style="margin:0" id="bkTitle">📅 Брони</h3>
-          <button class="btn sm" id="newBkBtn" onclick="openBook()" data-t="btn_new_bk">+ Новая бронь</button>
+          <div style="display:flex;gap:8px;flex-wrap:wrap;align-items:center" id="bkTools">
+            <select id="fltGuide" class="langsel" onchange="renderBookings()"></select>
+            <input type="date" id="fltDate" class="langsel" onchange="renderBookings()">
+            <button class="btn sm gl" onclick="resetFilters()" data-t="filter_reset">✕</button>
+            <button class="btn sm cy2" onclick="exportCsv()" data-t="btn_export">⬇ CSV</button>
+            <button class="btn sm" id="newBkBtn" onclick="openBook()" data-t="btn_new_bk">+ Новая бронь</button>
+          </div>
         </div>
         <div id="bkList"></div>
       </div>
@@ -245,7 +287,7 @@ btn_auth:'🔑 Вход для персонала', btn_logout:'Выйти', lan
 find_title:'🔍 Найти свободных гидов', f_date:'Дата поездки', f_time:'Время начала', f_hours:'Длительность (часов)', f_show:'Показать свободных',
 guides_title:'👨‍💼 Свободные гиды', price_day:'{p} / день', no_car:'Без автомобиля', btn_book:'📅 Забронировать',
 none_free:'Нет свободных гидов на выбранное время.',
-new_guide:'➕ Новый гид', l_name:'Имя', ph_name:'Алишер (Ташкент)', l_langs:'Языки', ph_langs:'Русский, Английский',
+l_name:'Имя', ph_name:'Алишер (Ташкент)', l_langs:'Языки', ph_langs:'Русский, Английский',
 l_car:'Автомобиль гида (модель и номер)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Цена за день ($)', ph_price:'50',
 btn_add_guide:'+ Создать гида',
 warn_db:'⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).',
@@ -267,7 +309,20 @@ client:'Укажите имя и номер телефона (минимум 9 �
 many_bookings:'Слишком много броней', no_guide:'Гид не найден', busy:'Это время уже занято — выберите другое',
 rate_login:'Слишком много попыток, подождите 10 минут', rate_book:'Слишком много запросов', wrong_pass:'Неверный пароль!',
 forbid:'Недостаточно прав', no_auth:'Войдите в систему', empty_msg:'Пустое сообщение', no_booking:'Бронь не найдена',
-unknown_op:'Неизвестное действие', server:'Ошибка сервера', network:'Нет связи с сервером'
+unknown_op:'Неизвестное действие', server:'Ошибка сервера', network:'Нет связи с сервером',
+closed_hours:'Это время вне рабочих часов', too_far:'Слишком далеко вперёд, выберите дату пораньше', login_busy:'Этот логин уже занят',
+new_staff:'➕ Новый сотрудник', staff_role:'Роль', role_owner:'Владелец', role_admin:'Админ', role_guide:'Гид', l_login:'Логин',
+admin_hint:'Админ видит все брони, управляет гидами и их паролями, пользуется чатом. Настройки сайта и пароль владельца недоступны.',
+guide_hint:'Гид видит только свои заказы и может завершать их.',
+settings_title:'⚙️ Настройки сайта', s_site:'Название сайта', s_contact:'Контакт (телефон / Telegram)', s_currency:'Валюта',
+s_hours_from:'Работаем с', s_hours_to:'до', s_minh:'Мин. часов', s_maxh:'Макс. часов',
+s_ahead:'Дней вперёд (0 = все)', s_notice:'Примечание для гостей', btn_save_settings:'Сохранить настройки', ok_settings:'Настройки сохранены!',
+admin_added:'Сотрудник добавлен!\nИмя: {name}\nЛогин для входа: {login}\nПароль: {pass}\n\nСохраните пароль — повторно он показан не будет.',
+hours_hint:'Мы работаем с {a} до {b}', hours_24:'Работаем круглосуточно', ahead_hint:'бронь не более чем за {n} дней вперёд',
+stat_title:'📊 Статистика', stat_total:'всего броней', stat_today:'на сегодня', stat_week:'за 7 дней', stat_future:'предстоит', stat_sum:'сумма за неделю',
+btn_export:'⬇ CSV', filter_all:'все', filter_reset:'Сбросить фильтр',
+bk_none_filtered:'По этому фильтру броней нет.', ok_export:'Скачано броней: {n}',
+csv_date:'Дата', csv_time:'Время', csv_hours:'Часов', csv_guide:'Гид', csv_car:'Автомобиль', csv_client:'Клиент'
 },
 uz: {
 page_title:"Oʻzbekiston gidlari — bron qilish", status_guest:'Gidni tanlang va sayohatni bron qiling', status_me:'Siz kirdingiz: {name}',
@@ -275,7 +330,7 @@ btn_auth:'🔑 Xodimlar uchun kirish', btn_logout:'Chiqish', lang_tip:'Sayt tili
 find_title:'🔍 Boʻsh gidlarni topish', f_date:'Sayohat sanasi', f_time:'Boshlanish vaqti', f_hours:'Davomiyligi (soat)', f_show:'Boʻsh gidlarni koʻrsatish',
 guides_title:'👨‍💼 Boʻsh gidlar', price_day:'{p} / kun', no_car:'Mashina yoʻq', btn_book:'📅 Bron qilish',
 none_free:'Tanlangan vaqt uchun boʻsh gid yoʻq.',
-new_guide:'➕ Yangi gid', l_name:'Ism', ph_name:'Alisher (Toshkent)', l_langs:'Tillar', ph_langs:'Ruscha, Inglizcha',
+l_name:'Ism', ph_name:'Alisher (Toshkent)', l_langs:'Tillar', ph_langs:'Ruscha, Inglizcha',
 l_car:'Gidning mashinasi (model va raqam)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Kunlik narx ($)', ph_price:'50',
 btn_add_guide:'+ Gid yaratish',
 warn_db:'⚠️ Maʼlumotlar bazasi ulanmagan: maʼlumotlar vaqtinchalik faylda saqlanadi va qayta ishga tushirilganda yoʻqolishi mumkin. PostgreSQL ulang (Render da DATABASE_URL oʻzgaruvchisi).',
@@ -297,7 +352,20 @@ client:'Ism va telefon raqamni kiriting (kamida 9 ta raqam)', past:'Oʻtmish vaq
 many_bookings:'Bronlar juda koʻp', no_guide:'Gid topilmadi', busy:'Bu vaqt band — boshqa vaqt tanlang',
 rate_login:'Juda koʻp urinish, 10 daqiqa kutib turing', rate_book:'Juda koʻp soʻrovlar', wrong_pass:'Parol notoʻgʻri!',
 forbid:'Huquqlar yetarli emas', no_auth:'Tizimga kiring', empty_msg:'Boʻsh xabar', no_booking:'Bron topilmadi',
-unknown_op:'Nomaʼlum amal', server:'Server xatosi', network:'Server bilan aloqa yoʻq'
+unknown_op:'Nomaʼlum amal', server:'Server xatosi', network:'Server bilan aloqa yoʻq',
+closed_hours:'Bu vaqt ish vaqtlari tashqarisida', too_far:'Juda uzoqga oldinga, oldinroq sanani tanlang', login_busy:'Bu login band',
+new_staff:'➕ Yangi xodim', staff_role:'Rol', role_owner:'Egasi', role_admin:'Admin', role_guide:'Gid', l_login:'Login',
+admin_hint:'Admin barcha bronlarni koʻradi, gidlarni va ularning parollarini boshqaradi, chatdan foydalanadi. Sayt sozlamalari va egasi paroli unga koʻrinmaydi.',
+guide_hint:'Gid faqat oʻz buyurtmalarini koʻradi va ularni yakunlay oladi.',
+settings_title:'⚙️ Sayt sozlamalari', s_site:'Sayt nomi', s_contact:'Kontakt (telefon / Telegram)', s_currency:'Valyuta',
+s_hours_from:'Ish vaqti dan', s_hours_to:'gacha', s_minh:'Min. soat', s_maxh:'Maks. soat',
+s_ahead:'Kunlar oldinga (0 = hammasi)', s_notice:'Mehmonlar uchun izoh', btn_save_settings:'Sozlamalarni saqlash', ok_settings:'Sozlamalar saqlandi!',
+admin_added:'Xodim qoʻshildi!\nIsm: {name}\nKirish logini: {login}\nParol: {pass}\n\nParolni saqlang — u qayta koʻrsatilmaydi.',
+hours_hint:'Biz {a} dan {b} gacha ishlaymiz', hours_24:'Biz kechasi ham ishlaymiz', ahead_hint:'faqat {n} kun oldinga bron mumkin',
+stat_title:'📊 Statistika', stat_total:'jami bronlar', stat_today:'bugun', stat_week:'7 kun', stat_future:'oldingi', stat_sum:'7 kunlik summa',
+btn_export:'⬇ CSV', filter_all:'barchasi', filter_reset:'Filtrni tozalash',
+bk_none_filtered:'Bu filtr boʻyicha bronlar yoʻq.', ok_export:'Yuklab olingan bronlar: {n}',
+csv_date:'Sana', csv_time:'Vaqt', csv_hours:'Soat', csv_guide:'Gid', csv_car:'Mashina', csv_client:'Mijoz'
 },
 en: {
 page_title:'Guides of Uzbekistan — booking', status_guest:'Choose a guide and book your trip', status_me:'Signed in as: {name}',
@@ -305,7 +373,7 @@ btn_auth:'🔑 Staff login', btn_logout:'Log out', lang_tip:'Site language', fre
 find_title:'🔍 Find available guides', f_date:'Trip date', f_time:'Start time', f_hours:'Duration (hours)', f_show:'Show available',
 guides_title:'👨‍💼 Available guides', price_day:'{p} / day', no_car:'No car', btn_book:'📅 Book now',
 none_free:'No guides are available at the selected time.',
-new_guide:'➕ New guide', l_name:'Name', ph_name:'Alisher (Tashkent)', l_langs:'Languages', ph_langs:'Russian, English',
+l_name:'Name', ph_name:'Alisher (Tashkent)', l_langs:'Languages', ph_langs:'Russian, English',
 l_car:'Guide car (model and plate)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Price per day ($)', ph_price:'50',
 btn_add_guide:'+ Create guide',
 warn_db:'⚠️ Database is not connected: data is kept in a temporary file and may be lost on restart. Connect PostgreSQL (DATABASE_URL variable in Render).',
@@ -327,7 +395,20 @@ client:'Please enter your name and phone number (at least 9 digits)', past:'Cann
 many_bookings:'Too many bookings', no_guide:'Guide not found', busy:'This time is already taken — please choose another',
 rate_login:'Too many attempts, please wait 10 minutes', rate_book:'Too many requests', wrong_pass:'Wrong password!',
 forbid:'Not enough permissions', no_auth:'Please sign in', empty_msg:'Empty message', no_booking:'Booking not found',
-unknown_op:'Unknown action', server:'Server error', network:'No connection to the server'
+unknown_op:'Unknown action', server:'Server error', network:'No connection to the server',
+closed_hours:'This time is outside working hours', too_far:'Too far ahead, please choose an earlier date', login_busy:'This login is already taken',
+new_staff:'➕ New staff member', staff_role:'Role', role_owner:'Owner', role_admin:'Admin', role_guide:'Guide', l_login:'Login',
+admin_hint:'An admin sees all bookings, manages guides and their passwords, and uses the chat. Site settings and the owner password are not available.',
+guide_hint:'A guide sees only their own orders and can complete them.',
+settings_title:'⚙️ Site settings', s_site:'Site name', s_contact:'Contact (phone / Telegram)', s_currency:'Currency',
+s_hours_from:'Working from', s_hours_to:'to', s_minh:'Min. hours', s_maxh:'Max. hours',
+s_ahead:'Days ahead (0 = all)', s_notice:'Note for guests', btn_save_settings:'Save settings', ok_settings:'Settings saved!',
+admin_added:'Staff member added!\nName: {name}\nLogin: {login}\nPassword: {pass}\n\nSave the password — it will not be shown again.',
+hours_hint:'We work from {a} to {b}', hours_24:'We work around the clock', ahead_hint:'booking no more than {n} days ahead',
+stat_title:'📊 Statistics', stat_total:'total bookings', stat_today:'today', stat_week:'next 7 days', stat_future:'upcoming', stat_sum:'sum for the week',
+btn_export:'⬇ CSV', filter_all:'all', filter_reset:'Clear filter',
+bk_none_filtered:'No bookings match this filter.', ok_export:'Downloaded bookings: {n}',
+csv_date:'Date', csv_time:'Time', csv_hours:'Hours', csv_guide:'Guide', csv_car:'Car', csv_client:'Client'
 }
 };
 const LANGS = [['ru','🇷🇺 Русский'],['uz','🇺🇿 Oʻzbekcha'],['en','🇬🇧 English']];
@@ -365,6 +446,8 @@ const pick = (s, a) => a[[...String(s)].reduce((x, c) => x + c.charCodeAt(0), 0)
 
 // ---- Связь с сервером ----
 let users = [], profiles = [], bookings = [], slots = [], chat = [], online = [], M = null, DB = true;
+let SET = { siteName: 'Гиды Узбекистана', contact: '', notice: '', currency: '$', dayStart: '07:00', dayEnd: '23:00', minHours: 1, maxHours: 24, daysAhead: 90 };
+const DEF_SET = { ...SET };
 let token = localStorage.getItem('uz_token') || '';
 async function api(path, body) {
   let r;
@@ -381,14 +464,52 @@ async function act(op, p = {}) {
   catch (e) { toast(trErr(e.code, e.message)); return null; }
 }
 async function refresh() {
-  try { const d = await api('data'); ({ me: M, users, profiles, bookings, slots, chat, online } = d); DB = d.db; }
+  try { const d = await api('data'); ({ me: M, users, profiles, bookings, slots, chat, online } = d); DB = d.db; if (d.settings) SET = { ...SET, ...d.settings }; }
   catch (e) { return toast(trErr(e.code, e.message)); }
   if (!M && token) { token = ''; localStorage.removeItem('uz_token'); }
-  paint();
+  applySettings(); paint();
 }
 const isStaff = () => !!M && (M.role === 'owner' || M.role === 'admin');
 const canManage = u => !!M && (M.role === 'owner' || u.login === M.login || (M.role === 'admin' && u.role === 'guide'));
 const canDelete = u => !!M && u.role !== 'owner' && u.login !== M.login && (M.role === 'owner' || (M.role === 'admin' && u.role === 'guide'));
+const isOwner = () => !!M && M.role === 'owner';
+const money = n => SET.currency + (+n || 0);
+
+// ---- Настройки сайта (видимы всем, меняет только владелец) ----
+function applySettings() {
+  $('siteName').textContent = (SET.siteName || DEF_SET.siteName);
+  document.title = SET.siteName || DEF_SET.siteName;
+  const c = $('contactPill');
+  if (SET.contact) {
+    c.textContent = '✉ ' + SET.contact;
+    const raw = SET.contact.trim();
+    c.href = /^https?:\/\//i.test(raw) ? raw : (raw[0] === '@' ? 'https://t.me/' + raw.slice(1) : (/^[\d\s()+-]+$/.test(raw) ? 'tel:' + raw.replace(/[^\d+]/g, '') : '#'));
+  } else c.style.display = 'none';
+  const nb = $('noticeBar');
+  nb.innerHTML = SET.notice ? `<span>📌</span><span>${esc(SET.notice)}</span>` : '';
+  nb.style.display = SET.notice ? 'flex' : 'none';
+  const hm = SET.dayStart < SET.dayEnd ? t('hours_hint', { a: SET.dayStart, b: SET.dayEnd }) : t('hours_24');
+  const ah = SET.daysAhead > 0 ? ' · ' + t('ahead_hint', { n: SET.daysAhead }) : '';
+  $('hoursHint').textContent = hm + ah;
+  // пределы длительности и даты — в поиске, в форме брони и в настройках
+  ['fHours', 'bHours', 'stMin', 'stMax'].forEach(id => { const e = $(id); e.min = SET.minHours; e.max = SET.maxHours; });
+  ['fDate', 'bDate'].forEach(id => { $(id).max = SET.daysAhead > 0 ? addDays(today(), SET.daysAhead) : ''; });
+  $('fTime').min = $('bTime').min = SET.dayStart; $('fTime').max = $('bTime').max = SET.dayEnd;
+  if (isOwner()) fillSettingsForm();
+}
+function addDays(d, n) { const p = s => { const [y, m, dd] = s.split('-').map(Number); return new Date(Date.UTC(y, m - 1, dd) + n * 864e5).toISOString().slice(0, 10); }; return p(d); }
+function fillSettingsForm() {
+  $('stSite').value = SET.siteName; $('stContact').value = SET.contact; $('stCur').value = SET.currency;
+  $('stFrom').value = SET.dayStart; $('stTo').value = SET.dayEnd;
+  $('stMin').value = SET.minHours; $('stMax').value = SET.maxHours;
+  $('stAhead').value = SET.daysAhead; $('stNotice').value = SET.notice;
+}
+async function saveSettings() {
+  const st = { siteName: $('stSite').value, contact: $('stContact').value, currency: $('stCur').value,
+    dayStart: $('stFrom').value, dayEnd: $('stTo').value, minHours: $('stMin').value,
+    maxHours: $('stMax').value, daysAhead: $('stAhead').value, notice: $('stNotice').value };
+  if (await act('saveSettings', { settings: st })) { toast(t('ok_settings')); renderUsers(); }
+}
 
 // ---- Время ----
 const span = (d, t, h) => { const s = new Date(d + 'T' + t).getTime(); return { s, e: s + h * 36e5 }; };
@@ -408,7 +529,7 @@ function renderPublic() {
       .map(l => `<span class="chip" style="background:${pick(l, CH)}">${esc(l)}</span>`).join('');
     return `<div class="gc" style="--i:${i}"><div class="gh">
       <div class="av" style="background:linear-gradient(135deg,${pick(g.name, AV)})">${esc([...g.name][0] || '?')}</div>
-      <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">${t('price_day', { p: '$' + esc(g.price) })}</span></div></div>
+      <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">${t('price_day', { p: money(g.price) })}</span></div></div>
       <div class="chips">${langs}</div>
       <div class="car">🚘 ${g.car ? esc(g.car) : `<span class="mu">${t('no_car')}</span>`}</div>
       <button class="btn or2" onclick="openBook('${esc(g.login)}')">${t('btn_book')}</button></div>`;
@@ -455,11 +576,15 @@ function paint() {
   if (m) {
     const st = isStaff(), g = m.role === 'guide';
     $('ownerTools').style.display = $('usersCard').style.display = st ? 'block' : 'none';
+    $('setCard').style.display = isOwner() ? 'block' : 'none';
+    $('statCard').style.display = st ? 'block' : 'none';
+    $('roleRow').style.display = isOwner() ? 'block' : 'none';
     $('warn').style.display = st && !DB ? 'block' : 'none';
     $('sessCard').style.display = g ? 'none' : 'block';
-    $('newBkBtn').style.display = g ? 'none' : 'inline-block';
+    $('bkTools').style.display = g ? 'none' : 'flex'; // фильтры, CSV и новая бронь — только персоналу
     $('bkTitle').textContent = g ? t('bk_mine') : t('bk_all');
-    renderUsers(); renderBookings(); renderSessions(); renderChat();
+    if (isOwner()) roleChanged();
+    renderUsers(); renderBookings(); renderSessions(); renderChat(); renderStats();
   }
   renderPublic();
 }
@@ -473,17 +598,57 @@ $('bookForm').addEventListener('submit', async e => {
     $('bClient').value = ''; closeModal('bookModal'); toast(t('ok_book')); await refresh();
   } catch (err) { toast(trErr(err.code, err.message)); }
 });
+function visibleBookings() {
+  const f = $('fltGuide').value, d = $('fltDate').value;
+  return bookings.filter(b => (!f || b.targetLogin === f) && (!d || b.date === d))
+    .sort((a, b) => span(a.date, a.time, 1).s - span(b.date, b.time, 1).s);
+}
 function renderBookings() {
   const m = M; if (!m) return;
-  const list = (m.role === 'guide' ? bookings.filter(b => b.targetLogin === m.login) : bookings.slice())
-    .sort((a, b) => span(a.date, a.time, 1).s - span(b.date, b.time, 1).s);
+  const all = (m.role === 'guide' ? bookings.filter(b => b.targetLogin === m.login) : bookings.slice());
+  if (m.role !== 'guide') { // фильтры доступны админу и владельцу
+    const gsel = $('fltGuide');
+    const cur = gsel.value;
+    gsel.innerHTML = `<option value="">${t('filter_all')}</option>` + users.filter(u => u.role === 'guide')
+      .map(g => `<option value="${esc(g.login)}">${esc(g.name)}</option>`).join('');
+    gsel.value = [...gsel.options].some(o => o.value === cur) ? cur : '';
+  }
+  const list = m.role === 'guide' ? all : visibleBookings();
   $('bkList').innerHTML = list.length ? list.map(b => {
     const g = users.find(u => u.login === b.targetLogin);
     return `<div class="item"><div><strong>📅 ${esc(b.date)} · 🕒 ${esc(b.time)} (${esc(b.hours)} ${t('unit_h')})</strong><br>
       <small class="mu">👨‍💼 ${esc(g ? g.name : '—')}${g && g.car ? ' · 🚘 ' + esc(g.car) : ''}</small><br>
       <small class="mu">${t('client_label')}: ${esc(b.client)}</small></div>
       <button class="${m.role === 'guide' ? 'btn sm' : 'del'}" onclick="removeBooking(${+b.id})">${m.role === 'guide' ? t('btn_done') : t('btn_cancel_bk')}</button></div>`;
-  }).join('') : `<small class="mu">${t('bk_none')}</small>`;
+  }).join('') : `<small class="mu">${t(all.length ? 'bk_none_filtered' : 'bk_none')}</small>`;
+}
+function resetFilters() { $('fltGuide').value = ''; $('fltDate').value = ''; renderBookings(); }
+// ---- Статистика (админ и владелец) ----
+function renderStats() {
+  if (!isStaff()) return;
+  const all = bookings.slice();
+  const day = today();
+  const sum = l => l.reduce((s, b) => s + (+(users.find(u => u.login === b.targetLogin)?.price) || 0), 0);
+  const now = all.filter(b => b.date === day);
+  const week = all.filter(b => b.date >= day && b.date <= addDays(day, 6));
+  const future = all.filter(b => b.date > day);
+  $('statBox').innerHTML = [
+    [all.length, 'stat_total'], [now.length, 'stat_today'], [week.length, 'stat_week'],
+    [future.length, 'stat_future'], [sum(week), 'stat_sum']
+  ].map(([n, k]) => `<div class="stat"><b>${esc(n)}</b><span>${t(k)}</span></div>`).join('');
+}
+// ---- Экспорт броней в CSV ----
+function exportCsv() {
+  const list = visibleBookings();
+  if (!list.length) return toast(t('bk_none_filtered'));
+  const q = v => `"${String(v ?? '').replace(/"/g, '""')}"`;
+  const head = [t('csv_date'), t('csv_time'), t('csv_hours'), t('csv_guide'), t('csv_car'), t('csv_client')];
+  const rows = list.map(b => { const g = users.find(u => u.login === b.targetLogin); return [b.date, b.time, b.hours, g?.name || '', g?.car || '', b.client].map(q).join(';'); });
+  const blob = new Blob(['\uFEFF' + [head.map(q).join(';'), ...rows].join('\r\n')], { type: 'text/csv;charset=utf-8' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob); a.download = 'bookings-' + day + '.csv'; a.click();
+  setTimeout(() => URL.revokeObjectURL(a.href), 3000);
+  toast(t('ok_export', { n: list.length }));
 }
 function removeBooking(id) {
   if (M.role !== 'guide' && !confirm(t('ask_cancel_bk'))) return;
@@ -491,13 +656,21 @@ function removeBooking(id) {
 }
 
 // ---- Гиды и персонал ----
+function roleChanged() {
+  const admin = $('ngRole').value === 'admin';
+  $('loginRow').style.display = admin ? 'block' : 'none';
+  $('ngLangsRow').style.display = $('ngCarRow').style.display = $('ngPriceRow').style.display = admin ? 'none' : 'block';
+  $('roleHint').textContent = t(admin ? 'admin_hint' : 'guide_hint');
+}
 async function addGuide() {
   const name = $('ngName').value.trim();
   if (!name) return toast(t('name_guide'));
-  const j = await act('addGuide', { name, langs: $('ngLangs').value, car: $('ngCar').value, price: $('ngPrice').value });
+  const role = isOwner() ? $('ngRole').value : 'guide';
+  const j = await act('addUser', { role, name, login: $('ngLogin').value,
+    langs: $('ngLangs').value, car: $('ngCar').value, price: $('ngPrice').value });
   if (j) {
-    alert(t('guide_added', { name, pass: j.pass }));
-    $('ngName').value = $('ngLangs').value = $('ngCar').value = $('ngPrice').value = '';
+    alert(role === 'admin' ? t('admin_added', { name, login: j.login, pass: j.pass }) : t('guide_added', { name, pass: j.pass }));
+    ['ngName', 'ngLangs', 'ngCar', 'ngPrice', 'ngLogin'].forEach(id => $(id).value = '');
   }
 }
 // Пароль виден только тем, кто выше по рангу (владелец > админ > гид). Нажмите, чтобы показать.
@@ -508,14 +681,16 @@ function pwCell(u) {
 }
 function renderUsers() {
   if (!isStaff()) return;
-  $('usersTable').innerHTML = users.map(u => `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(u.role.toUpperCase())}</small></td>
-    <td>${pwCell(u)}</td><td>${esc(u.langs || '-')}</td><td>${esc(u.car || '—')}</td><td>$${esc(u.price || 0)}</td>
+  const roleName = r => t(r === 'owner' ? 'role_owner' : r === 'admin' ? 'role_admin' : 'role_guide');
+  $('usersTable').innerHTML = users.map(u => `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(roleName(u.role))}</small></td>
+    <td>${pwCell(u)}</td><td>${esc(u.langs || '-')}</td><td>${esc(u.car || '—')}</td><td>${u.role === 'guide' ? esc(money(u.price)) : '—'}</td>
     <td style="white-space:nowrap">${canManage(u) ? `<button class="btn sm cy2" onclick="openEdit('${esc(u.login)}')">✏️</button>` : ''}
     ${canDelete(u) ? `<button class="del" onclick="deleteUser('${esc(u.login)}')">✕</button>` : ''}</td></tr>`).join('');
 }
 function openEdit(login) {
   const u = users.find(x => x.login === login);
   if (!u || !canManage(u)) return;
+  ['eLangs', 'eCar', 'ePrice'].forEach(id => $(id).closest('.fg').style.display = u.role === 'guide' ? 'block' : 'none');
   $('eLogin').value = u.login; $('eName').value = u.name; $('ePass').value = '';
   $('eLangs').value = u.langs || ''; $('eCar').value = u.car || ''; $('ePrice').value = u.price || 0;
   $('editModal').classList.add('active');
