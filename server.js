@@ -23,16 +23,11 @@ const rnd = () => crypto.randomBytes(9).toString('hex');
 
 const seed = () => ({
   users: [
-    { login: 'owner', hash: hashPw(process.env.OWNER_PASSWORD || '000'), role: 'owner', name: 'Основатель', langs: 'Все', price: 0, carId: null },
-    { login: 'guide_timur', hash: hashPw(rnd()), role: 'guide', name: 'Тимур (Ташкент)', langs: 'Русский, Узбекский, Английский', price: 50, carId: 1 },
-    { login: 'guide_sardor', hash: hashPw(rnd()), role: 'guide', name: 'Сардор (Самарканд)', langs: 'Русский, Узбекский', price: 40, carId: 2 }
+    { login: 'owner', hash: hashPw(process.env.OWNER_PASSWORD || '000'), role: 'owner', name: 'Основатель', langs: 'Все', price: 0, car: '' },
+    { login: 'guide_timur', hash: hashPw(rnd()), role: 'guide', name: 'Тимур (Ташкент)', langs: 'Русский, Узбекский, Английский', price: 50, car: 'Chevrolet Malibu 2 (01 A 123 AB)' },
+    { login: 'guide_sardor', hash: hashPw(rnd()), role: 'guide', name: 'Сардор (Самарканд)', langs: 'Русский, Узбекский', price: 40, car: 'Chevrolet Tracker (01 B 456 CD)' }
   ],
-  cars: [
-    { id: 1, name: 'Chevrolet Malibu 2 (01 A 123 AB)', price: 70 },
-    { id: 2, name: 'Chevrolet Tracker (01 B 456 CD)', price: 50 },
-    { id: 3, name: 'Chevrolet Tahoe (01 Z 777 ZZ)', price: 120 }
-  ],
-  bookings: [],
+  bookings: [], sessions: [],
   chat: [{ author: 'Основатель', text: 'Чат персонала активен. Добро пожаловать!' }]
 });
 
@@ -42,24 +37,29 @@ async function writeAll() {
   else fs.writeFileSync(FILE, JSON.stringify(S));
 }
 const persist = () => (q = q.then(writeAll).catch(e => console.error('save error', e)));
+const tokens = new Map();
+const syncTokens = () => { S.sessions = [...tokens].map(([t, v]) => ({ t, ...v })); return persist(); };
+
 async function init() {
   if (pool) {
     await pool.query('create table if not exists state(id int primary key, data jsonb)');
     S = (await pool.query('select data from state where id=1')).rows[0]?.data;
   } else { try { S = JSON.parse(fs.readFileSync(FILE, 'utf8')); } catch {} }
-  if (!S) {
-    S = seed(); await persist();
-    console.log('Создан владелец: логин owner, пароль из OWNER_PASSWORD (по умолчанию 000). СМЕНИТЕ ПАРОЛЬ после входа!');
+  if (!S) { S = seed(); await persist(); console.log('Создан владелец: логин owner, пароль из OWNER_PASSWORD (по умолчанию 000). Смените пароль после входа!'); }
+  if (S.cars) { // миграция: машина теперь привязана к гиду текстом
+    S.users.forEach(u => { if (u.car === undefined) u.car = (S.cars.find(c => c.id === u.carId) || {}).name || ''; delete u.carId; });
+    delete S.cars; S.bookings = S.bookings.filter(b => b.targetLogin); await persist();
   }
+  (S.sessions || []).forEach(x => tokens.set(x.t, { login: x.login, at: x.at }));
   console.log(pool ? 'Хранилище: PostgreSQL' : 'Хранилище: файл data.json (на бесплатном Render может сбрасываться!)');
 }
 
 // ---- Авторизация и лимиты ----
-const tokens = new Map(), hits = new Map();
+const hits = new Map();
 const limited = (key, max, ms) => { const n = Date.now(), a = (hits.get(key) || []).filter(x => n - x < ms); a.push(n); hits.set(key, a); return a.length > max; };
 const auth = req => {
-  const t = tokens.get(req.get('x-token')); if (!t) return null;
-  if (Date.now() - t.at > 432e5) { tokens.delete(req.get('x-token')); return null; }
+  const k = req.get('x-token'), t = tokens.get(k); if (!t) return null;
+  if (Date.now() - t.at > 6048e5) { tokens.delete(k); return null; }
   const u = S.users.find(x => x.login === t.login); if (!u) return null;
   t.at = Date.now(); return u;
 };
@@ -72,11 +72,8 @@ const str = (s, n) => String(s ?? '').trim().slice(0, n);
 const span = (d, t, h) => { const s = new Date(`${d}T${t}:00+05:00`).getTime(); return { s, e: s + h * 36e5 }; };
 const hit = (b, sp) => { const x = span(b.date, b.time, +b.hours); return x.s < sp.e && sp.s < x.e; };
 const guides = () => S.users.filter(u => u.role === 'guide');
-const busyCar = (id, sp) => S.bookings.some(b => b.targetCarId === id && hit(b, sp)) ||
-  guides().some(g => g.carId === id && S.bookings.some(b => b.targetLogin === g.login && hit(b, sp)));
-const busyGuide = (g, sp) => S.bookings.some(b => b.targetLogin === g.login && hit(b, sp)) ||
-  (g.carId != null && S.bookings.some(b => b.targetCarId === g.carId && hit(b, sp)));
-const pub = u => ({ login: u.login, role: u.role, name: u.name, langs: u.langs, price: u.price, carId: u.carId });
+const busyGuide = (g, sp) => S.bookings.some(b => b.targetLogin === g.login && hit(b, sp));
+const pub = u => ({ login: u.login, role: u.role, name: u.name, langs: u.langs, price: u.price, car: u.car || '' });
 const isStaff = u => u.role === 'owner' || u.role === 'admin';
 const canManage = (m, u) => m.role === 'owner' || u.login === m.login || (m.role === 'admin' && u.role === 'guide');
 const canDelete = (m, u) => u.role !== 'owner' && u.login !== m.login && (m.role === 'owner' || (m.role === 'admin' && u.role === 'guide'));
@@ -89,23 +86,23 @@ app.get('/api/data', (req, res) => {
   const online = m && m.role !== 'guide'
     ? [...new Set(live().map(t => t.login))].map(l => { const u = S.users.find(x => x.login === l); return u && { login: l, name: u.name }; }).filter(Boolean) : [];
   res.json({
-    me: m && pub(m), users, cars: S.cars, bookings, online,
+    me: m && pub(m), users, bookings, online, db: !!pool,
     profiles: S.users.map(u => ({ login: u.login, name: u.name, role: u.role })),
-    slots: S.bookings.map(b => ({ date: b.date, time: b.time, hours: b.hours, targetLogin: b.targetLogin, targetCarId: b.targetCarId })),
+    slots: S.bookings.map(b => ({ date: b.date, time: b.time, hours: b.hours, targetLogin: b.targetLogin })),
     chat: m ? S.chat : []
   });
 });
 
-app.post('/api/login', (req, res) => {
+app.post('/api/login', async (req, res) => {
   if (limited('l' + req.ip, 10, 6e5)) return res.status(429).json({ error: 'Слишком много попыток, подождите 10 минут' });
   const u = S.users.find(x => x.login === req.body?.login);
   if (!u || !checkPw(String(req.body.pass ?? ''), u.hash)) return res.status(401).json({ error: 'Неверный пароль!' });
+  for (const [k, v] of tokens) if (Date.now() - v.at > 6048e5) tokens.delete(k);
   const t = crypto.randomBytes(24).toString('hex');
   tokens.set(t, { login: u.login, at: Date.now() });
-  res.json({ token: t });
+  await syncTokens(); res.json({ token: t });
 });
-
-app.post('/api/logout', (req, res) => { tokens.delete(req.get('x-token')); res.json({ ok: 1 }); });
+app.post('/api/logout', async (req, res) => { tokens.delete(req.get('x-token')); await syncTokens(); res.json({ ok: 1 }); });
 
 // Бронь доступна всем (гостям и персоналу)
 app.post('/api/book', async (req, res) => {
@@ -118,19 +115,10 @@ app.post('/api/book', async (req, res) => {
   if (isNaN(sp.s)) return bad(res, 'Неверная дата или время');
   if (sp.s < Date.now()) return bad(res, 'Нельзя бронировать в прошлом');
   if (S.bookings.length > 5000) return bad(res, 'Слишком много броней');
-  let rec;
-  if (b.type === 'guide') {
-    const g = guides().find(x => x.login === b.target);
-    if (!g) return bad(res, 'Гид не найден');
-    if (busyGuide(g, sp)) return bad(res, 'Это время уже занято — выберите другое');
-    rec = { targetLogin: g.login, targetCarId: null };
-  } else if (b.type === 'car') {
-    const c = S.cars.find(x => x.id === +b.target);
-    if (!c) return bad(res, 'Автомобиль не найден');
-    if (busyCar(c.id, sp)) return bad(res, 'Это время уже занято — выберите другое');
-    rec = { targetLogin: null, targetCarId: c.id };
-  } else return bad(res, 'Неверный тип услуги');
-  S.bookings.push({ id: Date.now() * 1000 + crypto.randomInt(1000), type: b.type, ...rec, client, date, time, hours });
+  const g = guides().find(x => x.login === b.target);
+  if (!g) return bad(res, 'Гид не найден');
+  if (busyGuide(g, sp)) return bad(res, 'Это время уже занято — выберите другое');
+  S.bookings.push({ id: Date.now() * 1000 + crypto.randomInt(1000), targetLogin: g.login, client, date, time, hours });
   await persist(); res.json({ ok: 1 });
 });
 
@@ -155,19 +143,8 @@ app.post('/api/act', async (req, res) => {
         const name = str(b.name, 60); if (!name) return bad(res, 'Введите имя гида');
         const login = 'guide_' + Date.now().toString(36) + crypto.randomInt(10, 99), pass = crypto.randomBytes(4).toString('hex');
         S.users.push({ login, hash: hashPw(pass), role: 'guide', name, langs: str(b.langs, 100) || 'Русский',
-          price: Math.max(0, parseInt(b.price) || 30), carId: null });
+          price: Math.max(0, parseInt(b.price) || 30), car: str(b.car, 80) });
         await persist(); return res.json({ ok: 1, pass });
-      }
-      case 'addCar': {
-        if (!st) return forbid(res);
-        const name = str(b.name, 80); if (!name) return bad(res, 'Введите название автомобиля');
-        S.cars.push({ id: Date.now(), name, price: Math.max(0, parseInt(b.price) || 40) }); break;
-      }
-      case 'deleteCar': {
-        if (!st) return forbid(res);
-        S.cars = S.cars.filter(c => c.id !== +b.id);
-        S.users.forEach(u => { if (u.carId === +b.id) u.carId = null; });
-        S.bookings = S.bookings.filter(k => k.targetCarId !== +b.id); break;
       }
       case 'editUser': {
         const u = S.users.find(x => x.login === b.login);
@@ -176,9 +153,8 @@ app.post('/api/act', async (req, res) => {
         if (!name) return bad(res, 'Имя не может быть пустым');
         if (pass && pass.length < 4) return bad(res, 'Пароль — минимум 4 символа');
         u.name = name; if (pass) u.hash = hashPw(pass);
-        u.langs = str(b.langs, 100); u.price = Math.max(0, parseInt(b.price) || 0);
-        u.carId = b.carId && S.cars.some(c => c.id === +b.carId) ? +b.carId : null;
-        if (pass) for (const [t, v] of tokens) if (v.login === u.login && u !== m) tokens.delete(t);
+        u.langs = str(b.langs, 100); u.price = Math.max(0, parseInt(b.price) || 0); u.car = str(b.car, 80);
+        if (pass) { for (const [t, v] of tokens) if (v.login === u.login && u !== m) tokens.delete(t); await syncTokens(); }
         break;
       }
       case 'deleteUser': {
@@ -187,7 +163,7 @@ app.post('/api/act', async (req, res) => {
         S.users = S.users.filter(x => x !== u);
         S.bookings = S.bookings.filter(k => k.targetLogin !== u.login);
         for (const [t, v] of tokens) if (v.login === u.login) tokens.delete(t);
-        break;
+        await syncTokens(); break;
       }
       default: return bad(res, 'Неизвестное действие');
     }
