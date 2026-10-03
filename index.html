@@ -1,1005 +1,388 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Аренда Авто и Гиды — Узбекистан</title>
-
-  <style>
-    :root {
-      --bg-gradient: linear-gradient(135deg, #070913 0%, #0f172a 50%, #030712 100%);
-      --card-bg: rgba(15, 23, 42, 0.75);
-      --card-border: rgba(56, 189, 248, 0.25);
-      --accent: #38bdf8;
-      --accent-glow: rgba(56, 189, 248, 0.35);
-      --accent-hover: #0ea5e9;
-      --danger: #f43f5e;
-      --success: #10b981;
-      --text-main: #f8fafc;
-      --text-muted: #94a3b8;
-    }
-
-    * {
-      box-sizing: border-box;
-      transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
-    }
-
-    body {
-      margin: 0;
-      padding: 20px;
-      font-family: 'Inter', system-ui, -apple-system, sans-serif;
-      min-height: 100vh;
-      background: var(--bg-gradient);
-      color: var(--text-main);
-      display: flex;
-      justify-content: center;
-      align-items: flex-start;
-    }
-
-    .main-wrapper {
-      width: 100%;
-      max-width: 1250px;
-      animation: pageEntrance 0.5s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes pageEntrance {
-      from { opacity: 0; transform: translateY(15px); }
-      to { opacity: 1; transform: translateY(0); }
-    }
-
-    .top-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: var(--card-bg);
-      border: 1px solid var(--card-border);
-      padding: 18px 26px;
-      border-radius: 20px;
-      margin-bottom: 22px;
-      backdrop-filter: blur(20px);
-      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px var(--accent-glow);
-    }
-
-    .top-header h2 {
-      margin: 0;
-      font-size: 1.4rem;
-      background: linear-gradient(90deg, #ffffff, var(--accent));
-      -webkit-background-clip: text;
-      -webkit-text-fill-color: transparent;
-    }
-
-    .card {
-      background: var(--card-bg);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--card-border);
-      border-radius: 20px;
-      padding: 22px;
-      box-shadow: 0 12px 35px rgba(0, 0, 0, 0.4);
-      margin-bottom: 22px;
-    }
-
-    .card:hover {
-      border-color: rgba(56, 189, 248, 0.45);
-      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.5), 0 0 15px rgba(56, 189, 248, 0.15);
-    }
-
-    .grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-    }
-
-    .form-group {
-      margin-bottom: 14px;
-    }
-
-    label {
-      display: block;
-      font-size: 0.85rem;
-      margin-bottom: 6px;
-      color: var(--text-muted);
-      font-weight: 500;
-    }
-
-    select, input, textarea {
-      width: 100%;
-      padding: 11px 14px;
-      border-radius: 10px;
-      border: 1px solid rgba(255, 255, 255, 0.1);
-      background: rgba(3, 7, 18, 0.7);
-      color: #fff;
-      font-size: 0.9rem;
-      outline: none;
-    }
-
-    select:focus, input:focus, textarea:focus {
-      border-color: var(--accent);
-      box-shadow: 0 0 12px var(--accent-glow);
-      background: rgba(3, 7, 18, 0.9);
-    }
-
-    .btn {
-      width: 100%;
-      padding: 11px 16px;
-      border: none;
-      border-radius: 10px;
-      background: linear-gradient(135deg, var(--accent), #0284c7);
-      color: #030712;
-      font-weight: 700;
-      font-size: 0.9rem;
-      cursor: pointer;
-      box-shadow: 0 4px 15px var(--accent-glow);
-    }
-
-    .btn:hover {
-      background: linear-gradient(135deg, var(--accent-hover), var(--accent));
-      color: #fff;
-      transform: translateY(-2px);
-      box-shadow: 0 6px 20px var(--accent-glow);
-    }
-
-    .btn-sm {
-      width: auto;
-      padding: 7px 14px;
-      font-size: 0.8rem;
-    }
-
-    .btn-outline {
-      background: transparent;
-      border: 1px solid var(--accent);
-      color: var(--accent);
-      width: auto;
-      padding: 9px 18px;
-      border-radius: 10px;
-    }
-
-    .btn-outline:hover {
-      background: var(--accent);
-      color: #030712;
-      box-shadow: 0 0 15px var(--accent-glow);
-    }
-
-    .btn-danger {
-      background: rgba(244, 63, 94, 0.15);
-      border: 1px solid var(--danger);
-      color: var(--danger);
-      padding: 7px 12px;
-      border-radius: 8px;
-      cursor: pointer;
-      font-size: 0.8rem;
-      font-weight: 600;
-    }
-
-    .btn-danger:hover {
-      background: var(--danger);
-      color: #fff;
-      box-shadow: 0 0 12px rgba(244, 63, 94, 0.4);
-    }
-
-    .item-box {
-      background: rgba(255, 255, 255, 0.02);
-      border: 1px solid rgba(255, 255, 255, 0.06);
-      padding: 14px 18px;
-      border-radius: 12px;
-      margin-bottom: 12px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    .item-box:hover {
-      background: rgba(255, 255, 255, 0.04);
-      border-color: rgba(56, 189, 248, 0.2);
-    }
-
-    .item-box.free {
-      border-left: 4px solid var(--success);
-    }
-
-    .badge {
-      font-size: 0.75rem;
-      padding: 4px 10px;
-      border-radius: 12px;
-      font-weight: 700;
-    }
-    .badge-free {
-      background: rgba(16, 185, 129, 0.15);
-      color: var(--success);
-      border: 1px solid var(--success);
-    }
-
-    .price-tag {
-      color: #f59e0b;
-      font-weight: bold;
-      font-size: 0.95rem;
-    }
-
-    /* Модальное окно */
-    .modal {
-      display: none;
-      position: fixed;
-      top: 0; left: 0; width: 100%; height: 100%;
-      background: rgba(3, 7, 18, 0.85);
-      backdrop-filter: blur(10px);
-      justify-content: center;
-      align-items: center;
-      z-index: 100;
-    }
-
-    .modal.active {
-      display: flex;
-    }
-
-    .modal-content {
-      width: 100%;
-      max-width: 420px;
-      animation: modalOpen 0.3s cubic-bezier(0.16, 1, 0.3, 1) forwards;
-    }
-
-    @keyframes modalOpen {
-      from { opacity: 0; transform: scale(0.95); }
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    table {
-      width: 100%;
-      border-collapse: collapse;
-      margin-top: 10px;
-      font-size: 0.85rem;
-    }
-
-    th, td {
-      padding: 10px 8px;
-      text-align: left;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
-    }
-
-    th {
-      color: var(--accent);
-      font-weight: 600;
-    }
-
-    /* Чат */
-    .chat-box {
-      height: 200px;
-      overflow-y: auto;
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 10px;
-      padding: 12px;
-      background: rgba(3, 7, 18, 0.5);
-      margin-bottom: 12px;
-      display: flex;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .chat-msg {
-      background: rgba(255, 255, 255, 0.04);
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 0.85rem;
-      border: 1px solid rgba(255, 255, 255, 0.03);
-    }
-
-    .chat-msg .author {
-      color: var(--accent);
-      font-weight: bold;
-      margin-right: 6px;
-    }
-
-    .filter-panel {
-      background: linear-gradient(135deg, rgba(56, 189, 248, 0.04), rgba(15, 23, 42, 0.8));
-      border: 1px solid var(--card-border);
-      padding: 18px;
-      border-radius: 18px;
-      margin-bottom: 22px;
-    }
-
-    @media (max-width: 800px) {
-      .grid-2 { grid-template-columns: 1fr; }
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Аренда Авто и Гиды — Узбекистан</title>
+<style>
+:root{--bg:linear-gradient(135deg,#070913,#0f172a 50%,#030712);--card:rgba(15,23,42,.75);--bd:rgba(56,189,248,.25);--ac:#38bdf8;--glow:rgba(56,189,248,.35);--danger:#f43f5e;--ok:#10b981;--tx:#f8fafc;--mu:#94a3b8}
+*{box-sizing:border-box;transition:all .2s}
+body{margin:0;padding:20px;font-family:Inter,system-ui,sans-serif;min-height:100vh;background:var(--bg);color:var(--tx);display:flex;justify-content:center}
+.wrap{width:100%;max-width:1250px}
+.top{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--bd);padding:18px 26px;border-radius:20px;margin-bottom:22px;backdrop-filter:blur(20px);box-shadow:0 0 20px var(--glow)}
+.top h2{margin:0;font-size:1.4rem;background:linear-gradient(90deg,#fff,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 12px 35px rgba(0,0,0,.4);margin-bottom:22px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.fg{margin-bottom:14px}
+label{display:block;font-size:.85rem;margin-bottom:6px;color:var(--mu);font-weight:500}
+select,input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(3,7,18,.7);color:#fff;font-size:.9rem;outline:none}
+select:focus,input:focus{border-color:var(--ac);box-shadow:0 0 12px var(--glow)}
+.btn{width:100%;padding:11px 16px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--ac),#0284c7);color:#030712;font-weight:700;font-size:.9rem;cursor:pointer;box-shadow:0 4px 15px var(--glow)}
+.btn:hover{color:#fff;transform:translateY(-2px)}
+.sm{width:auto;padding:6px 12px;font-size:.8rem}
+.out{background:transparent;border:1px solid var(--ac);color:var(--ac);width:auto;padding:9px 18px;box-shadow:none}
+.out:hover{background:var(--ac);color:#030712}
+.del{background:rgba(244,63,94,.12);border:1px solid var(--danger);color:var(--danger);padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600;margin-left:6px}
+.del:hover{background:var(--danger);color:#fff}
+.item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);padding:14px 18px;border-radius:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
+.item.free{border-left:4px solid var(--ok)}
+.item.booked{border-left:4px solid #f59e0b}
+.badge{font-size:.75rem;padding:4px 10px;border-radius:12px;font-weight:700;background:rgba(16,185,129,.15);color:var(--ok);border:1px solid var(--ok)}
+.price{color:#f59e0b;font-weight:700}
+.mu{color:var(--mu)}
+.modal{display:none;position:fixed;inset:0;background:rgba(3,7,18,.85);backdrop-filter:blur(10px);justify-content:center;align-items:center;z-index:100;padding:15px;overflow:auto}
+.modal.active{display:flex}
+.mc{width:100%;max-width:420px;margin:auto}
+table{width:100%;border-collapse:collapse;font-size:.85rem}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
+th{color:var(--ac)}
+.chat{height:200px;overflow-y:auto;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;background:rgba(3,7,18,.5);margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.msg{background:rgba(255,255,255,.04);padding:8px 12px;border-radius:8px;font-size:.85rem}
+.msg b{color:var(--ac);margin-right:6px}
+.filter{border:1px solid var(--bd);background:linear-gradient(135deg,rgba(56,189,248,.04),rgba(15,23,42,.8))}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid var(--ac);padding:12px 22px;border-radius:12px;z-index:200;display:none;box-shadow:0 0 20px var(--glow)}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}.top{flex-direction:column;gap:12px}}
+</style>
 </head>
 <body>
-
-  <div class="main-wrapper">
-    
-    <!-- Шапка -->
-    <div class="top-header">
-      <div>
-        <h2>🚗 Аренда Авто и Гиды Узбекистана</h2>
-        <small style="color:var(--text-muted);" id="headerStatus">Публичный режим бронирования</small>
-      </div>
-      <div>
-        <button class="btn btn-outline" id="authBtn" onclick="openLoginModal()">🔑 Вход</button>
-        <button class="btn btn-danger" id="logoutBtn" style="display:none;" onclick="logout()">Выйти</button>
-      </div>
+<div class="wrap">
+  <div class="top">
+    <div><h2>🚗 Аренда Авто и Гиды Узбекистана</h2><small class="mu" id="status">Публичный режим бронирования</small></div>
+    <div>
+      <button class="btn out" id="authBtn" onclick="openLogin()">🔑 Вход</button>
+      <button class="btn out" id="logoutBtn" style="display:none;border-color:var(--danger);color:var(--danger)" onclick="logout()">Выйти</button>
     </div>
+  </div>
 
-    <!-- Фильтр времени и поиска для клиента -->
-    <div class="filter-panel card">
-      <h3 style="margin-top:0; color:var(--accent); font-size: 1.1rem;">🔍 Поиск свободных гидов и авто по дате и времени</h3>
-      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 14px; align-items: end;">
-        <div class="form-group" style="margin:0;">
-          <label>Дата поездки:</label>
-          <input type="date" id="filterDate">
-        </div>
-        <div class="form-group" style="margin:0;">
-          <label>Время начала:</label>
-          <input type="time" id="filterTime" value="09:00">
-        </div>
-        <div class="form-group" style="margin:0;">
-          <label>Длительность (часов):</label>
-          <input type="number" id="filterHours" min="1" max="24" value="4">
-        </div>
-        <div class="form-group" style="margin:0;">
-          <label>Язык гида:</label>
-          <select id="filterLang">
-            <option value="all">Все языки</option>
-            <option value="Русский">Русский</option>
-            <option value="Узбекский">Узбекский</option>
-            <option value="Английский">Английский</option>
-            <option value="Китайский">Китайский</option>
-          </select>
-        </div>
-        <div>
-          <button class="btn" onclick="renderPublicData()">Показать свободные</button>
-        </div>
-      </div>
+  <div class="card filter">
+    <h3 style="margin-top:0;color:var(--ac);font-size:1.1rem">🔍 Поиск свободных гидов и авто по дате и времени</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;align-items:end">
+      <div><label>Дата поездки:</label><input type="date" id="fDate" onchange="renderPublic()"></div>
+      <div><label>Время начала:</label><input type="time" id="fTime" value="09:00" onchange="renderPublic()"></div>
+      <div><label>Длительность (часов):</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
+      <div><label>Язык гида:</label>
+        <select id="fLang" onchange="renderPublic()">
+          <option value="all">Все языки</option><option>Русский</option><option>Узбекский</option><option>Английский</option><option>Китайский</option>
+        </select></div>
+      <div><button class="btn" onclick="renderPublic()">Показать свободные</button></div>
     </div>
+  </div>
 
-    <!-- Публичная витрина -->
-    <div id="publicView" class="grid-2">
-      <div class="card">
-        <h3 style="margin-top:0;">👨‍💼 Свободные Гиды</h3>
-        <div id="publicGuidesList"></div>
+  <div class="grid2">
+    <div class="card"><h3 style="margin-top:0">👨‍💼 Свободные Гиды</h3><div id="pGuides"></div></div>
+    <div class="card"><h3 style="margin-top:0">🚘 Свободные Автомобили</h3><div id="pCars"></div></div>
+  </div>
+
+  <div id="panel" style="display:none" class="grid2">
+    <div>
+      <div class="card" id="ownerTools" style="display:none">
+        <h3 style="margin-top:0;color:var(--ac)">➕ Добавление Гидов и Авто</h3>
+        <div class="fg">
+          <label>Новый Гид (Имя):</label>
+          <input id="ngName" placeholder="Алишер Ташкент">
+          <div style="display:flex;gap:8px;margin-top:6px">
+            <input id="ngLangs" placeholder="Языки (Русский, Английский)">
+            <input type="number" id="ngPrice" placeholder="$/день" style="width:110px" min="0">
+          </div>
+          <button class="btn" style="margin-top:10px" onclick="addGuide()">+ Создать Гида</button>
+        </div>
+        <hr style="border-color:rgba(255,255,255,.08);margin:18px 0">
+        <div class="fg">
+          <label>Новый Автомобиль (Модель и Гос. номер):</label>
+          <input id="ncName" placeholder="Chevrolet Tahoe (01 A 777 AA)">
+          <input type="number" id="ncPrice" placeholder="Цена за день ($)" style="margin-top:6px" min="0">
+          <button class="btn" style="margin-top:10px" onclick="addCar()">+ Добавить Авто</button>
+        </div>
+        <hr style="border-color:rgba(255,255,255,.08);margin:18px 0">
+        <label>Автомобили:</label><div id="carsList"></div>
       </div>
 
       <div class="card">
-        <h3 style="margin-top:0;">🚘 Свободные Автомобили</h3>
-        <div id="publicCarsList"></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px">
+          <h3 style="margin:0;color:var(--ac)" id="bkTitle">📅 Брони</h3>
+          <button class="btn sm" id="newBkBtn" onclick="openBook('guide')">+ Новая бронь</button>
+        </div>
+        <div id="bkList"></div>
       </div>
     </div>
 
-    <!-- Панель Управления (после входа) -->
-    <div id="adminPanel" style="display: none;" class="grid-2">
-      
-      <!-- Левая колонка -->
-      <div>
-        <div class="card" id="bookingCard">
-          <h3 style="margin-top:0; color:var(--accent);">📅 Оформить Бронь</h3>
-          <form id="bookingForm">
-            <div class="form-group">
-              <label>Тип услуги:</label>
-              <select id="bookingType" onchange="toggleBookingType()">
-                <option value="guide">Гид</option>
-                <option value="car">Автомобиль</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label>Выберите объект:</label>
-              <select id="targetSelect" required></select>
-            </div>
-            <div class="form-group">
-              <label>Имя и Телефон Клиента:</label>
-              <input type="text" id="clientName" placeholder="Иван (+998901234567)" required>
-            </div>
-            <div class="form-group">
-              <label>Дата:</label>
-              <input type="date" id="bookDate" required>
-            </div>
-            <div class="form-group">
-              <label>Время начала и Часов:</label>
-              <div style="display:flex; gap:10px;">
-                <input type="time" id="bookTime" value="09:00" required>
-                <input type="number" id="bookHours" min="1" max="24" value="4" placeholder="Часов" required>
-              </div>
-            </div>
-            <button type="submit" class="btn">Забронировать</button>
-          </form>
-        </div>
-
-        <!-- Добавление гидов и машин (Основатель) -->
-        <div class="card" id="ownerTools" style="display: none;">
-          <h3 style="margin-top:0; color: var(--accent);">➕ Добавление Гидов и Авто</h3>
-          
-          <div class="form-group">
-            <label>Новый Гид (Имя):</label>
-            <input type="text" id="newGuideName" placeholder="Алишер Ташкент">
-            <div style="display:flex; gap:8px; margin-top:6px;">
-              <input type="text" id="newGuideLangs" placeholder="Языки (Русский, Английский)">
-              <input type="number" id="newGuidePrice" placeholder="$/день" style="width:110px;">
-            </div>
-            <button class="btn" style="margin-top:10px;" onclick="addGuide()">+ Создать Гида</button>
-          </div>
-
-          <hr style="border-color: rgba(255,255,255,0.08); margin: 18px 0;">
-
-          <div class="form-group">
-            <label>Новый Автомобиль (Модель и Гос. номер):</label>
-            <input type="text" id="newCarName" placeholder="Chevrolet Tahoe (01 A 777 AA)">
-            <input type="number" id="newCarPrice" placeholder="Цена за день ($)" style="margin-top:6px;">
-            <button class="btn" style="margin-top:10px;" onclick="addCar()">+ Добавить Авто</button>
-          </div>
+    <div>
+      <div class="card">
+        <h3 style="margin-top:0;color:var(--ac)">💬 Внутренний Чат Персонала</h3>
+        <div class="chat" id="chatBox"></div>
+        <div style="display:flex;gap:8px">
+          <input id="chatInput" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="btn sm" onclick="sendChat()">Отправить</button>
         </div>
       </div>
 
-      <!-- Правая колонка -->
-      <div>
-        <!-- Внутренний чат -->
-        <div class="card">
-          <h3 style="margin-top:0; color:var(--accent);">💬 Внутренний Чат Персонала</h3>
-          <div class="chat-box" id="chatBox"></div>
-          <div style="display:flex; gap:8px;">
-            <input type="text" id="chatInput" placeholder="Напишите сообщение..." onkeypress="if(event.key==='Enter') sendChatMessage()">
-            <button class="btn btn-sm" onclick="sendChatMessage()">Отправить</button>
-          </div>
-        </div>
-
-        <!-- Расписание для гида -->
-        <div class="card" id="guideScheduleCard" style="display: none;">
-          <h3 style="margin-top:0; color:var(--accent);">⏳ Мои Заказы и Расписание</h3>
-          <div id="guideBookingsList"></div>
-        </div>
-
-        <!-- Редактирование персонала и цен (Основатель / Админ) -->
-        <div class="card" id="ownerUsersCard" style="display: none;">
-          <h3 style="margin-top:0; color: var(--accent);">👥 Управление персоналом и ценами</h3>
-          <div style="overflow-x:auto;">
-            <table>
-              <thead>
-                <tr>
-                  <th>Имя</th>
-                  <th>Пароль</th>
-                  <th>Языки</th>
-                  <th>Авто</th>
-                  <th>$/день</th>
-                  <th>Действия</th>
-                </tr>
-              </thead>
-              <tbody id="usersTable"></tbody>
-            </table>
-          </div>
-        </div>
-
-        <!-- Активные сессии -->
-        <div class="card" id="activeSessionsCard">
-          <h3 style="margin-top:0;">🌐 Кто сейчас в системе</h3>
-          <div id="activeSessionsList"></div>
-        </div>
+      <div class="card" id="usersCard" style="display:none">
+        <h3 style="margin-top:0;color:var(--ac)">👥 Управление персоналом и ценами</h3>
+        <div style="overflow-x:auto"><table>
+          <thead><tr><th>Имя</th><th>Языки</th><th>Авто</th><th>$/день</th><th>Действия</th></tr></thead>
+          <tbody id="usersTable"></tbody>
+        </table></div>
       </div>
 
-    </div>
-
-  </div>
-
-  <!-- Модальное окно входа с выбором аккаунта -->
-  <div class="modal" id="loginModal">
-    <div class="card modal-content">
-      <h3 style="text-align: center; margin-top:0; color:var(--accent);">🔒 Вход в систему</h3>
-      <form id="loginForm">
-        <div class="form-group">
-          <label>Выберите ваш профиль:</label>
-          <select id="loginUserSelect" required></select>
-        </div>
-        <div class="form-group">
-          <label>Короткий пароль:</label>
-          <input type="password" id="passInput" placeholder="Введите пароль" required>
-        </div>
-        <button type="submit" class="btn">Войти</button>
-        <button type="button" class="btn-danger" style="width:100%; margin-top:10px;" onclick="closeLoginModal()">Отмена</button>
-      </form>
+      <div class="card" id="sessCard">
+        <h3 style="margin-top:0">🌐 Кто сейчас в системе</h3><div id="sessList"></div>
+      </div>
     </div>
   </div>
-
-  <!-- Модальное окно редактирования гида -->
-  <div class="modal" id="editModal">
-    <div class="card modal-content">
-      <h3 style="text-align: center; margin-top:0; color:var(--accent);">✏ Редактирование Данных</h3>
-      <input type="hidden" id="editUserLogin">
-      <div class="form-group">
-        <label>Имя:</label>
-        <input type="text" id="editName">
-      </div>
-      <div class="form-group" id="editPassGroup">
-        <label>Пароль:</label>
-        <input type="text" id="editPass">
-      </div>
-      <div class="form-group">
-        <label>Языки (через запятую):</label>
-        <input type="text" id="editLangs">
-      </div>
-      <div class="form-group">
-        <label>Закрепленный автомобиль:</label>
-        <select id="editCarSelect"></select>
-      </div>
-      <div class="form-group">
-        <label>Цена за день ($):</label>
-        <input type="number" id="editPrice">
-      </div>
-      <button type="button" class="btn" onclick="saveUserEdit()">Сохранить</button>
-      <button type="button" class="btn-danger" style="width:100%; margin-top:10px;" onclick="closeEditModal()">Отмена</button>
-    </div>
-  </div>
-
-  <script>
-    // Начальные данные с сохранением в localStorage для защиты от слета при перезагрузке
-    let defaultUsers = [
-      { login: 'owner', pass: '000', role: 'owner', name: 'Основатель', langs: 'Все', price: 0, carId: null },
-      { login: 'admin1', pass: '111', role: 'admin', name: 'Администратор', langs: 'Русский', price: 0, carId: null },
-      { login: 'guide_timur', pass: '11', role: 'guide', name: 'Тимур (Ташкент)', langs: 'Русский, Узбекский, Английский', price: 50, carId: 1 },
-      { login: 'guide_sardor', pass: '22', role: 'guide', name: 'Сардор (Самарканд)', langs: 'Русский, Узбекский', price: 40, carId: 2 }
-    ];
-
-    let defaultCars = [
-      { id: 1, name: 'Chevrolet Malibu 2 (01 A 123 AB)', price: 70 },
-      { id: 2, name: 'Chevrolet Tracker (01 B 456 CD)', price: 50 },
-      { id: 3, name: 'Chevrolet Tahoe (01 Z 777 ZZ)', price: 120 }
-    ];
-
-    let users = JSON.parse(localStorage.getItem('uz_users')) || defaultUsers;
-    let cars = JSON.parse(localStorage.getItem('uz_cars')) || defaultCars;
-    let bookings = JSON.parse(localStorage.getItem('uz_bookings')) || [];
-    let activeSessions = JSON.parse(localStorage.getItem('uz_sessions')) || [];
-    let chatMessages = JSON.parse(localStorage.getItem('uz_chat')) || [
-      { author: 'Основатель', text: 'Чат персонала активен. Добро пожаловать!' }
-    ];
-    let currentUser = JSON.parse(localStorage.getItem('uz_current_user')) || null;
-
-    function saveData() {
-      localStorage.setItem('uz_users', JSON.stringify(users));
-      localStorage.setItem('uz_cars', JSON.stringify(cars));
-      localStorage.setItem('uz_bookings', JSON.stringify(bookings));
-      localStorage.setItem('uz_sessions', JSON.stringify(activeSessions));
-      localStorage.setItem('uz_chat', JSON.stringify(chatMessages));
-      localStorage.setItem('uz_current_user', JSON.stringify(currentUser));
-    }
-
-    // Установка дат по умолчанию
-    document.getElementById('filterDate').valueAsDate = new Date();
-    document.getElementById('bookDate').valueAsDate = new Date();
-
-    renderPublicData();
-    renderChat();
-
-    if (currentUser) {
-      document.getElementById('authBtn').style.display = 'none';
-      document.getElementById('logoutBtn').style.display = 'block';
-      document.getElementById('headerStatus').innerText = `Вошли как: ${currentUser.name}`;
-      document.getElementById('adminPanel').style.display = 'grid';
-      setupAdminUI();
-    }
-
-    // Проверка пересечения временных интервалов
-    function isTimeOverlapping(start1, hours1, start2, hours2) {
-      const s1 = parseInt(start1.split(':')[0]) * 60 + parseInt(start1.split(':')[1]);
-      const e1 = s1 + hours1 * 60;
-      const s2 = parseInt(start2.split(':')[0]) * 60 + parseInt(start2.split(':')[1]);
-      const e2 = s2 + hours2 * 60;
-      return Math.max(s1, s2) < Math.min(e1, e2);
-    }
-
-    // Отображение свободных гидов и авто
-    function renderPublicData() {
-      const gList = document.getElementById('publicGuidesList');
-      const cList = document.getElementById('publicCarsList');
-      
-      gList.innerHTML = '';
-      cList.innerHTML = '';
-
-      const filterDate = document.getElementById('filterDate').value;
-      const filterTime = document.getElementById('filterTime').value;
-      const filterHours = parseInt(document.getElementById('filterHours').value) || 1;
-      const filterLang = document.getElementById('filterLang').value;
-
-      // Свободные гиды (исключаем админов и владельца из списка гидов-исполнителей)
-      const guides = users.filter(u => u.role === 'guide');
-      guides.forEach(g => {
-        if (filterLang !== 'all' && !g.langs.toLowerCase().includes(filterLang.toLowerCase())) {
-          return;
-        }
-
-        const isBusy = bookings.some(b => 
-          b.targetLogin === g.login && 
-          b.date === filterDate && 
-          isTimeOverlapping(b.time, parseInt(b.hours), filterTime, filterHours)
-        );
-
-        if (!isBusy) {
-          const car = cars.find(c => c.id === g.carId);
-          const carInfo = car ? car.name : 'Без машины';
-          
-          gList.innerHTML += `
-            <div class="item-box free">
-              <div>
-                <strong>${g.name}</strong><br>
-                <small style="color:var(--text-muted);">🗣 Языки: ${g.langs}</small><br>
-                <small style="color:var(--text-muted);">🚘 Машина: ${carInfo}</small><br>
-                <span class="price-tag">$${g.price} / день</span>
-              </div>
-              <button class="btn btn-sm" onclick="selectForBooking('guide', '${g.login}')">📅 Забронить</button>
-            </div>`;
-        }
-      });
-
-      if (gList.innerHTML === '') {
-        gList.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Нет свободных гидов на выбранное время.</div>';
-      }
-
-      // Свободные машины
-      cars.forEach(c => {
-        const isBusy = bookings.some(b => 
-          b.targetCarId === c.id && 
-          b.date === filterDate && 
-          isTimeOverlapping(b.time, parseInt(b.hours), filterTime, filterHours)
-        );
-
-        if (!isBusy) {
-          cList.innerHTML += `
-            <div class="item-box free">
-              <div>
-                <strong>${c.name}</strong><br>
-                <span class="price-tag">$${c.price} / день</span>
-              </div>
-              <button class="btn btn-sm" onclick="selectForBooking('car', ${c.id})">📅 Забронить</button>
-            </div>`;
-        }
-      });
-
-      if (cList.innerHTML === '') {
-        cList.innerHTML = '<div style="color:var(--text-muted); padding:10px;">Нет свободных автомобилей на выбранное время.</div>';
-      }
-    }
-
-    function selectForBooking(type, id) {
-      document.getElementById('bookingType').value = type;
-      toggleBookingType();
-      document.getElementById('targetSelect').value = id;
-      document.getElementById('bookDate').value = document.getElementById('filterDate').value;
-      document.getElementById('bookTime').value = document.getElementById('filterTime').value;
-      document.getElementById('bookHours').value = document.getElementById('filterHours').value;
-
-      document.getElementById('bookingCard').scrollIntoView({ behavior: 'smooth' });
-    }
-
-    // Окно входа
-    function openLoginModal() { 
-      const select = document.getElementById('loginUserSelect');
-      select.innerHTML = '';
-      users.forEach(u => {
-        select.innerHTML += `<option value="${u.login}">${u.name} (${u.role.toUpperCase()})</option>`;
-      });
-      document.getElementById('loginModal').classList.add('active');
-    }
-
-    function closeLoginModal() { 
-      document.getElementById('loginModal').classList.remove('active');
-    }
-
-    document.getElementById('loginForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const login = document.getElementById('loginUserSelect').value;
-      const pass = document.getElementById('passInput').value.trim();
-
-      const user = users.find(u => u.login === login && u.pass === pass);
-
-      if (user) {
-        currentUser = user;
-        if (!activeSessions.includes(user.login)) activeSessions.push(user.login);
-        saveData();
-
-        closeLoginModal();
-        document.getElementById('passInput').value = '';
-        document.getElementById('authBtn').style.display = 'none';
-        document.getElementById('logoutBtn').style.display = 'block';
-        document.getElementById('headerStatus').innerText = `Вошли как: ${user.name}`;
-
-        document.getElementById('adminPanel').style.display = 'grid';
-        setupAdminUI();
-      } else {
-        alert('Неверный пароль!');
-      }
-    });
-
-    function logout() {
-      if (currentUser) {
-        activeSessions = activeSessions.filter(l => l !== currentUser.login);
-      }
-      currentUser = null;
-      saveData();
-      
-      document.getElementById('adminPanel').style.display = 'none';
-      document.getElementById('authBtn').style.display = 'block';
-      document.getElementById('logoutBtn').style.display = 'none';
-      document.getElementById('headerStatus').innerText = 'Публичный режим бронирования';
-      renderPublicData();
-    }
-
-    function setupAdminUI() {
-      const isOwner = currentUser.role === 'owner';
-      const isAdmin = currentUser.role === 'admin';
-      const isGuide = currentUser.role === 'guide';
-
-      document.getElementById('ownerTools').style.display = (isOwner || isAdmin) ? 'block' : 'none';
-      document.getElementById('ownerUsersCard').style.display = (isOwner || isAdmin) ? 'block' : 'none';
-      
-      document.getElementById('bookingCard').style.display = isGuide ? 'none' : 'block';
-      document.getElementById('activeSessionsCard').style.display = isGuide ? 'none' : 'block';
-      document.getElementById('guideScheduleCard').style.display = isGuide ? 'block' : 'none';
-
-      toggleBookingType();
-
-      if (isOwner || isAdmin) renderUsersTable();
-      if (isGuide) renderGuideSchedule();
-      renderActiveSessions();
-    }
-
-    function toggleBookingType() {
-      const type = document.getElementById('bookingType').value;
-      const targetSelect = document.getElementById('targetSelect');
-      targetSelect.innerHTML = '';
-
-      if (type === 'guide') {
-        users.filter(u => u.role === 'guide').forEach(g => {
-          targetSelect.innerHTML += `<option value="${g.login}">${g.name} (${g.langs})</option>`;
-        });
-      } else {
-        cars.forEach(c => {
-          targetSelect.innerHTML += `<option value="${c.id}">${c.name}</option>`;
-        });
-      }
-    }
-
-    // Оформление брони
-    document.getElementById('bookingForm').addEventListener('submit', function(e) {
-      e.preventDefault();
-      const type = document.getElementById('bookingType').value;
-      const target = document.getElementById('targetSelect').value;
-      const client = document.getElementById('clientName').value;
-      const date = document.getElementById('bookDate').value;
-      const time = document.getElementById('bookTime').value;
-      const hours = document.getElementById('bookHours').value;
-
-      bookings.push({
-        id: Date.now(),
-        type: type,
-        targetLogin: type === 'guide' ? target : null,
-        targetCarId: type === 'car' ? parseInt(target) : null,
-        client: client,
-        date: date,
-        time: time,
-        hours: hours
-      });
-
-      saveData();
-      alert('Бронирование успешно создано!');
-      document.getElementById('clientName').value = '';
-      renderPublicData();
-    });
-
-    // Добавление гида
-    function addGuide() {
-      const name = document.getElementById('newGuideName').value.trim();
-      const langs = document.getElementById('newGuideLangs').value.trim() || 'Русский';
-      const price = parseInt(document.getElementById('newGuidePrice').value) || 30;
-
-      if (!name) return alert('Введите имя гида');
-
-      const login = 'guide_' + Math.floor(100 + Math.random() * 900);
-      const pass = Math.floor(10 + Math.random() * 90).toString();
-
-      users.push({ login, pass, role: 'guide', name, langs, price, carId: null });
-      saveData();
-
-      alert(`Гид успешно добавлен!\nИмя: ${name}\nПароль для входа: ${pass}`);
-      
-      document.getElementById('newGuideName').value = '';
-      document.getElementById('newGuideLangs').value = '';
-      document.getElementById('newGuidePrice').value = '';
-      renderUsersTable();
-      renderPublicData();
-      toggleBookingType();
-    }
-
-    // Добавление машины
-    function addCar() {
-      const name = document.getElementById('newCarName').value.trim();
-      const price = parseInt(document.getElementById('newCarPrice').value) || 40;
-
-      if (!name) return alert('Введите название автомобиля');
-
-      cars.push({ id: Date.now(), name, price });
-      saveData();
-
-      alert('Автомобиль успешно добавлен!');
-      
-      document.getElementById('newCarName').value = '';
-      document.getElementById('newCarPrice').value = '';
-      renderPublicData();
-      toggleBookingType();
-    }
-
-    // Управление пользователями (гидами и админами) с разграничением видимости паролей
-    function renderUsersTable() {
-      const tbody = document.getElementById('usersTable');
-      tbody.innerHTML = '';
-
-      users.forEach(u => {
-        // Основатель видит всех, админ видит гидов и себя, гиды вообще не видят эту таблицу
-        if (currentUser.role === 'admin' && u.role === 'owner') return;
-
-        let displayPass = '••••••';
-        if (currentUser.role === 'owner' || currentUser.login === u.login) {
-          displayPass = u.pass; // Основатель видит все пароли, каждый видит свой
-        }
-
-        const car = cars.find(c => c.id === u.carId);
-        
-        // Кнопка удаления доступна для гидов (и для админов/основателя)
-        let deleteBtn = `<button class="btn-danger" onclick="deleteUser('${u.login}')">🗑 Удалить</button>`;
-        if (u.role === 'owner') deleteBtn = '<span style="color:var(--text-muted); font-size:0.75rem;">Неприкосновенен</span>';
-
-        tbody.innerHTML += `
-          <tr>
-            <td><strong>${u.name}</strong><br><small style="color:var(--text-muted);">${u.role.toUpperCase()}</small></td>
-            <td><code style="color:var(--accent);">${displayPass}</code></td>
-            <td>${u.langs || '-'}</td>
-            <td>${car ? car.name : '—'}</td>
-            <td>$${u.price || 0}</td>
-            <td>
-              <button class="btn btn-sm" onclick="openEditModal('${u.login}')">✏️ Ред.</button>
-              ${deleteBtn}
-            </td>
-          </tr>
-        `;
-      });
-    }
-
-    function openEditModal(login) {
-      const u = users.find(x => x.login === login);
-      if (!u) return;
-
-      document.getElementById('editUserLogin').value = u.login;
-      document.getElementById('editName').value = u.name;
-      document.getElementById('editPass').value = u.pass;
-      document.getElementById('editLangs').value = u.langs || '';
-      document.getElementById('editPrice').value = u.price || 0;
-
-      // Убираем возможность менять пароль админам/основателям через редактирование если они выше рангом, разрешаем гидам или самому себе
-      const passGroup = document.getElementById('editPassGroup');
-      if (u.role === 'owner' && currentUser.role !== 'owner') {
-        passGroup.style.display = 'none';
-      } else {
-        passGroup.style.display = 'block';
-      }
-
-      const carSelect = document.getElementById('editCarSelect');
-      carSelect.innerHTML = '<option value="">Без машины</option>';
-      cars.forEach(c => {
-        carSelect.innerHTML += `<option value="${c.id}" ${u.carId === c.id ? 'selected' : ''}>${c.name}</option>`;
-      });
-
-      document.getElementById('editModal').classList.add('active');
-    }
-
-    function closeEditModal() {
-      document.getElementById('editModal').classList.remove('active');
-    }
-
-    function saveUserEdit() {
-      const login = document.getElementById('editUserLogin').value;
-      const u = users.find(x => x.login === login);
-
-      if (u) {
-        u.name = document.getElementById('editName').value.trim();
-        const passVal = document.getElementById('editPass').value.trim();
-        if (passVal) u.pass = passVal;
-
-        u.langs = document.getElementById('editLangs').value.trim();
-        u.price = parseInt(document.getElementById('editPrice').value) || 0;
-        
-        const carVal = document.getElementById('editCarSelect').value;
-        u.carId = carVal ? parseInt(carVal) : null;
-
-        saveData();
-        alert('Изменения сохранены!');
-        closeEditModal();
-        renderUsersTable();
-        renderPublicData();
-      }
-    }
-
-    function deleteUser(login) {
-      const targetUser = users.find(u => u.login === login);
-      if (targetUser && targetUser.role === 'owner') {
-        return alert('Нельзя удалить основателя!');
-      }
-
-      if (confirm('Вы уверены, что хотите удалить этого сотрудника?')) {
-        users = users.filter(u => u.login !== login);
-        activeSessions = activeSessions.filter(l => l !== login);
-        saveData();
-        renderUsersTable();
-        renderPublicData();
-        toggleBookingType();
-      }
-    }
-
-    // Расписание заказов для гида
-    function renderGuideSchedule() {
-      const container = document.getElementById('guideBookingsList');
-      container.innerHTML = '';
-
-      const myBookings = bookings.filter(b => b.targetLogin === currentUser.login);
-
-      if (myBookings.length === 0) {
-        container.innerHTML = '<small style="color:var(--text-muted);">У вас нет текущих заказов.</small>';
-        return;
-      }
-
-      myBookings.forEach(b => {
-        container.innerHTML += `
-          <div class="item-box booked">
-            <div>
-              <strong>📅 Дата: ${b.date} | 🕒 ${b.time} (${b.hours} ч.)</strong><br>
-              <small style="color:var(--text-muted);">Клиент: ${b.client}</small>
-            </div>
-            <button class="btn btn-sm" onclick="completeBooking(${b.id})">Завершить</button>
-          </div>
-        `;
-      });
-    }
-
-    function completeBooking(id) {
-      bookings = bookings.filter(b => b.id !== id);
-      saveData();
-      renderGuideSchedule();
-      renderPublicData();
-    }
-
-    function renderActiveSessions() {
-      const list = document.getElementById('activeSessionsList');
-      if (!list) return;
-      list.innerHTML = '';
-
-      activeSessions.forEach(login => {
-        const u = users.find(x => x.login === login);
-        list.innerHTML += `
-          <div class="item-box free" style="padding:8px 14px;">
-            <div><strong>${u ? u.name : login}</strong></div>
-            <span class="badge badge-free">Онлайн</span>
-          </div>
-        `;
-      });
-    }
-
-    // Чат персонала
-    function sendChatMessage() {
-      const input = document.getElementById('chatInput');
-      const text = input.value.trim();
-      if (!text) return;
-
-      const authorName = currentUser ? currentUser.name : 'Гость';
-      chatMessages.push({ author: authorName, text: text });
-      saveData();
-
-      input.value = '';
-      renderChat();
-    }
-
-    function renderChat() {
-      const box = document.getElementById('chatBox');
-      box.innerHTML = '';
-      chatMessages.forEach(m => {
-        box.innerHTML += `
-          <div class="chat-msg">
-            <span class="author">${m.author}:</span>
-            <span>${m.text}</span>
-          </div>
-        `;
-      });
-      box.scrollTop = box.scrollHeight;
-    }
-  </script>
+</div>
+
+<!-- Вход -->
+<div class="modal" id="loginModal"><div class="card mc">
+  <h3 style="text-align:center;margin-top:0;color:var(--ac)">🔒 Вход в систему</h3>
+  <form id="loginForm">
+    <div class="fg"><label>Выберите ваш профиль:</label><select id="loginUser" required></select></div>
+    <div class="fg"><label>Пароль:</label><input type="password" id="passInput" placeholder="Введите пароль" required></div>
+    <button type="submit" class="btn">Войти</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:9px" onclick="closeModal('loginModal')">Отмена</button>
+  </form>
+</div></div>
+
+<!-- Бронь (для гостей и персонала) -->
+<div class="modal" id="bookModal"><div class="card mc">
+  <h3 style="text-align:center;margin-top:0;color:var(--ac)">📅 Оформить Бронь</h3>
+  <form id="bookForm">
+    <div class="fg"><label>Тип услуги:</label>
+      <select id="bType" onchange="fillTargets()"><option value="guide">Гид</option><option value="car">Автомобиль</option></select></div>
+    <div class="fg"><label>Выберите объект:</label><select id="bTarget" required></select></div>
+    <div class="fg"><label>Имя и Телефон Клиента:</label><input id="bClient" placeholder="Иван (+998901234567)" required maxlength="80"></div>
+    <div class="fg"><label>Дата:</label><input type="date" id="bDate" required></div>
+    <div class="fg"><label>Время начала и Часов:</label>
+      <div style="display:flex;gap:10px"><input type="time" id="bTime" value="09:00" required><input type="number" id="bHours" min="1" max="24" value="4" required></div></div>
+    <button type="submit" class="btn">Забронировать</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:9px" onclick="closeModal('bookModal')">Отмена</button>
+  </form>
+</div></div>
+
+<!-- Редактирование -->
+<div class="modal" id="editModal"><div class="card mc">
+  <h3 style="text-align:center;margin-top:0;color:var(--ac)">✏ Редактирование Данных</h3>
+  <input type="hidden" id="eLogin">
+  <div class="fg"><label>Имя:</label><input id="eName"></div>
+  <div class="fg"><label>Новый пароль (пусто = не менять, мин. 4 символа):</label><input type="password" id="ePass" autocomplete="new-password"></div>
+  <div class="fg"><label>Языки (через запятую):</label><input id="eLangs"></div>
+  <div class="fg"><label>Закрепленный автомобиль:</label><select id="eCar"></select></div>
+  <div class="fg"><label>Цена за день ($):</label><input type="number" id="ePrice" min="0"></div>
+  <button type="button" class="btn" onclick="saveEdit()">Сохранить</button>
+  <button type="button" class="del" style="width:100%;margin:10px 0 0;padding:9px" onclick="closeModal('editModal')">Отмена</button>
+</div></div>
+
+<div id="toast"></div>
+
+<script>
+const $ = id => document.getElementById(id);
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const pad = n => String(n).padStart(2, '0');
+const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
+function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2800); }
+
+// ---- Связь с сервером ----
+let users = [], profiles = [], cars = [], bookings = [], slots = [], chat = [], online = [], M = null;
+let token = sessionStorage.getItem('uz_token') || '';
+async function api(path, body) {
+  const r = await fetch('/api/' + path, { method: body ? 'POST' : 'GET',
+    headers: { 'Content-Type': 'application/json', 'x-token': token }, body: body ? JSON.stringify(body) : undefined });
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.error || 'Ошибка сервера');
+  return j;
+}
+async function act(op, p = {}) {
+  try { const j = await api('act', { op, ...p }); await refresh(); return j; }
+  catch (e) { toast(e.message); return null; }
+}
+async function refresh() {
+  try { ({ me: M, users, profiles, cars, bookings, slots, chat, online } = await api('data')); }
+  catch (e) { return toast(e.message); }
+  if (!M && token) { token = ''; sessionStorage.removeItem('uz_token'); }
+  paint();
+}
+
+const me = () => M;
+const isStaff = () => !!M && (M.role === 'owner' || M.role === 'admin');
+const canManage = u => !!M && (M.role === 'owner' || u.login === M.login || (M.role === 'admin' && u.role === 'guide'));
+const canDelete = u => !!M && u.role !== 'owner' && u.login !== M.login && (M.role === 'owner' || (M.role === 'admin' && u.role === 'guide'));
+
+// ---- Время (с учётом перехода через полночь) ----
+const span = (d, t, h) => { const s = new Date(d + 'T' + t).getTime(); return { s, e: s + h * 36e5 }; };
+const hit = (b, sp) => { const x = span(b.date, b.time, +b.hours); return x.s < sp.e && sp.s < x.e; };
+const busyCar = (id, sp) =>
+  slots.some(b => b.targetCarId === id && hit(b, sp)) ||
+  users.some(g => g.role === 'guide' && g.carId === id && slots.some(b => b.targetLogin === g.login && hit(b, sp)));
+const busyGuide = (g, sp) =>
+  slots.some(b => b.targetLogin === g.login && hit(b, sp)) ||
+  (g.carId != null && slots.some(b => b.targetCarId === g.carId && hit(b, sp)));
+
+// ---- Публичная витрина ----
+function renderPublic() {
+  const d = $('fDate').value, t = $('fTime').value || '09:00';
+  const h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
+  const lang = $('fLang').value, sp = span(d || today(), t, h);
+  let gh = '', ch = '';
+  users.filter(u => u.role === 'guide').forEach(g => {
+    if (lang !== 'all' && !(g.langs || '').toLowerCase().includes(lang.toLowerCase())) return;
+    if (busyGuide(g, sp)) return;
+    const car = cars.find(c => c.id === g.carId);
+    gh += `<div class="item free"><div><strong>${esc(g.name)}</strong><br>
+      <small class="mu">🗣 Языки: ${esc(g.langs)}</small><br>
+      <small class="mu">🚘 Машина: ${esc(car ? car.name : 'Без машины')}</small><br>
+      <span class="price">$${esc(g.price)} / день</span></div>
+      <button class="btn sm" onclick="openBook('guide','${esc(g.login)}')">📅 Забронить</button></div>`;
+  });
+  cars.forEach(c => {
+    if (busyCar(c.id, sp)) return;
+    ch += `<div class="item free"><div><strong>${esc(c.name)}</strong><br><span class="price">$${esc(c.price)} / день</span></div>
+      <button class="btn sm" onclick="openBook('car',${+c.id})">📅 Забронить</button></div>`;
+  });
+  $('pGuides').innerHTML = gh || '<div class="mu" style="padding:10px">Нет свободных гидов на выбранное время.</div>';
+  $('pCars').innerHTML = ch || '<div class="mu" style="padding:10px">Нет свободных автомобилей на выбранное время.</div>';
+}
+
+// ---- Модальные окна ----
+const closeModal = id => $(id).classList.remove('active');
+function openLogin() {
+  $('loginUser').innerHTML = profiles.map(u => `<option value="${esc(u.login)}">${esc(u.name)} (${esc(u.role.toUpperCase())})</option>`).join('');
+  $('loginModal').classList.add('active');
+}
+function fillTargets(sel) {
+  const type = $('bType').value;
+  $('bTarget').innerHTML = type === 'guide'
+    ? users.filter(u => u.role === 'guide').map(g => `<option value="${esc(g.login)}">${esc(g.name)} (${esc(g.langs)})</option>`).join('')
+    : cars.map(c => `<option value="${+c.id}">${esc(c.name)}</option>`).join('');
+  if (sel != null) $('bTarget').value = sel;
+}
+function openBook(type, id) {
+  $('bType').value = type; fillTargets(id);
+  $('bDate').min = today(); $('bDate').value = $('fDate').value || today();
+  $('bTime').value = $('fTime').value || '09:00'; $('bHours').value = $('fHours').value || 4;
+  $('bookModal').classList.add('active');
+}
+
+// ---- Вход / выход ----
+$('loginForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    const j = await api('login', { login: $('loginUser').value, pass: $('passInput').value.trim() });
+    token = j.token; sessionStorage.setItem('uz_token', token);
+    $('passInput').value = ''; closeModal('loginModal'); await refresh();
+  } catch (err) { toast(err.message); }
+});
+async function logout() {
+  try { await api('logout', {}); } catch {}
+  token = ''; sessionStorage.removeItem('uz_token'); await refresh();
+}
+function paint() {
+  const m = M;
+  $('authBtn').style.display = m ? 'none' : 'inline-block';
+  $('logoutBtn').style.display = m ? 'inline-block' : 'none';
+  $('status').textContent = m ? 'Вошли как: ' + m.name : 'Публичный режим бронирования';
+  $('panel').style.display = m ? 'grid' : 'none';
+  if (m) {
+    const st = isStaff(), g = m.role === 'guide';
+    $('ownerTools').style.display = $('usersCard').style.display = st ? 'block' : 'none';
+    $('sessCard').style.display = g ? 'none' : 'block';
+    $('newBkBtn').style.display = g ? 'none' : 'inline-block';
+    $('bkTitle').textContent = g ? '⏳ Мои Заказы и Расписание' : '📅 Все брони';
+    renderUsers(); renderCars(); renderBookings(); renderSessions(); renderChat();
+  }
+  renderPublic();
+}
+
+// ---- Брони ----
+$('bookForm').addEventListener('submit', async e => {
+  e.preventDefault();
+  try {
+    await api('book', { type: $('bType').value, target: $('bTarget').value, client: $('bClient').value,
+      date: $('bDate').value, time: $('bTime').value, hours: $('bHours').value });
+    $('bClient').value = ''; closeModal('bookModal'); toast('Бронирование успешно создано!'); await refresh();
+  } catch (err) { toast(err.message); }
+});
+function renderBookings() {
+  const m = M; if (!m) return;
+  const list = (m.role === 'guide' ? bookings.filter(b => b.targetLogin === m.login) : bookings.slice())
+    .sort((a, b) => span(a.date, a.time, 1).s - span(b.date, b.time, 1).s);
+  $('bkList').innerHTML = list.length ? list.map(b => {
+    const what = b.targetLogin ? '👨‍💼 ' + (users.find(u => u.login === b.targetLogin)?.name || '—')
+                               : '🚘 ' + (cars.find(c => c.id === b.targetCarId)?.name || '—');
+    return `<div class="item booked"><div><strong>📅 ${esc(b.date)} | 🕒 ${esc(b.time)} (${esc(b.hours)} ч.)</strong><br>
+      <small class="mu">${esc(what)}</small><br><small class="mu">Клиент: ${esc(b.client)}</small></div>
+      <button class="${m.role === 'guide' ? 'btn sm' : 'del'}" onclick="removeBooking(${+b.id})">${m.role === 'guide' ? 'Завершить' : '✕ Отменить'}</button></div>`;
+  }).join('') : '<small class="mu">Заказов нет.</small>';
+}
+function removeBooking(id) {
+  if (M.role !== 'guide' && !confirm('Отменить эту бронь?')) return;
+  act('removeBooking', { id });
+}
+
+// ---- Гиды, авто, персонал ----
+async function addGuide() {
+  const name = $('ngName').value.trim();
+  if (!name) return toast('Введите имя гида');
+  const j = await act('addGuide', { name, langs: $('ngLangs').value, price: $('ngPrice').value });
+  if (j) {
+    alert(`Гид добавлен!\nИмя: ${name}\nПароль для входа: ${j.pass}\n\nСохраните пароль — повторно он показан не будет.`);
+    $('ngName').value = $('ngLangs').value = $('ngPrice').value = '';
+  }
+}
+async function addCar() {
+  const name = $('ncName').value.trim();
+  if (!name) return toast('Введите название автомобиля');
+  if (await act('addCar', { name, price: $('ncPrice').value })) { $('ncName').value = $('ncPrice').value = ''; toast('Автомобиль добавлен!'); }
+}
+function renderCars() {
+  $('carsList').innerHTML = cars.map(c => `<div class="item" style="padding:8px 14px"><div><strong>${esc(c.name)}</strong> <span class="price">$${esc(c.price)}</span></div>
+    <button class="del" onclick="deleteCar(${+c.id})">✕ Удал.</button></div>`).join('') || '<small class="mu">Нет автомобилей.</small>';
+}
+function deleteCar(id) { if (confirm('Удалить автомобиль и все его брони?')) act('deleteCar', { id }); }
+function renderUsers() {
+  if (!isStaff()) return;
+  $('usersTable').innerHTML = users.map(u => {
+    const car = cars.find(c => c.id === u.carId);
+    return `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(u.role.toUpperCase())}</small></td>
+      <td>${esc(u.langs || '-')}</td><td>${esc(car ? car.name : '—')}</td><td>$${esc(u.price || 0)}</td>
+      <td style="white-space:nowrap">${canManage(u) ? `<button class="btn sm" onclick="openEdit('${esc(u.login)}')">✏️</button>` : ''}
+      ${canDelete(u) ? `<button class="del" onclick="deleteUser('${esc(u.login)}')">✕ Удал.</button>` : ''}</td></tr>`;
+  }).join('');
+}
+function openEdit(login) {
+  const u = users.find(x => x.login === login);
+  if (!u || !canManage(u)) return;
+  $('eLogin').value = u.login; $('eName').value = u.name; $('ePass').value = '';
+  $('eLangs').value = u.langs || ''; $('ePrice').value = u.price || 0;
+  $('eCar').innerHTML = '<option value="">Без машины</option>' +
+    cars.map(c => `<option value="${+c.id}" ${u.carId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+  $('editModal').classList.add('active');
+}
+async function saveEdit() {
+  const name = $('eName').value.trim(), pass = $('ePass').value.trim();
+  if (!name) return toast('Имя не может быть пустым');
+  if (pass && pass.length < 4) return toast('Пароль — минимум 4 символа');
+  if (await act('editUser', { login: $('eLogin').value, name, pass, langs: $('eLangs').value,
+      price: $('ePrice').value, carId: $('eCar').value })) { closeModal('editModal'); toast('Изменения сохранены!'); }
+}
+function deleteUser(login) { if (confirm('Удалить этого сотрудника и его брони?')) act('deleteUser', { login }); }
+
+// ---- Онлайн и чат ----
+function renderSessions() {
+  $('sessList').innerHTML = online.map(u => `<div class="item free" style="padding:8px 14px"><strong>${esc(u.name)}</strong><span class="badge">Онлайн</span></div>`).join('');
+}
+async function sendChat() {
+  const text = $('chatInput').value.trim(); if (!text) return;
+  $('chatInput').value = ''; await act('chat', { text });
+}
+function renderChat() {
+  const box = $('chatBox');
+  box.innerHTML = chat.map(m => `<div class="msg"><b>${esc(m.author)}:</b><span>${esc(m.text)}</span></div>`).join('');
+  box.scrollTop = box.scrollHeight;
+}
+
+// ---- Запуск ----
+$('fDate').value = today();
+refresh();
+setInterval(() => { if (M && !document.querySelector('.modal.active')) refresh(); }, 15000);
+</script>
 </body>
 </html>
