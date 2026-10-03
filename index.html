@@ -53,10 +53,50 @@ th{color:#c4b5fd}
 .msg{background:rgba(255,255,255,.07);padding:8px 12px;border-radius:12px;font-size:.86rem}
 .msg b{background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:6px}
 #toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#1e1245;border:1px solid var(--pink);padding:12px 22px;border-radius:14px;z-index:200;display:none;box-shadow:0 0 25px rgba(236,72,153,.4)}
+/* ---- Анимации ---- */
+@keyframes rise{from{opacity:0;transform:translateY(28px) scale(.98)}to{opacity:1;transform:none}}
+@keyframes pop{from{opacity:0;transform:scale(.92) translateY(14px)}to{opacity:1;transform:none}}
+@keyframes fade{from{opacity:0}to{opacity:1}}
+@keyframes float{0%,100%{transform:translate(0,0) scale(1)}50%{transform:translate(70px,-50px) scale(1.15)}}
+@keyframes shift{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes spin{0%{transform:rotate(-20deg) scale(1)}50%{transform:rotate(20deg) scale(1.12)}100%{transform:rotate(-20deg) scale(1)}}
+@keyframes load{from{transform:translateX(-100%)}to{transform:translateX(250%)}}
+@keyframes gone{to{opacity:0;visibility:hidden}}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(236,72,153,.5)}100%{box-shadow:0 0 0 14px rgba(236,72,153,0)}}
+.blob{position:fixed;border-radius:50%;filter:blur(80px);opacity:.4;z-index:0;pointer-events:none;animation:float 20s ease-in-out infinite}
+.b1{width:380px;height:380px;background:#8b5cf6;top:-90px;left:-70px}
+.b2{width:340px;height:340px;background:#ec4899;top:35%;right:-90px;animation-delay:-7s}
+.b3{width:360px;height:360px;background:#22d3ee;bottom:-110px;left:30%;animation-delay:-13s}
+.wrap{position:relative;z-index:1}
+body:not(.ready) .wrap>*{opacity:0}
+.ready .wrap>*{animation:rise .8s cubic-bezier(.16,1,.3,1) backwards}
+.ready .wrap>*:nth-child(2){animation-delay:.12s}.ready .wrap>*:nth-child(3){animation-delay:.22s}
+.ready .wrap>*:nth-child(4){animation-delay:.3s}.ready .wrap>*:nth-child(5){animation-delay:.38s}
+.ready .top{background-size:220% 220%;animation:rise .8s cubic-bezier(.16,1,.3,1) backwards,shift 9s ease infinite}
+.ready .gc{animation:rise .7s cubic-bezier(.16,1,.3,1) backwards;animation-delay:calc(var(--i,0)*80ms + .35s)}
+.ready .gc .av{animation:ring 2.6s ease-out infinite}
+.ready #panel .card{animation:rise .7s cubic-bezier(.16,1,.3,1) backwards}
+.ready #panel>div>.card:nth-child(2){animation-delay:.1s}.ready #panel>div>.card:nth-child(3){animation-delay:.2s}
+.modal.active{animation:fade .25s ease}
+.modal.active .mc{animation:pop .4s cubic-bezier(.16,1,.3,1)}
+#toast{animation:rise .35s ease}
+.btn{position:relative;overflow:hidden}
+.btn::after{content:'';position:absolute;top:0;left:-70%;width:45%;height:100%;background:linear-gradient(100deg,transparent,rgba(255,255,255,.35),transparent);transform:skewX(-20deg);transition:left .6s}
+.btn:hover::after{left:130%}
+.btn:active{transform:scale(.97)}
+#splash{position:fixed;inset:0;z-index:300;display:grid;place-items:center;text-align:center;background:linear-gradient(135deg,#1e0b4d,#0b0720);transition:opacity .7s,visibility .7s;animation:gone .7s 7s forwards}
+#splash.hide{opacity:0;visibility:hidden}
+.sp-i{font-size:4rem;display:inline-block;animation:spin 2.4s ease-in-out infinite}
+.sp-t{font-size:1.5rem;font-weight:800;margin:10px 0 18px;background:linear-gradient(90deg,#fff,#f9a8d4,#fcd34d);-webkit-background-clip:text;-webkit-text-fill-color:transparent;animation:fade 1s}
+.sp-b{width:170px;height:5px;border-radius:9px;background:rgba(255,255,255,.15);margin:0 auto;overflow:hidden}
+.sp-b::after{content:'';display:block;width:40%;height:100%;border-radius:9px;background:linear-gradient(90deg,#8b5cf6,#ec4899,#f59e0b);animation:load 1.2s ease-in-out infinite}
+@media(prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}body:not(.ready) .wrap>*{opacity:1}}
 @media(max-width:800px){.grid2{grid-template-columns:1fr}.top h1{font-size:1.35rem}}
 </style>
 </head>
 <body>
+<div class="blob b1"></div><div class="blob b2"></div><div class="blob b3"></div>
+<div id="splash"><div><div class="sp-i">🧭</div><div class="sp-t">Гиды Узбекистана</div><div class="sp-b"></div></div></div>
 <div class="wrap">
   <div class="top">
     <div><h1>🧭 Гиды Узбекистана</h1><small id="status">Выберите гида и забронируйте поездку</small></div>
@@ -110,7 +150,7 @@ th{color:#c4b5fd}
       <div class="card pk" id="usersCard" style="display:none">
         <h3>👥 Персонал и цены</h3>
         <div style="overflow-x:auto"><table>
-          <thead><tr><th>Имя</th><th>Языки</th><th>Авто</th><th>$/день</th><th></th></tr></thead>
+          <thead><tr><th>Имя</th><th>Пароль</th><th>Языки</th><th>Авто</th><th>$/день</th><th></th></tr></thead>
           <tbody id="usersTable"></tbody>
         </table></div>
       </div>
@@ -197,17 +237,19 @@ const busy = (g, sp) => slots.some(b => b.targetLogin === g.login && (x => x.s <
 function renderPublic() {
   const t = $('fTime').value || '09:00', h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
   const sp = span($('fDate').value || today(), t, h);
-  const html = users.filter(u => u.role === 'guide' && !busy(u, sp)).map(g => {
+  const html = users.filter(u => u.role === 'guide' && !busy(u, sp)).map((g, i) => {
     const langs = (g.langs || '').split(',').map(x => x.trim()).filter(Boolean)
       .map(l => `<span class="chip" style="background:${pick(l, CH)}">${esc(l)}</span>`).join('');
-    return `<div class="gc"><div class="gh">
+    return `<div class="gc" style="--i:${i}"><div class="gh">
       <div class="av" style="background:linear-gradient(135deg,${pick(g.name, AV)})">${esc([...g.name][0] || '?')}</div>
       <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">$${esc(g.price)} / день</span></div></div>
       <div class="chips">${langs}</div>
       <div class="car">🚘 ${g.car ? esc(g.car) : '<span class="mu">Без автомобиля</span>'}</div>
       <button class="btn or2" onclick="openBook('${esc(g.login)}')">📅 Забронировать</button></div>`;
   }).join('');
-  $('pGuides').innerHTML = html || '<div class="card mu" style="grid-column:1/-1">Нет свободных гидов на выбранное время.</div>';
+  const out = html || '<div class="card mu" style="grid-column:1/-1">Нет свободных гидов на выбранное время.</div>';
+  if (renderPublic.last === out) return; // не перерисовываем без изменений, чтобы анимация не мигала
+  renderPublic.last = out; $('pGuides').innerHTML = out;
 }
 
 // ---- Окна ----
@@ -292,10 +334,16 @@ async function addGuide() {
     $('ngName').value = $('ngLangs').value = $('ngCar').value = $('ngPrice').value = '';
   }
 }
+// Пароль виден только тем, кто выше по рангу (владелец > админ > гид). Нажмите, чтобы показать.
+function pwCell(u) {
+  if (u.pass === undefined) return '<span class="mu" title="Скрыт: этот пользователь не ниже вас по рангу">🔒</span>';
+  if (u.pass === null) return '<span class="mu" title="Задайте пароль заново через ✏️, тогда он станет виден">не задан</span>';
+  return `<code style="cursor:pointer;color:#fbcfe8" data-p="${esc(u.pass)}" onclick="this.textContent=this.textContent==='••••••'?this.dataset.p:'••••••'">••••••</code>`;
+}
 function renderUsers() {
   if (!isStaff()) return;
   $('usersTable').innerHTML = users.map(u => `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(u.role.toUpperCase())}</small></td>
-    <td>${esc(u.langs || '-')}</td><td>${esc(u.car || '—')}</td><td>$${esc(u.price || 0)}</td>
+    <td>${pwCell(u)}</td><td>${esc(u.langs || '-')}</td><td>${esc(u.car || '—')}</td><td>$${esc(u.price || 0)}</td>
     <td style="white-space:nowrap">${canManage(u) ? `<button class="btn sm cy2" onclick="openEdit('${esc(u.login)}')">✏️</button>` : ''}
     ${canDelete(u) ? `<button class="del" onclick="deleteUser('${esc(u.login)}')">✕</button>` : ''}</td></tr>`).join('');
 }
@@ -330,7 +378,11 @@ function renderChat() {
 }
 
 $('fDate').value = today();
-refresh();
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+Promise.all([Promise.race([refresh(), sleep(2500)]), sleep(900)]).finally(() => {
+  $('splash').classList.add('hide'); document.body.classList.add('ready');
+  setTimeout(() => $('splash').remove(), 800);
+});
 setInterval(() => { if (M && !document.querySelector('.modal.active')) refresh(); }, 15000);
 </script>
 </body>
