@@ -1,14 +1,8 @@
 {
-  "name": "uzbekistan-guider-turs",
-  "version": "1.0.0",
+  "name": "uzberistan-guides",
+  "version": "2.0.0",
   "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "dependencies": {
-    "bcrypt": "^6.0.0",
-    "cors": "^2.8.6",
-    "express": "^5.2.1",
-    "nodemailer": "^10.0.13"
-  }
+  "scripts": { "start": "node server.js" },
+  "dependencies": { "express": "^4.19.2", "pg": "^8.11.5" },
+  "engines": { "node": ">=18" }
 }
