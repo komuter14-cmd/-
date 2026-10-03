@@ -1,0 +1,46 @@
+# Будильник сайта
+#
+# Зачем: бесплатный сервер Render засыпает через 15 минут без посетителей.
+# Когда гость (чаще всего — с телефона) заходит на заспавший сайт, Render
+# ждёт его запуска 30-60 секунд, а мобильный браузер нередко сдаётся раньше
+# и показывает «не удаётся подключиться к сайту».
+#
+# Что делает эта задача: раз в 5 минут будит сервер обычным запросом.
+# Запустить вручную: вкладка Actions → Будильник сайта → Run workflow.
+name: Будильник сайта
+
+on:
+  schedule:
+    # каждые 5 минут (это намеренно чаще, чем 15-минутный сон Render)
+    - cron: '*/5 * * * *'
+  workflow_dispatch: # запуск вручную
+
+# не копим запуски, если предыдущий ещё идёт
+concurrency:
+  group: keep-awake
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  ping:
+    name: Разбудить сервер
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - name: Пинг сайта
+        run: |
+          URL="https://uzberistan-guides.onrender.com/api/data"
+          for attempt in 1 2 3; do
+            # --max-time 90: patiently wait while Render boots the server
+            code=$(curl -s -o /dev/null -w '%{http_code}' --max-time 90 "$URL") || code="000"
+            if [ "$code" = "200" ]; then
+              echo "Сервер отвечает: HTTP $code (попытка $attempt)"
+              exit 0
+            fi
+            echo "Попытка $attempt: HTTP $code, ждём ещё 40 секунд"
+            sleep 40
+          done
+          echo "Сервер не проснулся — код $code"
+          exit 1
