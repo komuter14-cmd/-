@@ -20,12 +20,20 @@ const checkPw = (p, h) => {
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 };
 const rnd = () => crypto.randomBytes(9).toString('hex');
+// Пароли хранятся хэшем (для входа) и в зашифрованном виде AES-256 (чтобы старший по рангу мог их видеть).
+// Ключ берётся из SECRET_KEY, а если его нет — из DATABASE_URL (он секретный и постоянный).
+const KEY = crypto.createHash('sha256').update(process.env.SECRET_KEY || process.env.DATABASE_URL || 'uz-local').digest();
+const enc = p => { const iv = crypto.randomBytes(12), c = crypto.createCipheriv('aes-256-gcm', KEY, iv), d = Buffer.concat([c.update(p, 'utf8'), c.final()]); return iv.toString('hex') + ':' + c.getAuthTag().toString('hex') + ':' + d.toString('hex'); };
+const dec = s => { try { const [i, t, d] = s.split(':'), x = crypto.createDecipheriv('aes-256-gcm', KEY, Buffer.from(i, 'hex')); x.setAuthTag(Buffer.from(t, 'hex')); return Buffer.concat([x.update(Buffer.from(d, 'hex')), x.final()]).toString('utf8'); } catch { return null; } };
+const mk = p => ({ hash: hashPw(p), pw: enc(p) });
+const RANK = { owner: 3, admin: 2, guide: 1 };
+const canSeePw = (m, u) => RANK[m.role] > RANK[u.role];
 
 const seed = () => ({
   users: [
-    { login: 'owner', hash: hashPw(process.env.OWNER_PASSWORD || '000'), role: 'owner', name: 'Основатель', langs: 'Все', price: 0, car: '' },
-    { login: 'guide_timur', hash: hashPw(rnd()), role: 'guide', name: 'Тимур (Ташкент)', langs: 'Русский, Узбекский, Английский', price: 50, car: 'Chevrolet Malibu 2 (01 A 123 AB)' },
-    { login: 'guide_sardor', hash: hashPw(rnd()), role: 'guide', name: 'Сардор (Самарканд)', langs: 'Русский, Узбекский', price: 40, car: 'Chevrolet Tracker (01 B 456 CD)' }
+    { login: 'owner', ...mk(process.env.OWNER_PASSWORD || '000'), role: 'owner', name: 'Основатель', langs: 'Все', price: 0, car: '' },
+    { login: 'guide_timur', ...mk(rnd()), role: 'guide', name: 'Тимур (Ташкент)', langs: 'Русский, Узбекский, Английский', price: 50, car: 'Chevrolet Malibu 2 (01 A 123 AB)' },
+    { login: 'guide_sardor', ...mk(rnd()), role: 'guide', name: 'Сардор (Самарканд)', langs: 'Русский, Узбекский', price: 40, car: 'Chevrolet Tracker (01 B 456 CD)' }
   ],
   bookings: [], sessions: [],
   chat: [{ author: 'Основатель', text: 'Чат персонала активен. Добро пожаловать!' }]
@@ -81,7 +89,8 @@ const canDelete = (m, u) => u.role !== 'owner' && u.login !== m.login && (m.role
 // ---- API ----
 app.get('/api/data', (req, res) => {
   const m = auth(req);
-  const users = (m ? S.users.filter(u => !(m.role === 'admin' && u.role === 'owner')) : guides()).map(pub);
+  const users = (m ? S.users.filter(u => !(m.role === 'admin' && u.role === 'owner')) : guides())
+    .map(u => ({ ...pub(u), pass: m && canSeePw(m, u) ? (u.pw ? dec(u.pw) : null) : undefined }));
   const bookings = !m ? [] : m.role === 'guide' ? S.bookings.filter(b => b.targetLogin === m.login) : S.bookings;
   const online = m && m.role !== 'guide'
     ? [...new Set(live().map(t => t.login))].map(l => { const u = S.users.find(x => x.login === l); return u && { login: l, name: u.name }; }).filter(Boolean) : [];
@@ -142,7 +151,7 @@ app.post('/api/act', async (req, res) => {
         if (!st) return forbid(res);
         const name = str(b.name, 60); if (!name) return bad(res, 'Введите имя гида');
         const login = 'guide_' + Date.now().toString(36) + crypto.randomInt(10, 99), pass = crypto.randomBytes(4).toString('hex');
-        S.users.push({ login, hash: hashPw(pass), role: 'guide', name, langs: str(b.langs, 100) || 'Русский',
+        S.users.push({ login, ...mk(pass), role: 'guide', name, langs: str(b.langs, 100) || 'Русский',
           price: Math.max(0, parseInt(b.price) || 30), car: str(b.car, 80) });
         await persist(); return res.json({ ok: 1, pass });
       }
@@ -152,7 +161,7 @@ app.post('/api/act', async (req, res) => {
         const name = str(b.name, 60), pass = String(b.pass ?? '').trim();
         if (!name) return bad(res, 'Имя не может быть пустым');
         if (pass && pass.length < 4) return bad(res, 'Пароль — минимум 4 символа');
-        u.name = name; if (pass) u.hash = hashPw(pass);
+        u.name = name; if (pass) Object.assign(u, mk(pass));
         u.langs = str(b.langs, 100); u.price = Math.max(0, parseInt(b.price) || 0); u.car = str(b.car, 80);
         if (pass) { for (const [t, v] of tokens) if (v.login === u.login && u !== m) tokens.delete(t); await syncTokens(); }
         break;
