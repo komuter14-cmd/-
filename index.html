@@ -3,174 +3,156 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Аренда Авто и Гиды — Узбекистан</title>
+<title>Гиды Узбекистана — бронирование</title>
 <style>
-:root{--bg:linear-gradient(135deg,#070913,#0f172a 50%,#030712);--card:rgba(15,23,42,.75);--bd:rgba(56,189,248,.25);--ac:#38bdf8;--glow:rgba(56,189,248,.35);--danger:#f43f5e;--ok:#10b981;--tx:#f8fafc;--mu:#94a3b8}
+:root{--tx:#f8fafc;--mu:#a5b4d4;--bd:rgba(255,255,255,.13);--pink:#ec4899;--vio:#8b5cf6;--cy:#22d3ee;--or:#f59e0b;--gr:#10b981;--red:#f43f5e}
 *{box-sizing:border-box;transition:all .2s}
-body{margin:0;padding:20px;font-family:Inter,system-ui,sans-serif;min-height:100vh;background:var(--bg);color:var(--tx);display:flex;justify-content:center}
-.wrap{width:100%;max-width:1250px}
-.top{display:flex;justify-content:space-between;align-items:center;background:var(--card);border:1px solid var(--bd);padding:18px 26px;border-radius:20px;margin-bottom:22px;backdrop-filter:blur(20px);box-shadow:0 0 20px var(--glow)}
-.top h2{margin:0;font-size:1.4rem;background:linear-gradient(90deg,#fff,var(--ac));-webkit-background-clip:text;-webkit-text-fill-color:transparent}
-.card{background:var(--card);backdrop-filter:blur(20px);border:1px solid var(--bd);border-radius:20px;padding:22px;box-shadow:0 12px 35px rgba(0,0,0,.4);margin-bottom:22px}
+body{margin:0;padding:18px;font-family:system-ui,-apple-system,'Segoe UI',sans-serif;min-height:100vh;color:var(--tx);
+background:radial-gradient(circle at 12% 8%,rgba(139,92,246,.45),transparent 38%),radial-gradient(circle at 90% 15%,rgba(236,72,153,.32),transparent 36%),radial-gradient(circle at 75% 92%,rgba(34,211,238,.28),transparent 40%),radial-gradient(circle at 8% 85%,rgba(245,158,11,.22),transparent 35%),#0b0720;background-attachment:fixed}
+.wrap{max-width:1250px;margin:0 auto}
+.top{display:flex;justify-content:space-between;align-items:center;gap:14px;flex-wrap:wrap;padding:26px 30px;border-radius:26px;margin-bottom:22px;background:linear-gradient(120deg,#6d28d9,#db2777 55%,#f59e0b);box-shadow:0 18px 50px rgba(219,39,119,.35)}
+.top h1{margin:0;font-size:1.7rem;letter-spacing:-.5px}
+.top small{opacity:.9}
+.card{position:relative;overflow:hidden;background:rgba(255,255,255,.07);border:1px solid var(--bd);border-radius:22px;padding:22px;backdrop-filter:blur(18px);margin-bottom:22px;box-shadow:0 12px 35px rgba(0,0,0,.3)}
+.card::before{content:'';position:absolute;inset:0 0 auto 0;height:4px;background:var(--g,linear-gradient(90deg,var(--vio),var(--pink)))}
+.cy{--g:linear-gradient(90deg,#22d3ee,#8b5cf6)}.or{--g:linear-gradient(90deg,#f59e0b,#ec4899)}.gr{--g:linear-gradient(90deg,#10b981,#22d3ee)}.pk{--g:linear-gradient(90deg,#ec4899,#8b5cf6)}
+h3{margin:0 0 14px;font-size:1.1rem}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:22px}
+.guides{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:18px;margin-bottom:22px}
+.gc{position:relative;background:rgba(255,255,255,.07);border:1px solid var(--bd);border-radius:22px;padding:20px;display:flex;flex-direction:column;gap:10px;backdrop-filter:blur(14px)}
+.gc:hover{transform:translateY(-5px);box-shadow:0 18px 40px rgba(0,0,0,.4);border-color:rgba(255,255,255,.3)}
+.gh{display:flex;align-items:center;gap:14px}
+.av{width:54px;height:54px;border-radius:50%;display:grid;place-items:center;font-size:1.4rem;font-weight:800;color:#fff;flex-shrink:0;box-shadow:0 6px 18px rgba(0,0,0,.35)}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font-size:.75rem;padding:4px 10px;border-radius:99px;font-weight:600}
+.car{background:rgba(255,255,255,.07);border-radius:12px;padding:9px 12px;font-size:.88rem}
+.price{font-weight:800;font-size:1.15rem;background:linear-gradient(90deg,#fbbf24,#fb923c);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
 .fg{margin-bottom:14px}
-label{display:block;font-size:.85rem;margin-bottom:6px;color:var(--mu);font-weight:500}
-select,input{width:100%;padding:11px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.1);background:rgba(3,7,18,.7);color:#fff;font-size:.9rem;outline:none}
-select:focus,input:focus{border-color:var(--ac);box-shadow:0 0 12px var(--glow)}
-.btn{width:100%;padding:11px 16px;border:none;border-radius:10px;background:linear-gradient(135deg,var(--ac),#0284c7);color:#030712;font-weight:700;font-size:.9rem;cursor:pointer;box-shadow:0 4px 15px var(--glow)}
-.btn:hover{color:#fff;transform:translateY(-2px)}
-.sm{width:auto;padding:6px 12px;font-size:.8rem}
-.out{background:transparent;border:1px solid var(--ac);color:var(--ac);width:auto;padding:9px 18px;box-shadow:none}
-.out:hover{background:var(--ac);color:#030712}
-.del{background:rgba(244,63,94,.12);border:1px solid var(--danger);color:var(--danger);padding:5px 9px;border-radius:6px;cursor:pointer;font-size:.75rem;font-weight:600;margin-left:6px}
-.del:hover{background:var(--danger);color:#fff}
-.item{background:rgba(255,255,255,.02);border:1px solid rgba(255,255,255,.06);padding:14px 18px;border-radius:12px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px}
-.item.free{border-left:4px solid var(--ok)}
-.item.booked{border-left:4px solid #f59e0b}
-.badge{font-size:.75rem;padding:4px 10px;border-radius:12px;font-weight:700;background:rgba(16,185,129,.15);color:var(--ok);border:1px solid var(--ok)}
-.price{color:#f59e0b;font-weight:700}
+label{display:block;font-size:.82rem;margin-bottom:6px;color:var(--mu);font-weight:600}
+select,input{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--bd);background:rgba(8,5,30,.55);color:#fff;font-size:.92rem;outline:none}
+select:focus,input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(236,72,153,.25)}
+.btn{width:100%;padding:11px 16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--vio),var(--pink));color:#fff;font-weight:700;font-size:.92rem;cursor:pointer;box-shadow:0 6px 18px rgba(236,72,153,.35)}
+.btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
+.sm{width:auto;padding:7px 14px;font-size:.82rem}
+.btn.or2{background:linear-gradient(135deg,#f59e0b,#ec4899)}
+.btn.cy2{background:linear-gradient(135deg,#06b6d4,#8b5cf6)}
+.btn.gl{background:rgba(255,255,255,.2);box-shadow:none;width:auto;backdrop-filter:blur(8px)}
+.del{background:rgba(244,63,94,.14);border:1px solid var(--red);color:#fda4af;padding:6px 10px;border-radius:8px;cursor:pointer;font-size:.78rem;font-weight:600;margin-left:6px}
+.del:hover{background:var(--red);color:#fff}
+.item{background:rgba(255,255,255,.05);border:1px solid var(--bd);padding:14px 16px;border-radius:14px;margin-bottom:12px;display:flex;justify-content:space-between;align-items:center;gap:10px;border-left:4px solid var(--or)}
+.item.on{border-left-color:var(--gr)}
+.badge{font-size:.75rem;padding:4px 10px;border-radius:99px;font-weight:700;background:rgba(16,185,129,.18);color:#6ee7b7;border:1px solid var(--gr)}
 .mu{color:var(--mu)}
-.modal{display:none;position:fixed;inset:0;background:rgba(3,7,18,.85);backdrop-filter:blur(10px);justify-content:center;align-items:center;z-index:100;padding:15px;overflow:auto}
-.modal.active{display:flex}
-.mc{width:100%;max-width:420px;margin:auto}
+.warn{background:rgba(245,158,11,.15);border:1px solid var(--or);color:#fde68a;padding:12px 14px;border-radius:12px;font-size:.85rem;margin-bottom:16px}
+.modal{display:none;position:fixed;inset:0;background:rgba(8,5,30,.82);backdrop-filter:blur(10px);justify-content:center;align-items:center;z-index:100;padding:15px;overflow:auto}
+.modal.active{display:flex}.mc{width:100%;max-width:430px;margin:auto}
 table{width:100%;border-collapse:collapse;font-size:.85rem}
-th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.08)}
-th{color:var(--ac)}
-.chat{height:200px;overflow-y:auto;border:1px solid rgba(255,255,255,.08);border-radius:10px;padding:12px;background:rgba(3,7,18,.5);margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
-.msg{background:rgba(255,255,255,.04);padding:8px 12px;border-radius:8px;font-size:.85rem}
-.msg b{color:var(--ac);margin-right:6px}
-.filter{border:1px solid var(--bd);background:linear-gradient(135deg,rgba(56,189,248,.04),rgba(15,23,42,.8))}
-#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#0f172a;border:1px solid var(--ac);padding:12px 22px;border-radius:12px;z-index:200;display:none;box-shadow:0 0 20px var(--glow)}
-@media(max-width:800px){.grid2{grid-template-columns:1fr}.top{flex-direction:column;gap:12px}}
+th,td{padding:10px 8px;text-align:left;border-bottom:1px solid rgba(255,255,255,.1)}
+th{color:#c4b5fd}
+.chat{height:210px;overflow-y:auto;border:1px solid var(--bd);border-radius:14px;padding:12px;background:rgba(8,5,30,.45);margin-bottom:12px;display:flex;flex-direction:column;gap:8px}
+.msg{background:rgba(255,255,255,.07);padding:8px 12px;border-radius:12px;font-size:.86rem}
+.msg b{background:linear-gradient(90deg,#22d3ee,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-right:6px}
+#toast{position:fixed;bottom:25px;left:50%;transform:translateX(-50%);background:#1e1245;border:1px solid var(--pink);padding:12px 22px;border-radius:14px;z-index:200;display:none;box-shadow:0 0 25px rgba(236,72,153,.4)}
+@media(max-width:800px){.grid2{grid-template-columns:1fr}.top h1{font-size:1.35rem}}
 </style>
 </head>
 <body>
 <div class="wrap">
   <div class="top">
-    <div><h2>🚗 Аренда Авто и Гиды Узбекистана</h2><small class="mu" id="status">Публичный режим бронирования</small></div>
+    <div><h1>🧭 Гиды Узбекистана</h1><small id="status">Выберите гида и забронируйте поездку</small></div>
     <div>
-      <button class="btn out" id="authBtn" onclick="openLogin()">🔑 Вход</button>
-      <button class="btn out" id="logoutBtn" style="display:none;border-color:var(--danger);color:var(--danger)" onclick="logout()">Выйти</button>
+      <button class="btn gl" id="authBtn" onclick="openLogin()">🔑 Вход для персонала</button>
+      <button class="btn gl" id="logoutBtn" style="display:none" onclick="logout()">Выйти</button>
     </div>
   </div>
 
-  <div class="card filter">
-    <h3 style="margin-top:0;color:var(--ac);font-size:1.1rem">🔍 Поиск свободных гидов и авто по дате и времени</h3>
-    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:14px;align-items:end">
-      <div><label>Дата поездки:</label><input type="date" id="fDate" onchange="renderPublic()"></div>
-      <div><label>Время начала:</label><input type="time" id="fTime" value="09:00" onchange="renderPublic()"></div>
-      <div><label>Длительность (часов):</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
-      <div><label>Язык гида:</label>
-        <select id="fLang" onchange="renderPublic()">
-          <option value="all">Все языки</option><option>Русский</option><option>Узбекский</option><option>Английский</option><option>Китайский</option>
-        </select></div>
-      <div><button class="btn" onclick="renderPublic()">Показать свободные</button></div>
+  <div class="card cy">
+    <h3>🔍 Найти свободных гидов</h3>
+    <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;align-items:end">
+      <div><label>Дата поездки</label><input type="date" id="fDate" onchange="renderPublic()"></div>
+      <div><label>Время начала</label><input type="time" id="fTime" value="09:00" onchange="renderPublic()"></div>
+      <div><label>Длительность (часов)</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
+      <div><button class="btn cy2" onclick="renderPublic()">Показать свободных</button></div>
     </div>
   </div>
 
-  <div class="grid2">
-    <div class="card"><h3 style="margin-top:0">👨‍💼 Свободные Гиды</h3><div id="pGuides"></div></div>
-    <div class="card"><h3 style="margin-top:0">🚘 Свободные Автомобили</h3><div id="pCars"></div></div>
-  </div>
+  <h3 style="font-size:1.25rem;margin-left:6px">👨‍💼 Свободные гиды</h3>
+  <div class="guides" id="pGuides"></div>
 
   <div id="panel" style="display:none" class="grid2">
     <div>
-      <div class="card" id="ownerTools" style="display:none">
-        <h3 style="margin-top:0;color:var(--ac)">➕ Добавление Гидов и Авто</h3>
-        <div class="fg">
-          <label>Новый Гид (Имя):</label>
-          <input id="ngName" placeholder="Алишер Ташкент">
-          <div style="display:flex;gap:8px;margin-top:6px">
-            <input id="ngLangs" placeholder="Языки (Русский, Английский)">
-            <input type="number" id="ngPrice" placeholder="$/день" style="width:110px" min="0">
-          </div>
-          <button class="btn" style="margin-top:10px" onclick="addGuide()">+ Создать Гида</button>
-        </div>
-        <hr style="border-color:rgba(255,255,255,.08);margin:18px 0">
-        <div class="fg">
-          <label>Новый Автомобиль (Модель и Гос. номер):</label>
-          <input id="ncName" placeholder="Chevrolet Tahoe (01 A 777 AA)">
-          <input type="number" id="ncPrice" placeholder="Цена за день ($)" style="margin-top:6px" min="0">
-          <button class="btn" style="margin-top:10px" onclick="addCar()">+ Добавить Авто</button>
-        </div>
-        <hr style="border-color:rgba(255,255,255,.08);margin:18px 0">
-        <label>Автомобили:</label><div id="carsList"></div>
+      <div class="card or" id="ownerTools" style="display:none">
+        <div class="warn" id="warn" style="display:none">⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).</div>
+        <h3>➕ Новый гид</h3>
+        <div class="fg"><label>Имя</label><input id="ngName" placeholder="Алишер (Ташкент)"></div>
+        <div class="fg"><label>Языки</label><input id="ngLangs" placeholder="Русский, Английский"></div>
+        <div class="fg"><label>Автомобиль гида (модель и номер)</label><input id="ngCar" placeholder="Chevrolet Tahoe (01 A 777 AA)"></div>
+        <div class="fg"><label>Цена за день ($)</label><input type="number" id="ngPrice" placeholder="50" min="0"></div>
+        <button class="btn or2" onclick="addGuide()">+ Создать гида</button>
       </div>
-
-      <div class="card">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:10px">
-          <h3 style="margin:0;color:var(--ac)" id="bkTitle">📅 Брони</h3>
-          <button class="btn sm" id="newBkBtn" onclick="openBook('guide')">+ Новая бронь</button>
+      <div class="card gr">
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px">
+          <h3 style="margin:0" id="bkTitle">📅 Брони</h3>
+          <button class="btn sm" id="newBkBtn" onclick="openBook()">+ Новая бронь</button>
         </div>
         <div id="bkList"></div>
       </div>
     </div>
-
     <div>
-      <div class="card">
-        <h3 style="margin-top:0;color:var(--ac)">💬 Внутренний Чат Персонала</h3>
+      <div class="card cy">
+        <h3>💬 Чат персонала</h3>
         <div class="chat" id="chatBox"></div>
         <div style="display:flex;gap:8px">
           <input id="chatInput" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="btn sm" onclick="sendChat()">Отправить</button>
+          <button class="btn sm cy2" onclick="sendChat()">Отправить</button>
         </div>
       </div>
-
-      <div class="card" id="usersCard" style="display:none">
-        <h3 style="margin-top:0;color:var(--ac)">👥 Управление персоналом и ценами</h3>
+      <div class="card pk" id="usersCard" style="display:none">
+        <h3>👥 Персонал и цены</h3>
         <div style="overflow-x:auto"><table>
-          <thead><tr><th>Имя</th><th>Языки</th><th>Авто</th><th>$/день</th><th>Действия</th></tr></thead>
+          <thead><tr><th>Имя</th><th>Языки</th><th>Авто</th><th>$/день</th><th></th></tr></thead>
           <tbody id="usersTable"></tbody>
         </table></div>
       </div>
-
-      <div class="card" id="sessCard">
-        <h3 style="margin-top:0">🌐 Кто сейчас в системе</h3><div id="sessList"></div>
-      </div>
+      <div class="card gr" id="sessCard"><h3>🌐 Сейчас в системе</h3><div id="sessList"></div></div>
     </div>
   </div>
 </div>
 
-<!-- Вход -->
-<div class="modal" id="loginModal"><div class="card mc">
-  <h3 style="text-align:center;margin-top:0;color:var(--ac)">🔒 Вход в систему</h3>
+<div class="modal" id="loginModal"><div class="card mc pk">
+  <h3 style="text-align:center">🔒 Вход в систему</h3>
   <form id="loginForm">
-    <div class="fg"><label>Выберите ваш профиль:</label><select id="loginUser" required></select></div>
-    <div class="fg"><label>Пароль:</label><input type="password" id="passInput" placeholder="Введите пароль" required></div>
+    <div class="fg"><label>Профиль</label><select id="loginUser" required></select></div>
+    <div class="fg"><label>Пароль</label><input type="password" id="passInput" placeholder="Введите пароль" required></div>
     <button type="submit" class="btn">Войти</button>
-    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:9px" onclick="closeModal('loginModal')">Отмена</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('loginModal')">Отмена</button>
   </form>
 </div></div>
 
-<!-- Бронь (для гостей и персонала) -->
-<div class="modal" id="bookModal"><div class="card mc">
-  <h3 style="text-align:center;margin-top:0;color:var(--ac)">📅 Оформить Бронь</h3>
+<div class="modal" id="bookModal"><div class="card mc or">
+  <h3 style="text-align:center">📅 Оформить бронь</h3>
   <form id="bookForm">
-    <div class="fg"><label>Тип услуги:</label>
-      <select id="bType" onchange="fillTargets()"><option value="guide">Гид</option><option value="car">Автомобиль</option></select></div>
-    <div class="fg"><label>Выберите объект:</label><select id="bTarget" required></select></div>
-    <div class="fg"><label>Имя и Телефон Клиента:</label><input id="bClient" placeholder="Иван (+998901234567)" required maxlength="80"></div>
-    <div class="fg"><label>Дата:</label><input type="date" id="bDate" required></div>
-    <div class="fg"><label>Время начала и Часов:</label>
+    <div class="fg"><label>Гид</label><select id="bTarget" required></select></div>
+    <div class="fg"><label>Ваше имя и телефон</label><input id="bClient" placeholder="Иван (+998901234567)" required maxlength="80"></div>
+    <div class="fg"><label>Дата</label><input type="date" id="bDate" required></div>
+    <div class="fg"><label>Время начала и часов</label>
       <div style="display:flex;gap:10px"><input type="time" id="bTime" value="09:00" required><input type="number" id="bHours" min="1" max="24" value="4" required></div></div>
-    <button type="submit" class="btn">Забронировать</button>
-    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:9px" onclick="closeModal('bookModal')">Отмена</button>
+    <button type="submit" class="btn or2">Забронировать</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('bookModal')">Отмена</button>
   </form>
 </div></div>
 
-<!-- Редактирование -->
-<div class="modal" id="editModal"><div class="card mc">
-  <h3 style="text-align:center;margin-top:0;color:var(--ac)">✏ Редактирование Данных</h3>
+<div class="modal" id="editModal"><div class="card mc cy">
+  <h3 style="text-align:center">✏ Редактирование</h3>
   <input type="hidden" id="eLogin">
-  <div class="fg"><label>Имя:</label><input id="eName"></div>
-  <div class="fg"><label>Новый пароль (пусто = не менять, мин. 4 символа):</label><input type="password" id="ePass" autocomplete="new-password"></div>
-  <div class="fg"><label>Языки (через запятую):</label><input id="eLangs"></div>
-  <div class="fg"><label>Закрепленный автомобиль:</label><select id="eCar"></select></div>
-  <div class="fg"><label>Цена за день ($):</label><input type="number" id="ePrice" min="0"></div>
-  <button type="button" class="btn" onclick="saveEdit()">Сохранить</button>
-  <button type="button" class="del" style="width:100%;margin:10px 0 0;padding:9px" onclick="closeModal('editModal')">Отмена</button>
+  <div class="fg"><label>Имя</label><input id="eName"></div>
+  <div class="fg"><label>Новый пароль (пусто = не менять, мин. 4 символа)</label><input type="password" id="ePass" autocomplete="new-password"></div>
+  <div class="fg"><label>Языки (через запятую)</label><input id="eLangs"></div>
+  <div class="fg"><label>Автомобиль гида</label><input id="eCar" placeholder="Модель и госномер"></div>
+  <div class="fg"><label>Цена за день ($)</label><input type="number" id="ePrice" min="0"></div>
+  <button type="button" class="btn cy2" onclick="saveEdit()">Сохранить</button>
+  <button type="button" class="del" style="width:100%;margin:10px 0 0;padding:10px" onclick="closeModal('editModal')">Отмена</button>
 </div></div>
-
 <div id="toast"></div>
 
 <script>
@@ -179,10 +161,13 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 const pad = n => String(n).padStart(2, '0');
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
 function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2800); }
+const AV = ['#8b5cf6,#ec4899', '#06b6d4,#8b5cf6', '#f59e0b,#ef4444', '#10b981,#06b6d4', '#ec4899,#f59e0b', '#6366f1,#22d3ee'];
+const CH = ['rgba(139,92,246,.3);color:#ddd6fe', 'rgba(34,211,238,.25);color:#a5f3fc', 'rgba(236,72,153,.28);color:#fbcfe8', 'rgba(245,158,11,.28);color:#fde68a'];
+const pick = (s, a) => a[[...String(s)].reduce((x, c) => x + c.charCodeAt(0), 0) % a.length];
 
 // ---- Связь с сервером ----
-let users = [], profiles = [], cars = [], bookings = [], slots = [], chat = [], online = [], M = null;
-let token = sessionStorage.getItem('uz_token') || '';
+let users = [], profiles = [], bookings = [], slots = [], chat = [], online = [], M = null, DB = true;
+let token = localStorage.getItem('uz_token') || '';
 async function api(path, body) {
   const r = await fetch('/api/' + path, { method: body ? 'POST' : 'GET',
     headers: { 'Content-Type': 'application/json', 'x-token': token }, body: body ? JSON.stringify(body) : undefined });
@@ -195,98 +180,78 @@ async function act(op, p = {}) {
   catch (e) { toast(e.message); return null; }
 }
 async function refresh() {
-  try { ({ me: M, users, profiles, cars, bookings, slots, chat, online } = await api('data')); }
+  try { const d = await api('data'); ({ me: M, users, profiles, bookings, slots, chat, online } = d); DB = d.db; }
   catch (e) { return toast(e.message); }
-  if (!M && token) { token = ''; sessionStorage.removeItem('uz_token'); }
+  if (!M && token) { token = ''; localStorage.removeItem('uz_token'); }
   paint();
 }
-
-const me = () => M;
 const isStaff = () => !!M && (M.role === 'owner' || M.role === 'admin');
 const canManage = u => !!M && (M.role === 'owner' || u.login === M.login || (M.role === 'admin' && u.role === 'guide'));
 const canDelete = u => !!M && u.role !== 'owner' && u.login !== M.login && (M.role === 'owner' || (M.role === 'admin' && u.role === 'guide'));
 
-// ---- Время (с учётом перехода через полночь) ----
+// ---- Время ----
 const span = (d, t, h) => { const s = new Date(d + 'T' + t).getTime(); return { s, e: s + h * 36e5 }; };
-const hit = (b, sp) => { const x = span(b.date, b.time, +b.hours); return x.s < sp.e && sp.s < x.e; };
-const busyCar = (id, sp) =>
-  slots.some(b => b.targetCarId === id && hit(b, sp)) ||
-  users.some(g => g.role === 'guide' && g.carId === id && slots.some(b => b.targetLogin === g.login && hit(b, sp)));
-const busyGuide = (g, sp) =>
-  slots.some(b => b.targetLogin === g.login && hit(b, sp)) ||
-  (g.carId != null && slots.some(b => b.targetCarId === g.carId && hit(b, sp)));
+const busy = (g, sp) => slots.some(b => b.targetLogin === g.login && (x => x.s < sp.e && sp.s < x.e)(span(b.date, b.time, +b.hours)));
 
-// ---- Публичная витрина ----
+// ---- Витрина гидов ----
 function renderPublic() {
-  const d = $('fDate').value, t = $('fTime').value || '09:00';
-  const h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
-  const lang = $('fLang').value, sp = span(d || today(), t, h);
-  let gh = '', ch = '';
-  users.filter(u => u.role === 'guide').forEach(g => {
-    if (lang !== 'all' && !(g.langs || '').toLowerCase().includes(lang.toLowerCase())) return;
-    if (busyGuide(g, sp)) return;
-    const car = cars.find(c => c.id === g.carId);
-    gh += `<div class="item free"><div><strong>${esc(g.name)}</strong><br>
-      <small class="mu">🗣 Языки: ${esc(g.langs)}</small><br>
-      <small class="mu">🚘 Машина: ${esc(car ? car.name : 'Без машины')}</small><br>
-      <span class="price">$${esc(g.price)} / день</span></div>
-      <button class="btn sm" onclick="openBook('guide','${esc(g.login)}')">📅 Забронить</button></div>`;
-  });
-  cars.forEach(c => {
-    if (busyCar(c.id, sp)) return;
-    ch += `<div class="item free"><div><strong>${esc(c.name)}</strong><br><span class="price">$${esc(c.price)} / день</span></div>
-      <button class="btn sm" onclick="openBook('car',${+c.id})">📅 Забронить</button></div>`;
-  });
-  $('pGuides').innerHTML = gh || '<div class="mu" style="padding:10px">Нет свободных гидов на выбранное время.</div>';
-  $('pCars').innerHTML = ch || '<div class="mu" style="padding:10px">Нет свободных автомобилей на выбранное время.</div>';
+  const t = $('fTime').value || '09:00', h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
+  const sp = span($('fDate').value || today(), t, h);
+  const html = users.filter(u => u.role === 'guide' && !busy(u, sp)).map(g => {
+    const langs = (g.langs || '').split(',').map(x => x.trim()).filter(Boolean)
+      .map(l => `<span class="chip" style="background:${pick(l, CH)}">${esc(l)}</span>`).join('');
+    return `<div class="gc"><div class="gh">
+      <div class="av" style="background:linear-gradient(135deg,${pick(g.name, AV)})">${esc([...g.name][0] || '?')}</div>
+      <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">$${esc(g.price)} / день</span></div></div>
+      <div class="chips">${langs}</div>
+      <div class="car">🚘 ${g.car ? esc(g.car) : '<span class="mu">Без автомобиля</span>'}</div>
+      <button class="btn or2" onclick="openBook('${esc(g.login)}')">📅 Забронировать</button></div>`;
+  }).join('');
+  $('pGuides').innerHTML = html || '<div class="card mu" style="grid-column:1/-1">Нет свободных гидов на выбранное время.</div>';
 }
 
-// ---- Модальные окна ----
+// ---- Окна ----
 const closeModal = id => $(id).classList.remove('active');
 function openLogin() {
   $('loginUser').innerHTML = profiles.map(u => `<option value="${esc(u.login)}">${esc(u.name)} (${esc(u.role.toUpperCase())})</option>`).join('');
   $('loginModal').classList.add('active');
 }
-function fillTargets(sel) {
-  const type = $('bType').value;
-  $('bTarget').innerHTML = type === 'guide'
-    ? users.filter(u => u.role === 'guide').map(g => `<option value="${esc(g.login)}">${esc(g.name)} (${esc(g.langs)})</option>`).join('')
-    : cars.map(c => `<option value="${+c.id}">${esc(c.name)}</option>`).join('');
-  if (sel != null) $('bTarget').value = sel;
-}
-function openBook(type, id) {
-  $('bType').value = type; fillTargets(id);
+function openBook(login) {
+  $('bTarget').innerHTML = users.filter(u => u.role === 'guide')
+    .map(g => `<option value="${esc(g.login)}">${esc(g.name)}${g.car ? ' — ' + esc(g.car) : ''}</option>`).join('');
+  if (login) $('bTarget').value = login;
   $('bDate').min = today(); $('bDate').value = $('fDate').value || today();
   $('bTime').value = $('fTime').value || '09:00'; $('bHours').value = $('fHours').value || 4;
   $('bookModal').classList.add('active');
 }
 
-// ---- Вход / выход ----
+// ---- Вход / выход (вход сохраняется, пока не нажмёте «Выйти») ----
 $('loginForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
     const j = await api('login', { login: $('loginUser').value, pass: $('passInput').value.trim() });
-    token = j.token; sessionStorage.setItem('uz_token', token);
+    token = j.token; localStorage.setItem('uz_token', token);
     $('passInput').value = ''; closeModal('loginModal'); await refresh();
   } catch (err) { toast(err.message); }
 });
 async function logout() {
   try { await api('logout', {}); } catch {}
-  token = ''; sessionStorage.removeItem('uz_token'); await refresh();
+  token = ''; localStorage.removeItem('uz_token'); await refresh();
 }
 function paint() {
   const m = M;
   $('authBtn').style.display = m ? 'none' : 'inline-block';
   $('logoutBtn').style.display = m ? 'inline-block' : 'none';
-  $('status').textContent = m ? 'Вошли как: ' + m.name : 'Публичный режим бронирования';
+  $('status').textContent = m ? 'Вошли как: ' + m.name : 'Выберите гида и забронируйте поездку';
   $('panel').style.display = m ? 'grid' : 'none';
   if (m) {
     const st = isStaff(), g = m.role === 'guide';
     $('ownerTools').style.display = $('usersCard').style.display = st ? 'block' : 'none';
+    $('warn').style.display = st && !DB ? 'block' : 'none';
     $('sessCard').style.display = g ? 'none' : 'block';
     $('newBkBtn').style.display = g ? 'none' : 'inline-block';
-    $('bkTitle').textContent = g ? '⏳ Мои Заказы и Расписание' : '📅 Все брони';
-    renderUsers(); renderCars(); renderBookings(); renderSessions(); renderChat();
+    $('bkTitle').textContent = g ? '⏳ Мои заказы' : '📅 Все брони';
+    renderUsers(); renderBookings(); renderSessions(); renderChat();
   }
   renderPublic();
 }
@@ -295,7 +260,7 @@ function paint() {
 $('bookForm').addEventListener('submit', async e => {
   e.preventDefault();
   try {
-    await api('book', { type: $('bType').value, target: $('bTarget').value, client: $('bClient').value,
+    await api('book', { target: $('bTarget').value, client: $('bClient').value,
       date: $('bDate').value, time: $('bTime').value, hours: $('bHours').value });
     $('bClient').value = ''; closeModal('bookModal'); toast('Бронирование успешно создано!'); await refresh();
   } catch (err) { toast(err.message); }
@@ -305,10 +270,10 @@ function renderBookings() {
   const list = (m.role === 'guide' ? bookings.filter(b => b.targetLogin === m.login) : bookings.slice())
     .sort((a, b) => span(a.date, a.time, 1).s - span(b.date, b.time, 1).s);
   $('bkList').innerHTML = list.length ? list.map(b => {
-    const what = b.targetLogin ? '👨‍💼 ' + (users.find(u => u.login === b.targetLogin)?.name || '—')
-                               : '🚘 ' + (cars.find(c => c.id === b.targetCarId)?.name || '—');
-    return `<div class="item booked"><div><strong>📅 ${esc(b.date)} | 🕒 ${esc(b.time)} (${esc(b.hours)} ч.)</strong><br>
-      <small class="mu">${esc(what)}</small><br><small class="mu">Клиент: ${esc(b.client)}</small></div>
+    const g = users.find(u => u.login === b.targetLogin);
+    return `<div class="item"><div><strong>📅 ${esc(b.date)} · 🕒 ${esc(b.time)} (${esc(b.hours)} ч.)</strong><br>
+      <small class="mu">👨‍💼 ${esc(g ? g.name : '—')}${g && g.car ? ' · 🚘 ' + esc(g.car) : ''}</small><br>
+      <small class="mu">Клиент: ${esc(b.client)}</small></div>
       <button class="${m.role === 'guide' ? 'btn sm' : 'del'}" onclick="removeBooking(${+b.id})">${m.role === 'guide' ? 'Завершить' : '✕ Отменить'}</button></div>`;
   }).join('') : '<small class="mu">Заказов нет.</small>';
 }
@@ -317,43 +282,28 @@ function removeBooking(id) {
   act('removeBooking', { id });
 }
 
-// ---- Гиды, авто, персонал ----
+// ---- Гиды и персонал ----
 async function addGuide() {
   const name = $('ngName').value.trim();
   if (!name) return toast('Введите имя гида');
-  const j = await act('addGuide', { name, langs: $('ngLangs').value, price: $('ngPrice').value });
+  const j = await act('addGuide', { name, langs: $('ngLangs').value, car: $('ngCar').value, price: $('ngPrice').value });
   if (j) {
     alert(`Гид добавлен!\nИмя: ${name}\nПароль для входа: ${j.pass}\n\nСохраните пароль — повторно он показан не будет.`);
-    $('ngName').value = $('ngLangs').value = $('ngPrice').value = '';
+    $('ngName').value = $('ngLangs').value = $('ngCar').value = $('ngPrice').value = '';
   }
 }
-async function addCar() {
-  const name = $('ncName').value.trim();
-  if (!name) return toast('Введите название автомобиля');
-  if (await act('addCar', { name, price: $('ncPrice').value })) { $('ncName').value = $('ncPrice').value = ''; toast('Автомобиль добавлен!'); }
-}
-function renderCars() {
-  $('carsList').innerHTML = cars.map(c => `<div class="item" style="padding:8px 14px"><div><strong>${esc(c.name)}</strong> <span class="price">$${esc(c.price)}</span></div>
-    <button class="del" onclick="deleteCar(${+c.id})">✕ Удал.</button></div>`).join('') || '<small class="mu">Нет автомобилей.</small>';
-}
-function deleteCar(id) { if (confirm('Удалить автомобиль и все его брони?')) act('deleteCar', { id }); }
 function renderUsers() {
   if (!isStaff()) return;
-  $('usersTable').innerHTML = users.map(u => {
-    const car = cars.find(c => c.id === u.carId);
-    return `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(u.role.toUpperCase())}</small></td>
-      <td>${esc(u.langs || '-')}</td><td>${esc(car ? car.name : '—')}</td><td>$${esc(u.price || 0)}</td>
-      <td style="white-space:nowrap">${canManage(u) ? `<button class="btn sm" onclick="openEdit('${esc(u.login)}')">✏️</button>` : ''}
-      ${canDelete(u) ? `<button class="del" onclick="deleteUser('${esc(u.login)}')">✕ Удал.</button>` : ''}</td></tr>`;
-  }).join('');
+  $('usersTable').innerHTML = users.map(u => `<tr><td><strong>${esc(u.name)}</strong><br><small class="mu">${esc(u.role.toUpperCase())}</small></td>
+    <td>${esc(u.langs || '-')}</td><td>${esc(u.car || '—')}</td><td>$${esc(u.price || 0)}</td>
+    <td style="white-space:nowrap">${canManage(u) ? `<button class="btn sm cy2" onclick="openEdit('${esc(u.login)}')">✏️</button>` : ''}
+    ${canDelete(u) ? `<button class="del" onclick="deleteUser('${esc(u.login)}')">✕</button>` : ''}</td></tr>`).join('');
 }
 function openEdit(login) {
   const u = users.find(x => x.login === login);
   if (!u || !canManage(u)) return;
   $('eLogin').value = u.login; $('eName').value = u.name; $('ePass').value = '';
-  $('eLangs').value = u.langs || ''; $('ePrice').value = u.price || 0;
-  $('eCar').innerHTML = '<option value="">Без машины</option>' +
-    cars.map(c => `<option value="${+c.id}" ${u.carId === c.id ? 'selected' : ''}>${esc(c.name)}</option>`).join('');
+  $('eLangs').value = u.langs || ''; $('eCar').value = u.car || ''; $('ePrice').value = u.price || 0;
   $('editModal').classList.add('active');
 }
 async function saveEdit() {
@@ -361,13 +311,13 @@ async function saveEdit() {
   if (!name) return toast('Имя не может быть пустым');
   if (pass && pass.length < 4) return toast('Пароль — минимум 4 символа');
   if (await act('editUser', { login: $('eLogin').value, name, pass, langs: $('eLangs').value,
-      price: $('ePrice').value, carId: $('eCar').value })) { closeModal('editModal'); toast('Изменения сохранены!'); }
+      car: $('eCar').value, price: $('ePrice').value })) { closeModal('editModal'); toast('Изменения сохранены!'); }
 }
 function deleteUser(login) { if (confirm('Удалить этого сотрудника и его брони?')) act('deleteUser', { login }); }
 
 // ---- Онлайн и чат ----
 function renderSessions() {
-  $('sessList').innerHTML = online.map(u => `<div class="item free" style="padding:8px 14px"><strong>${esc(u.name)}</strong><span class="badge">Онлайн</span></div>`).join('');
+  $('sessList').innerHTML = online.map(u => `<div class="item on" style="padding:9px 14px"><strong>${esc(u.name)}</strong><span class="badge">Онлайн</span></div>`).join('');
 }
 async function sendChat() {
   const text = $('chatInput').value.trim(); if (!text) return;
@@ -379,7 +329,6 @@ function renderChat() {
   box.scrollTop = box.scrollHeight;
 }
 
-// ---- Запуск ----
 $('fDate').value = today();
 refresh();
 setInterval(() => { if (M && !document.querySelector('.modal.active')) refresh(); }, 15000);
