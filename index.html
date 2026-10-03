@@ -31,6 +31,7 @@ h3{margin:0 0 14px;font-size:1.1rem}
 label{display:block;font-size:.82rem;margin-bottom:6px;color:var(--mu);font-weight:600}
 select,input{width:100%;padding:11px 14px;border-radius:12px;border:1px solid var(--bd);background:rgba(8,5,30,.55);color:#fff;font-size:.92rem;outline:none}
 select:focus,input:focus{border-color:var(--pink);box-shadow:0 0 0 3px rgba(236,72,153,.25)}
+.langsel{width:auto;padding:9px 12px;font-size:.85rem;font-weight:600;cursor:pointer}
 .btn{width:100%;padding:11px 16px;border:none;border-radius:12px;background:linear-gradient(135deg,var(--vio),var(--pink));color:#fff;font-weight:700;font-size:.92rem;cursor:pointer;box-shadow:0 6px 18px rgba(236,72,153,.35)}
 .btn:hover{transform:translateY(-2px);filter:brightness(1.12)}
 .sm{width:auto;padding:7px 14px;font-size:.82rem}
@@ -99,108 +100,227 @@ body:not(.ready) .wrap>*{opacity:0}
 <div id="splash"><div><div class="sp-i">🧭</div><div class="sp-t">Гиды Узбекистана</div><div class="sp-b"></div></div></div>
 <div class="wrap">
   <div class="top">
-    <div><h1>🧭 Гиды Узбекистана</h1><small id="status">Выберите гида и забронируйте поездку</small></div>
-    <div>
-      <button class="btn gl" id="authBtn" onclick="openLogin()">🔑 Вход для персонала</button>
-      <button class="btn gl" id="logoutBtn" style="display:none" onclick="logout()">Выйти</button>
+    <div><h1>🧭 Гиды Узбекистана</h1><small id="status" data-t="status_guest">Выберите гида и забронируйте поездку</small></div>
+    <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+      <select id="langSel" class="langsel" onchange="setLang(this.value)" title="Язык сайта"></select>
+      <button class="btn gl" id="authBtn" onclick="openLogin()" data-t="btn_auth">🔑 Вход для персонала</button>
+      <button class="btn gl" id="logoutBtn" style="display:none" onclick="logout()" data-t="btn_logout">Выйти</button>
     </div>
   </div>
 
   <div class="card cy">
-    <h3>🔍 Найти свободных гидов</h3>
+    <h3 data-t="find_title">🔍 Найти свободных гидов</h3>
     <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(170px,1fr));gap:14px;align-items:end">
-      <div><label>Дата поездки</label><input type="date" id="fDate" onchange="renderPublic()"></div>
-      <div><label>Время начала</label><input type="time" id="fTime" value="09:00" onchange="renderPublic()"></div>
-      <div><label>Длительность (часов)</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
-      <div><button class="btn cy2" onclick="renderPublic()">Показать свободных</button></div>
+      <div><label data-t="f_date">Дата поездки</label><input type="date" id="fDate" onchange="renderPublic()"></div>
+      <div><label data-t="f_time">Время начала</label><input type="time" id="fTime" value="09:00" onchange="renderPublic()"></div>
+      <div><label data-t="f_hours">Длительность (часов)</label><input type="number" id="fHours" min="1" max="24" value="4" onchange="renderPublic()"></div>
+      <div><button class="btn cy2" onclick="renderPublic()" data-t="f_show">Показать свободных</button></div>
     </div>
   </div>
 
-  <h3 style="font-size:1.25rem;margin-left:6px">👨‍💼 Свободные гиды</h3>
+  <h3 style="font-size:1.25rem;margin-left:6px" data-t="guides_title">👨‍💼 Свободные гиды</h3>
   <div class="guides" id="pGuides"></div>
 
   <div id="panel" style="display:none" class="grid2">
     <div>
       <div class="card or" id="ownerTools" style="display:none">
-        <div class="warn" id="warn" style="display:none">⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).</div>
-        <h3>➕ Новый гид</h3>
-        <div class="fg"><label>Имя</label><input id="ngName" placeholder="Алишер (Ташкент)"></div>
-        <div class="fg"><label>Языки</label><input id="ngLangs" placeholder="Русский, Английский"></div>
-        <div class="fg"><label>Автомобиль гида (модель и номер)</label><input id="ngCar" placeholder="Chevrolet Tahoe (01 A 777 AA)"></div>
-        <div class="fg"><label>Цена за день ($)</label><input type="number" id="ngPrice" placeholder="50" min="0"></div>
-        <button class="btn or2" onclick="addGuide()">+ Создать гида</button>
+        <div class="warn" id="warn" style="display:none" data-t="warn_db">⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).</div>
+        <h3 data-t="new_guide">➕ Новый гид</h3>
+        <div class="fg"><label data-t="l_name">Имя</label><input id="ngName" data-p="ph_name" placeholder="Алишер (Ташкент)"></div>
+        <div class="fg"><label data-t="l_langs">Языки</label><input id="ngLangs" data-p="ph_langs" placeholder="Русский, Английский"></div>
+        <div class="fg"><label data-t="l_car">Автомобиль гида (модель и номер)</label><input id="ngCar" data-p="ph_car" placeholder="Chevrolet Tahoe (01 A 777 AA)"></div>
+        <div class="fg"><label data-t="l_price">Цена за день ($)</label><input type="number" id="ngPrice" data-p="ph_price" placeholder="50" min="0"></div>
+        <button class="btn or2" onclick="addGuide()" data-t="btn_add_guide">+ Создать гида</button>
       </div>
       <div class="card gr">
         <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;gap:10px">
           <h3 style="margin:0" id="bkTitle">📅 Брони</h3>
-          <button class="btn sm" id="newBkBtn" onclick="openBook()">+ Новая бронь</button>
+          <button class="btn sm" id="newBkBtn" onclick="openBook()" data-t="btn_new_bk">+ Новая бронь</button>
         </div>
         <div id="bkList"></div>
       </div>
     </div>
     <div>
       <div class="card cy">
-        <h3>💬 Чат персонала</h3>
+        <h3 data-t="chat_title">💬 Чат персонала</h3>
         <div class="chat" id="chatBox"></div>
         <div style="display:flex;gap:8px">
-          <input id="chatInput" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendChat()">
-          <button class="btn sm cy2" onclick="sendChat()">Отправить</button>
+          <input id="chatInput" data-p="chat_ph" placeholder="Напишите сообщение..." onkeydown="if(event.key==='Enter')sendChat()">
+          <button class="btn sm cy2" onclick="sendChat()" data-t="btn_send">Отправить</button>
         </div>
       </div>
       <div class="card pk" id="usersCard" style="display:none">
-        <h3>👥 Персонал и цены</h3>
+        <h3 data-t="staff_title">👥 Персонал и цены</h3>
         <div style="overflow-x:auto"><table>
-          <thead><tr><th>Имя</th><th>Пароль</th><th>Языки</th><th>Авто</th><th>$/день</th><th></th></tr></thead>
+          <thead><tr><th data-t="th_name">Имя</th><th data-t="th_pass">Пароль</th><th data-t="th_langs">Языки</th><th data-t="th_car">Авто</th><th data-t="th_price">$/день</th><th></th></tr></thead>
           <tbody id="usersTable"></tbody>
         </table></div>
       </div>
-      <div class="card gr" id="sessCard"><h3>🌐 Сейчас в системе</h3><div id="sessList"></div></div>
+      <div class="card gr" id="sessCard"><h3 data-t="online_title">🌐 Сейчас в системе</h3><div id="sessList"></div></div>
     </div>
   </div>
 </div>
 
 <div class="modal" id="loginModal"><div class="card mc pk">
-  <h3 style="text-align:center">🔒 Вход в систему</h3>
+  <h3 style="text-align:center" data-t="m_login">🔒 Вход в систему</h3>
   <form id="loginForm">
-    <div class="fg"><label>Профиль</label><select id="loginUser" required></select></div>
-    <div class="fg"><label>Пароль</label><input type="password" id="passInput" placeholder="Введите пароль" required></div>
-    <button type="submit" class="btn">Войти</button>
-    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('loginModal')">Отмена</button>
+    <div class="fg"><label data-t="m_profile">Профиль</label><select id="loginUser" required></select></div>
+    <div class="fg"><label data-t="m_pass">Пароль</label><input type="password" id="passInput" data-p="ph_pass" placeholder="Введите пароль" required></div>
+    <button type="submit" class="btn" data-t="btn_enter">Войти</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('loginModal')" data-t="btn_cancel">Отмена</button>
   </form>
 </div></div>
 
 <div class="modal" id="bookModal"><div class="card mc or">
-  <h3 style="text-align:center">📅 Оформить бронь</h3>
+  <h3 style="text-align:center" data-t="m_book">📅 Оформить бронь</h3>
   <form id="bookForm">
-    <div class="fg"><label>Гид</label><select id="bTarget" required></select></div>
-    <div class="fg"><label>Ваше имя и телефон</label><input id="bClient" placeholder="Иван (+998901234567)" required maxlength="80"></div>
-    <div class="fg"><label>Дата</label><input type="date" id="bDate" required></div>
-    <div class="fg"><label>Время начала и часов</label>
+    <div class="fg"><label data-t="m_guide">Гид</label><select id="bTarget" required></select></div>
+    <div class="fg"><label data-t="m_client">Ваше имя и телефон</label><input id="bClient" data-p="ph_client" placeholder="Иван (+998901234567)" required maxlength="80"></div>
+    <div class="fg"><label data-t="m_date">Дата</label><input type="date" id="bDate" required></div>
+    <div class="fg"><label data-t="m_time">Время начала и часов</label>
       <div style="display:flex;gap:10px"><input type="time" id="bTime" value="09:00" required><input type="number" id="bHours" min="1" max="24" value="4" required></div></div>
-    <button type="submit" class="btn or2">Забронировать</button>
-    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('bookModal')">Отмена</button>
+    <button type="submit" class="btn or2" data-t="btn_book_now">Забронировать</button>
+    <button type="button" class="del" style="width:100%;margin:12px 0 0;padding:10px" onclick="closeModal('bookModal')" data-t="btn_cancel">Отмена</button>
   </form>
 </div></div>
 
 <div class="modal" id="editModal"><div class="card mc cy">
-  <h3 style="text-align:center">✏ Редактирование</h3>
+  <h3 style="text-align:center" data-t="m_edit">✏ Редактирование</h3>
   <input type="hidden" id="eLogin">
-  <div class="fg"><label>Имя</label><input id="eName"></div>
-  <div class="fg"><label>Новый пароль (пусто = не менять, мин. 4 символа)</label><input type="password" id="ePass" autocomplete="new-password"></div>
-  <div class="fg"><label>Языки (через запятую)</label><input id="eLangs"></div>
-  <div class="fg"><label>Автомобиль гида</label><input id="eCar" placeholder="Модель и госномер"></div>
-  <div class="fg"><label>Цена за день ($)</label><input type="number" id="ePrice" min="0"></div>
-  <button type="button" class="btn cy2" onclick="saveEdit()">Сохранить</button>
-  <button type="button" class="del" style="width:100%;margin:10px 0 0;padding:10px" onclick="closeModal('editModal')">Отмена</button>
+  <div class="fg"><label data-t="l_name">Имя</label><input id="eName"></div>
+  <div class="fg"><label data-t="e_pass">Новый пароль (пусто = не менять, мин. 4 символа)</label><input type="password" id="ePass" autocomplete="new-password"></div>
+  <div class="fg"><label data-t="e_langs">Языки (через запятую)</label><input id="eLangs"></div>
+  <div class="fg"><label data-t="l_car">Автомобиль гида</label><input id="eCar" data-p="ph_car" placeholder="Модель и госномер"></div>
+  <div class="fg"><label data-t="l_price">Цена за день ($)</label><input type="number" id="ePrice" min="0"></div>
+  <button type="button" class="btn cy2" onclick="saveEdit()" data-t="btn_save">Сохранить</button>
+  <button type="button" class="del" style="width:100%;margin:10px 0 0;padding:10px" onclick="closeModal('editModal')" data-t="btn_cancel">Отмена</button>
 </div></div>
 <div id="toast"></div>
 
 <script>
+// ================= ПЕРЕВОДЫ =================
+// data-t — текст элемента, data-p — подсказка в поле. Ключи ошибок приходят с сервера (code).
+const I18N = {
+ru: {
+page_title:'Гиды Узбекистана — бронирование', status_guest:'Выберите гида и забронируйте поездку', status_me:'Вошли как: {name}',
+btn_auth:'🔑 Вход для персонала', btn_logout:'Выйти', lang_tip:'Язык сайта',
+find_title:'🔍 Найти свободных гидов', f_date:'Дата поездки', f_time:'Время начала', f_hours:'Длительность (часов)', f_show:'Показать свободных',
+guides_title:'👨‍💼 Свободные гиды', price_day:'{p} / день', no_car:'Без автомобиля', btn_book:'📅 Забронировать',
+none_free:'Нет свободных гидов на выбранное время.',
+new_guide:'➕ Новый гид', l_name:'Имя', ph_name:'Алишер (Ташкент)', l_langs:'Языки', ph_langs:'Русский, Английский',
+l_car:'Автомобиль гида (модель и номер)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Цена за день ($)', ph_price:'50',
+btn_add_guide:'+ Создать гида',
+warn_db:'⚠️ База данных не подключена: данные хранятся во временном файле и могут пропасть при перезапуске. Подключите PostgreSQL (переменная DATABASE_URL в Render).',
+bk_all:'📅 Все брони', bk_mine:'⏳ Мои заказы', btn_new_bk:'+ Новая бронь', bk_none:'Заказов нет.',
+btn_done:'Завершить', btn_cancel_bk:'✕ Отменить', ask_cancel_bk:'Отменить эту бронь?', ask_del_user:'Удалить этого сотрудника и его брони?',
+chat_title:'💬 Чат персонала', chat_ph:'Напишите сообщение...', btn_send:'Отправить',
+staff_title:'👥 Персонал и цены', th_name:'Имя', th_pass:'Пароль', th_langs:'Языки', th_car:'Авто', th_price:'$/день',
+online_title:'🌐 Сейчас в системе', badge_online:'Онлайн',
+m_login:'🔒 Вход в систему', m_profile:'Профиль', m_pass:'Пароль', ph_pass:'Введите пароль', btn_enter:'Войти', btn_cancel:'Отмена',
+m_book:'📅 Оформить бронь', m_guide:'Гид', m_client:'Ваше имя и телефон', ph_client:'Иван (+998901234567)', m_date:'Дата',
+m_time:'Время начала и часов', btn_book_now:'Забронировать',
+m_edit:'✏ Редактирование', e_pass:'Новый пароль (пусто = не менять, мин. 4 символа)', e_langs:'Языки (через запятую)', btn_save:'Сохранить',
+pw_locked:'Скрыт: этот пользователь не ниже вас по рангу', pw_none:'не задан',
+ok_book:'Бронирование успешно создано!', ok_save:'Изменения сохранены!', client_label:'Клиент', unit_h:'ч.',
+name_guide:'Введите имя гида', name_empty:'Имя не может быть пустым', pass_min:'Пароль — минимум 4 символа',
+guide_added:'Гид добавлен!\nИмя: {name}\nПароль для входа: {pass}\n\nСохраните пароль — повторно он показан не будет.',
+bad_date:'Неверная дата или время', hours:'Длительность: от 1 до 24 часов',
+client:'Укажите имя и номер телефона (минимум 9 цифр)', past:'Нельзя бронировать в прошлом',
+many_bookings:'Слишком много броней', no_guide:'Гид не найден', busy:'Это время уже занято — выберите другое',
+rate_login:'Слишком много попыток, подождите 10 минут', rate_book:'Слишком много запросов', wrong_pass:'Неверный пароль!',
+forbid:'Недостаточно прав', no_auth:'Войдите в систему', empty_msg:'Пустое сообщение', no_booking:'Бронь не найдена',
+unknown_op:'Неизвестное действие', server:'Ошибка сервера', network:'Нет связи с сервером'
+},
+uz: {
+page_title:"Oʻzbekiston gidlari — bron qilish", status_guest:'Gidni tanlang va sayohatni bron qiling', status_me:'Siz kirdingiz: {name}',
+btn_auth:'🔑 Xodimlar uchun kirish', btn_logout:'Chiqish', lang_tip:'Sayt tili',
+find_title:'🔍 Boʻsh gidlarni topish', f_date:'Sayohat sanasi', f_time:'Boshlanish vaqti', f_hours:'Davomiyligi (soat)', f_show:'Boʻsh gidlarni koʻrsatish',
+guides_title:'👨‍💼 Boʻsh gidlar', price_day:'{p} / kun', no_car:'Mashina yoʻq', btn_book:'📅 Bron qilish',
+none_free:'Tanlangan vaqt uchun boʻsh gid yoʻq.',
+new_guide:'➕ Yangi gid', l_name:'Ism', ph_name:'Alisher (Toshkent)', l_langs:'Tillar', ph_langs:'Ruscha, Inglizcha',
+l_car:'Gidning mashinasi (model va raqam)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Kunlik narx ($)', ph_price:'50',
+btn_add_guide:'+ Gid yaratish',
+warn_db:'⚠️ Maʼlumotlar bazasi ulanmagan: maʼlumotlar vaqtinchalik faylda saqlanadi va qayta ishga tushirilganda yoʻqolishi mumkin. PostgreSQL ulang (Render da DATABASE_URL oʻzgaruvchisi).',
+bk_all:'📅 Barcha bronlar', bk_mine:'⏳ Mening buyurtmalarim', btn_new_bk:'+ Yangi bron', bk_none:'Buyurtma yoʻq.',
+btn_done:'Yakunlash', btn_cancel_bk:'✕ Bekor qilish', ask_cancel_bk:'Bu bron bekor qilinsinmi?', ask_del_user:'Bu xodim va uning bronlari oʻchirilsinmi?',
+chat_title:'💬 Xodimlar chati', chat_ph:'Xabar yozing...', btn_send:'Yuborish',
+staff_title:'👥 Xodimlar va narxlar', th_name:'Ism', th_pass:'Parol', th_langs:'Tillar', th_car:'Mashina', th_price:'$/kun',
+online_title:'🌐 Hozir tizimda', badge_online:'Onlayn',
+m_login:'🔒 Tizimga kirish', m_profile:'Profil', m_pass:'Parol', ph_pass:'Parolni kiriting', btn_enter:'Kirish', btn_cancel:'Bekor qilish',
+m_book:'📅 Bronni rasmiylashtirish', m_guide:'Gid', m_client:'Ismingiz va telefon raqamingiz', ph_client:'Ivan (+998901234567)', m_date:'Sana',
+m_time:'Boshlanish vaqti va soatlar', btn_book_now:'Bron qilish',
+m_edit:'✏ Tahrirlash', e_pass:'Yangi parol (boʻsh = oʻzgartirmaslik, kamida 4 belgi)', e_langs:'Tillar (vergul bilan)', btn_save:'Saqlash',
+pw_locked:'Yashirilgan: bu foydalanuvchi sizdan yuqori darajada', pw_none:'belgilanmagan',
+ok_book:'Bron muvaffaqiyatli yaratildi!', ok_save:'Oʻzgarishlar saqlandi!', client_label:'Mijoz', unit_h:'soat',
+name_guide:'Gid ismini kiriting', name_empty:'Ism boʻsh boʻlmaydi', pass_min:'Parol — kamida 4 belgi',
+guide_added:'Gid qoʻshildi!\nIsm: {name}\nKirish paroli: {pass}\n\nParolni saqlang — u qayta koʻrsatilmaydi.',
+bad_date:'Sana yoki vaqt notoʻgʻri', hours:'Davomiylik: 1 dan 24 soatgacha',
+client:'Ism va telefon raqamni kiriting (kamida 9 ta raqam)', past:'Oʻtmish vaqtga bron qilish mumkin emas',
+many_bookings:'Bronlar juda koʻp', no_guide:'Gid topilmadi', busy:'Bu vaqt band — boshqa vaqt tanlang',
+rate_login:'Juda koʻp urinish, 10 daqiqa kutib turing', rate_book:'Juda koʻp soʻrovlar', wrong_pass:'Parol notoʻgʻri!',
+forbid:'Huquqlar yetarli emas', no_auth:'Tizimga kiring', empty_msg:'Boʻsh xabar', no_booking:'Bron topilmadi',
+unknown_op:'Nomaʼlum amal', server:'Server xatosi', network:'Server bilan aloqa yoʻq'
+},
+en: {
+page_title:'Guides of Uzbekistan — booking', status_guest:'Choose a guide and book your trip', status_me:'Signed in as: {name}',
+btn_auth:'🔑 Staff login', btn_logout:'Log out', lang_tip:'Site language',
+find_title:'🔍 Find available guides', f_date:'Trip date', f_time:'Start time', f_hours:'Duration (hours)', f_show:'Show available',
+guides_title:'👨‍💼 Available guides', price_day:'{p} / day', no_car:'No car', btn_book:'📅 Book now',
+none_free:'No guides are available at the selected time.',
+new_guide:'➕ New guide', l_name:'Name', ph_name:'Alisher (Tashkent)', l_langs:'Languages', ph_langs:'Russian, English',
+l_car:'Guide car (model and plate)', ph_car:'Chevrolet Tahoe (01 A 777 AA)', l_price:'Price per day ($)', ph_price:'50',
+btn_add_guide:'+ Create guide',
+warn_db:'⚠️ Database is not connected: data is kept in a temporary file and may be lost on restart. Connect PostgreSQL (DATABASE_URL variable in Render).',
+bk_all:'📅 All bookings', bk_mine:'⏳ My orders', btn_new_bk:'+ New booking', bk_none:'No bookings.',
+btn_done:'Finish', btn_cancel_bk:'✕ Cancel', ask_cancel_bk:'Cancel this booking?', ask_del_user:'Delete this staff member and their bookings?',
+chat_title:'💬 Staff chat', chat_ph:'Write a message...', btn_send:'Send',
+staff_title:'👥 Staff and prices', th_name:'Name', th_pass:'Password', th_langs:'Languages', th_car:'Car', th_price:'$/day',
+online_title:'🌐 Currently online', badge_online:'Online',
+m_login:'🔒 Sign in', m_profile:'Profile', m_pass:'Password', ph_pass:'Enter password', btn_enter:'Sign in', btn_cancel:'Cancel',
+m_book:'📅 Confirm booking', m_guide:'Guide', m_client:'Your name and phone', ph_client:'Ivan (+998901234567)', m_date:'Date',
+m_time:'Start time and hours', btn_book_now:'Book',
+m_edit:'✏ Edit', e_pass:'New password (leave empty to keep, min. 4 characters)', e_langs:'Languages (comma separated)', btn_save:'Save',
+pw_locked:'Hidden: this user is not below you in rank', pw_none:'not set',
+ok_book:'Booking created successfully!', ok_save:'Changes saved!', client_label:'Client', unit_h:'h',
+name_guide:'Enter the guide name', name_empty:'Name cannot be empty', pass_min:'Password — at least 4 characters',
+guide_added:'Guide added!\nName: {name}\nLogin password: {pass}\n\nSave the password — it will not be shown again.',
+bad_date:'Invalid date or time', hours:'Duration: from 1 to 24 hours',
+client:'Please enter your name and phone number (at least 9 digits)', past:'Cannot book in the past',
+many_bookings:'Too many bookings', no_guide:'Guide not found', busy:'This time is already taken — please choose another',
+rate_login:'Too many attempts, please wait 10 minutes', rate_book:'Too many requests', wrong_pass:'Wrong password!',
+forbid:'Not enough permissions', no_auth:'Please sign in', empty_msg:'Empty message', no_booking:'Booking not found',
+unknown_op:'Unknown action', server:'Server error', network:'No connection to the server'
+}
+};
+const LANGS = [['ru','🇷🇺 Русский'],['uz','🇺🇿 Oʻzbekcha'],['en','🇬🇧 English']];
+let LANG = localStorage.getItem('uz_lang') || 'ru';
+if (!I18N[LANG]) LANG = 'ru';
+const t = (k, vars) => {
+  let s = (I18N[LANG] && I18N[LANG][k]) ?? I18N.ru[k] ?? k;
+  return vars ? s.replace(/\{(\w+)\}/g, (m, p) => (vars[p] ?? '')) : s;
+};
+// Ошибка с сервера: сначала переводим по коду, иначе показываем как есть.
+const trErr = (code, fallback) => (I18N[LANG] && I18N[LANG][code]) || I18N.ru[code] || fallback || t('server');
+function applyLang() {
+  document.documentElement.lang = LANG;
+  document.title = t('page_title');
+  $('langSel').title = t('lang_tip');
+  document.querySelectorAll('[data-t]').forEach(el => { el.textContent = t(el.dataset.t); });
+  document.querySelectorAll('[data-p]').forEach(el => { el.placeholder = t(el.dataset.p); });
+  renderPublic.last = null;
+}
+function setLang(code) {
+  if (!I18N[code]) return;
+  LANG = code; localStorage.setItem('uz_lang', code);
+  $('langSel').value = code; applyLang(); paint();
+}
+// ================= КОНЕЦ ПЕРЕВОДОВ =================
+
 const $ = id => document.getElementById(id);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 const pad = n => String(n).padStart(2, '0');
 const today = () => { const d = new Date(); return `${d.getFullYear()}-${pad(d.getMonth()+1)}-${pad(d.getDate())}`; };
-function toast(t) { const e = $('toast'); e.textContent = t; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2800); }
+function toast(txt) { const e = $('toast'); e.textContent = txt; e.style.display = 'block'; clearTimeout(toast.t); toast.t = setTimeout(() => e.style.display = 'none', 2800); }
 const AV = ['#8b5cf6,#ec4899', '#06b6d4,#8b5cf6', '#f59e0b,#ef4444', '#10b981,#06b6d4', '#ec4899,#f59e0b', '#6366f1,#22d3ee'];
 const CH = ['rgba(139,92,246,.3);color:#ddd6fe', 'rgba(34,211,238,.25);color:#a5f3fc', 'rgba(236,72,153,.28);color:#fbcfe8', 'rgba(245,158,11,.28);color:#fde68a'];
 const pick = (s, a) => a[[...String(s)].reduce((x, c) => x + c.charCodeAt(0), 0) % a.length];
@@ -209,19 +329,22 @@ const pick = (s, a) => a[[...String(s)].reduce((x, c) => x + c.charCodeAt(0), 0)
 let users = [], profiles = [], bookings = [], slots = [], chat = [], online = [], M = null, DB = true;
 let token = localStorage.getItem('uz_token') || '';
 async function api(path, body) {
-  const r = await fetch('/api/' + path, { method: body ? 'POST' : 'GET',
-    headers: { 'Content-Type': 'application/json', 'x-token': token }, body: body ? JSON.stringify(body) : undefined });
+  let r;
+  try {
+    r = await fetch('/api/' + path, { method: body ? 'POST' : 'GET',
+      headers: { 'Content-Type': 'application/json', 'x-token': token }, body: body ? JSON.stringify(body) : undefined });
+  } catch { throw Object.assign(new Error(trErr('network')), { code: 'network' }); }
   const j = await r.json().catch(() => ({}));
-  if (!r.ok) throw new Error(j.error || 'Ошибка сервера');
+  if (!r.ok) throw Object.assign(new Error(trErr(j.code, j.error)), { code: j.code });
   return j;
 }
 async function act(op, p = {}) {
   try { const j = await api('act', { op, ...p }); await refresh(); return j; }
-  catch (e) { toast(e.message); return null; }
+  catch (e) { toast(trErr(e.code, e.message)); return null; }
 }
 async function refresh() {
   try { const d = await api('data'); ({ me: M, users, profiles, bookings, slots, chat, online } = d); DB = d.db; }
-  catch (e) { return toast(e.message); }
+  catch (e) { return toast(trErr(e.code, e.message)); }
   if (!M && token) { token = ''; localStorage.removeItem('uz_token'); }
   paint();
 }
@@ -235,19 +358,19 @@ const busy = (g, sp) => slots.some(b => b.targetLogin === g.login && (x => x.s <
 
 // ---- Витрина гидов ----
 function renderPublic() {
-  const t = $('fTime').value || '09:00', h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
-  const sp = span($('fDate').value || today(), t, h);
+  const t0 = $('fTime').value || '09:00', h = Math.max(1, Math.min(24, parseInt($('fHours').value) || 1));
+  const sp = span($('fDate').value || today(), t0, h);
   const html = users.filter(u => u.role === 'guide' && !busy(u, sp)).map((g, i) => {
     const langs = (g.langs || '').split(',').map(x => x.trim()).filter(Boolean)
       .map(l => `<span class="chip" style="background:${pick(l, CH)}">${esc(l)}</span>`).join('');
     return `<div class="gc" style="--i:${i}"><div class="gh">
       <div class="av" style="background:linear-gradient(135deg,${pick(g.name, AV)})">${esc([...g.name][0] || '?')}</div>
-      <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">$${esc(g.price)} / день</span></div></div>
+      <div><strong style="font-size:1.1rem">${esc(g.name)}</strong><br><span class="price">${t('price_day', { p: '$' + esc(g.price) })}</span></div></div>
       <div class="chips">${langs}</div>
-      <div class="car">🚘 ${g.car ? esc(g.car) : '<span class="mu">Без автомобиля</span>'}</div>
-      <button class="btn or2" onclick="openBook('${esc(g.login)}')">📅 Забронировать</button></div>`;
+      <div class="car">🚘 ${g.car ? esc(g.car) : `<span class="mu">${t('no_car')}</span>`}</div>
+      <button class="btn or2" onclick="openBook('${esc(g.login)}')">${t('btn_book')}</button></div>`;
   }).join('');
-  const out = html || '<div class="card mu" style="grid-column:1/-1">Нет свободных гидов на выбранное время.</div>';
+  const out = html || `<div class="card mu" style="grid-column:1/-1">${t('none_free')}</div>`;
   if (renderPublic.last === out) return; // не перерисовываем без изменений, чтобы анимация не мигала
   renderPublic.last = out; $('pGuides').innerHTML = out;
 }
@@ -274,7 +397,7 @@ $('loginForm').addEventListener('submit', async e => {
     const j = await api('login', { login: $('loginUser').value, pass: $('passInput').value.trim() });
     token = j.token; localStorage.setItem('uz_token', token);
     $('passInput').value = ''; closeModal('loginModal'); await refresh();
-  } catch (err) { toast(err.message); }
+  } catch (err) { toast(trErr(err.code, err.message)); }
 });
 async function logout() {
   try { await api('logout', {}); } catch {}
@@ -284,7 +407,7 @@ function paint() {
   const m = M;
   $('authBtn').style.display = m ? 'none' : 'inline-block';
   $('logoutBtn').style.display = m ? 'inline-block' : 'none';
-  $('status').textContent = m ? 'Вошли как: ' + m.name : 'Выберите гида и забронируйте поездку';
+  $('status').textContent = m ? t('status_me', { name: m.name }) : t('status_guest');
   $('panel').style.display = m ? 'grid' : 'none';
   if (m) {
     const st = isStaff(), g = m.role === 'guide';
@@ -292,7 +415,7 @@ function paint() {
     $('warn').style.display = st && !DB ? 'block' : 'none';
     $('sessCard').style.display = g ? 'none' : 'block';
     $('newBkBtn').style.display = g ? 'none' : 'inline-block';
-    $('bkTitle').textContent = g ? '⏳ Мои заказы' : '📅 Все брони';
+    $('bkTitle').textContent = g ? t('bk_mine') : t('bk_all');
     renderUsers(); renderBookings(); renderSessions(); renderChat();
   }
   renderPublic();
@@ -304,8 +427,8 @@ $('bookForm').addEventListener('submit', async e => {
   try {
     await api('book', { target: $('bTarget').value, client: $('bClient').value,
       date: $('bDate').value, time: $('bTime').value, hours: $('bHours').value });
-    $('bClient').value = ''; closeModal('bookModal'); toast('Бронирование успешно создано!'); await refresh();
-  } catch (err) { toast(err.message); }
+    $('bClient').value = ''; closeModal('bookModal'); toast(t('ok_book')); await refresh();
+  } catch (err) { toast(trErr(err.code, err.message)); }
 });
 function renderBookings() {
   const m = M; if (!m) return;
@@ -313,32 +436,32 @@ function renderBookings() {
     .sort((a, b) => span(a.date, a.time, 1).s - span(b.date, b.time, 1).s);
   $('bkList').innerHTML = list.length ? list.map(b => {
     const g = users.find(u => u.login === b.targetLogin);
-    return `<div class="item"><div><strong>📅 ${esc(b.date)} · 🕒 ${esc(b.time)} (${esc(b.hours)} ч.)</strong><br>
+    return `<div class="item"><div><strong>📅 ${esc(b.date)} · 🕒 ${esc(b.time)} (${esc(b.hours)} ${t('unit_h')})</strong><br>
       <small class="mu">👨‍💼 ${esc(g ? g.name : '—')}${g && g.car ? ' · 🚘 ' + esc(g.car) : ''}</small><br>
-      <small class="mu">Клиент: ${esc(b.client)}</small></div>
-      <button class="${m.role === 'guide' ? 'btn sm' : 'del'}" onclick="removeBooking(${+b.id})">${m.role === 'guide' ? 'Завершить' : '✕ Отменить'}</button></div>`;
-  }).join('') : '<small class="mu">Заказов нет.</small>';
+      <small class="mu">${t('client_label')}: ${esc(b.client)}</small></div>
+      <button class="${m.role === 'guide' ? 'btn sm' : 'del'}" onclick="removeBooking(${+b.id})">${m.role === 'guide' ? t('btn_done') : t('btn_cancel_bk')}</button></div>`;
+  }).join('') : `<small class="mu">${t('bk_none')}</small>`;
 }
 function removeBooking(id) {
-  if (M.role !== 'guide' && !confirm('Отменить эту бронь?')) return;
+  if (M.role !== 'guide' && !confirm(t('ask_cancel_bk'))) return;
   act('removeBooking', { id });
 }
 
 // ---- Гиды и персонал ----
 async function addGuide() {
   const name = $('ngName').value.trim();
-  if (!name) return toast('Введите имя гида');
+  if (!name) return toast(t('name_guide'));
   const j = await act('addGuide', { name, langs: $('ngLangs').value, car: $('ngCar').value, price: $('ngPrice').value });
   if (j) {
-    alert(`Гид добавлен!\nИмя: ${name}\nПароль для входа: ${j.pass}\n\nСохраните пароль — повторно он показан не будет.`);
+    alert(t('guide_added', { name, pass: j.pass }));
     $('ngName').value = $('ngLangs').value = $('ngCar').value = $('ngPrice').value = '';
   }
 }
 // Пароль виден только тем, кто выше по рангу (владелец > админ > гид). Нажмите, чтобы показать.
 function pwCell(u) {
-  if (u.pass === undefined) return '<span class="mu" title="Скрыт: этот пользователь не ниже вас по рангу">🔒</span>';
-  if (u.pass === null) return '<span class="mu" title="Задайте пароль заново через ✏️, тогда он станет виден">не задан</span>';
-  return `<code style="cursor:pointer;color:#fbcfe8" data-p="${esc(u.pass)}" onclick="this.textContent=this.textContent==='••••••'?this.dataset.p:'••••••'">••••••</code>`;
+  if (u.pass === undefined) return `<span class="mu" title="${t('pw_locked')}">🔒</span>`;
+  if (u.pass === null) return `<span class="mu" title="${t('e_pass')}">${t('pw_none')}</span>`;
+  return `<code style="cursor:pointer;color:#fbcfe8" data-pw="${esc(u.pass)}" onclick="this.textContent=this.textContent==='••••••'?this.dataset.pw:'••••••'">••••••</code>`;
 }
 function renderUsers() {
   if (!isStaff()) return;
@@ -356,16 +479,16 @@ function openEdit(login) {
 }
 async function saveEdit() {
   const name = $('eName').value.trim(), pass = $('ePass').value.trim();
-  if (!name) return toast('Имя не может быть пустым');
-  if (pass && pass.length < 4) return toast('Пароль — минимум 4 символа');
+  if (!name) return toast(t('name_empty'));
+  if (pass && pass.length < 4) return toast(t('pass_min'));
   if (await act('editUser', { login: $('eLogin').value, name, pass, langs: $('eLangs').value,
-      car: $('eCar').value, price: $('ePrice').value })) { closeModal('editModal'); toast('Изменения сохранены!'); }
+      car: $('eCar').value, price: $('ePrice').value })) { closeModal('editModal'); toast(t('ok_save')); }
 }
-function deleteUser(login) { if (confirm('Удалить этого сотрудника и его брони?')) act('deleteUser', { login }); }
+function deleteUser(login) { if (confirm(t('ask_del_user'))) act('deleteUser', { login }); }
 
 // ---- Онлайн и чат ----
 function renderSessions() {
-  $('sessList').innerHTML = online.map(u => `<div class="item on" style="padding:9px 14px"><strong>${esc(u.name)}</strong><span class="badge">Онлайн</span></div>`).join('');
+  $('sessList').innerHTML = online.map(u => `<div class="item on" style="padding:9px 14px"><strong>${esc(u.name)}</strong><span class="badge">${t('badge_online')}</span></div>`).join('');
 }
 async function sendChat() {
   const text = $('chatInput').value.trim(); if (!text) return;
@@ -377,7 +500,10 @@ function renderChat() {
   box.scrollTop = box.scrollHeight;
 }
 
+$('langSel').innerHTML = LANGS.map(([c, n]) => `<option value="${c}">${n}</option>`).join('');
+$('langSel').value = LANG;
 $('fDate').value = today();
+applyLang();
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 Promise.all([Promise.race([refresh(), sleep(2500)]), sleep(900)]).finally(() => {
   $('splash').classList.add('hide'); document.body.classList.add('ready');

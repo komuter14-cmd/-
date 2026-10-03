@@ -74,8 +74,20 @@ const auth = req => {
 const live = () => [...tokens.values()].filter(t => Date.now() - t.at < 9e5);
 
 // ---- Помощники ----
-const bad = (res, error) => res.status(400).json({ error });
-const forbid = res => res.status(403).json({ error: 'Недостаточно прав' });
+// Коды ошибок: клиент переводит их на выбранный язык, текст остаётся русским как запасной.
+const ECODE = {
+  'Неверная дата или время': 'bad_date', 'Длительность: от 1 до 24 часов': 'hours',
+  'Укажите имя и номер телефона (минимум 9 цифр)': 'client', 'Нельзя бронировать в прошлом': 'past',
+  'Слишком много броней': 'many_bookings', 'Гид не найден': 'no_guide',
+  'Это время уже занято — выберите другое': 'busy',
+  'Слишком много попыток, подождите 10 минут': 'rate_login', 'Слишком много запросов': 'rate_book',
+  'Неверный пароль!': 'wrong_pass', 'Недостаточно прав': 'forbid', 'Войдите в систему': 'no_auth',
+  'Пустое сообщение': 'empty_msg', 'Бронь не найдена': 'no_booking', 'Неизвестное действие': 'unknown_op',
+  'Введите имя гида': 'name_guide', 'Имя не может быть пустым': 'name_empty',
+  'Пароль — минимум 4 символа': 'pass_min', 'Ошибка сервера': 'server'
+};
+const bad = (res, error) => res.status(400).json({ error, code: ECODE[error] || 'server' });
+const forbid = res => res.status(403).json({ error: 'Недостаточно прав', code: 'forbid' });
 const str = (s, n) => String(s ?? '').trim().slice(0, n);
 const span = (d, t, h) => { const s = new Date(`${d}T${t}:00+05:00`).getTime(); return { s, e: s + h * 36e5 }; };
 const hit = (b, sp) => { const x = span(b.date, b.time, +b.hours); return x.s < sp.e && sp.s < x.e; };
@@ -103,9 +115,9 @@ app.get('/api/data', (req, res) => {
 });
 
 app.post('/api/login', async (req, res) => {
-  if (limited('l' + req.ip, 10, 6e5)) return res.status(429).json({ error: 'Слишком много попыток, подождите 10 минут' });
+  if (limited('l' + req.ip, 10, 6e5)) return res.status(429).json({ error: 'Слишком много попыток, подождите 10 минут', code: 'rate_login' });
   const u = S.users.find(x => x.login === req.body?.login);
-  if (!u || !checkPw(String(req.body.pass ?? ''), u.hash)) return res.status(401).json({ error: 'Неверный пароль!' });
+  if (!u || !checkPw(String(req.body.pass ?? ''), u.hash)) return res.status(401).json({ error: 'Неверный пароль!', code: 'wrong_pass' });
   for (const [k, v] of tokens) if (Date.now() - v.at > 6048e5) tokens.delete(k);
   const t = crypto.randomBytes(24).toString('hex');
   tokens.set(t, { login: u.login, at: Date.now() });
@@ -115,7 +127,7 @@ app.post('/api/logout', async (req, res) => { tokens.delete(req.get('x-token'));
 
 // Бронь доступна всем (гостям и персоналу)
 app.post('/api/book', async (req, res) => {
-  if (limited('b' + req.ip, 30, 36e5)) return res.status(429).json({ error: 'Слишком много запросов' });
+  if (limited('b' + req.ip, 30, 36e5)) return res.status(429).json({ error: 'Слишком много запросов', code: 'rate_book' });
   const b = req.body || {}, client = str(b.client, 80), hours = parseInt(b.hours), date = str(b.date, 10), time = str(b.time, 5);
   if (!/^\d{4}-\d\d-\d\d$/.test(date) || !/^\d\d:\d\d$/.test(time)) return bad(res, 'Неверная дата или время');
   if (!(hours >= 1 && hours <= 24)) return bad(res, 'Длительность: от 1 до 24 часов');
@@ -134,7 +146,7 @@ app.post('/api/book', async (req, res) => {
 // Действия для вошедших
 app.post('/api/act', async (req, res) => {
   const m = auth(req);
-  if (!m) return res.status(401).json({ error: 'Войдите в систему' });
+  if (!m) return res.status(401).json({ error: 'Войдите в систему', code: 'no_auth' });
   const b = req.body || {}, st = isStaff(m);
   try {
     switch (b.op) {
@@ -177,7 +189,7 @@ app.post('/api/act', async (req, res) => {
       default: return bad(res, 'Неизвестное действие');
     }
     await persist(); res.json({ ok: 1 });
-  } catch (e) { console.error(e); res.status(500).json({ error: 'Ошибка сервера' }); }
+  } catch (e) { console.error(e); res.status(500).json({ error: 'Ошибка сервера', code: 'server' }); }
 });
 
 // Отдаём только страницу сайта (код сервера и данные снаружи недоступны)
